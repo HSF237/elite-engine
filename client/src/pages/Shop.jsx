@@ -349,7 +349,7 @@ export default function Shop() {
             ) : (
               <motion.div
                 layout
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
               >
                 <AnimatePresence mode="popLayout">
                   {filtered.map(product => {
@@ -449,7 +449,7 @@ export default function Shop() {
                           <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
+                                <span className="text-base sm:text-xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
                                 {product.regularPrice > product.discountPrice && (
                                   <span className="text-[10px] text-white/25 line-through">₹{product.regularPrice.toLocaleString()}</span>
                                 )}

@@ -174,7 +174,7 @@ export default function Home() {
 
       {/* ——— Specialized Grid Cards (Amazon style) ——— */}
       <section className="py-12 px-4 sm:px-6">
-         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Card 1: Under 999 */}
             <motion.div 
                initial={{ opacity: 0, y: 20 }} 
@@ -184,16 +184,16 @@ export default function Home() {
                onClick={() => navigate('/shop?filter=deals')}
             >
                <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a962]/10 blur-3xl -mr-16 -mt-16" />
-               <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Under ₹999</h3>
-               <p className="text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Curated Essentials</p>
-               <div className="grid grid-cols-2 gap-3 flex-1">
-                  [
+               <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Under ₹999</h3>
+               <p className="text-[8px] sm:text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Curated Essentials</p>
+               <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
+                  {[
                      'https://images.unsplash.com/photo-1583394838336-acd977736f90', 
                      'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9', 
                      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e', 
                      'https://images.unsplash.com/photo-1542291026-7eec264c27ff'
                   ].map((img, i) => (
-                     <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/5">
+                     <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                         <img 
                            src={`${img}?auto=format&fit=crop&w=300&q=80`} 
                            alt="" 
@@ -218,16 +218,16 @@ export default function Home() {
                className="bg-[#1a1a1c] p-6 rounded-[2.5rem] border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all shadow-2xl"
                onClick={() => navigate('/shop?category=Home')}
             >
-               <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Elite Spaces</h3>
-               <p className="text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Smart Interior</p>
-               <div className="grid grid-cols-2 gap-3 flex-1">
-                  [
+               <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Elite Spaces</h3>
+               <p className="text-[8px] sm:text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Smart Interior</p>
+               <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
+                  {[
                      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7', 
                      'https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e', 
                      'https://images.unsplash.com/photo-1616489953149-924040974585', 
                      'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92'
                   ].map((img, i) => (
-                     <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/5">
+                     <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                         <img 
                            src={`${img}?auto=format&fit=crop&w=300&q=80`} 
                            alt="" 
@@ -254,8 +254,8 @@ export default function Home() {
                <div className="absolute top-0 right-0 p-4">
                   <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                </div>
-               <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Flash Deal</h3>
-               <p className="text-[10px] text-red-500 mb-6 font-black uppercase tracking-[0.2em]">Ends In:</p>
+               <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Flash Deal</h3>
+               <p className="text-[8px] sm:text-red-500 mb-6 font-black uppercase tracking-[0.2em] text-red-500">Ends In:</p>
                <div className="flex-1 flex flex-col justify-center gap-6">
                   <FlashDealCountdown />
                   <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10">
@@ -279,8 +279,8 @@ export default function Home() {
                className="bg-gradient-to-br from-[#c9a962] to-[#b09452] p-8 rounded-[2.5rem] flex flex-col justify-between"
             >
                <div>
-                  <h3 className="font-outfit font-black text-3xl text-black leading-none mb-3 uppercase tracking-tighter">Your Elite Profile</h3>
-                  <p className="text-xs text-black/70 font-bold uppercase tracking-wide">Sign in for exclusive drops and faster checkout.</p>
+                  <h3 className="font-outfit font-black text-xl sm:text-3xl text-black leading-none mb-3 uppercase tracking-tighter">Your Elite Profile</h3>
+                  <p className="text-[10px] sm:text-xs text-black/70 font-bold uppercase tracking-wide">Sign in for exclusive drops and faster checkout.</p>
                </div>
                <div className="space-y-3">
                   <button 
