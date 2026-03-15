@@ -18,15 +18,16 @@ async function seed() {
   await mongoose.connect(process.env.MONGO_URI)
   console.log('✅ Connected to MongoDB')
 
+  const passwordHash = await bcrypt.hash('elite123', 12)
+  
   const existing = await User.findOne({ email: 'hasan@elite.com' })
   if (existing) {
-    console.log('ℹ️  Admin already exists — updating role to admin just in case...')
-    await User.updateOne({ email: 'hasan@elite.com' }, { role: 'admin' })
+    console.log('ℹ️  Admin already exists — updating role and forcing password reset...')
+    await User.updateOne({ email: 'hasan@elite.com' }, { role: 'admin', passwordHash })
     await mongoose.disconnect()
     return
   }
 
-  const passwordHash = await bcrypt.hash('elite123', 12)
   await User.create({
     name: 'Muhammad Hasan',
     email: 'hasan@elite.com',
