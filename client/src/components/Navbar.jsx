@@ -134,18 +134,30 @@ export default function Navbar() {
       </div>
 
       {/* Bottom Sub Nav - Flipkart/Amazon style */}
-      <div className="hidden md:block bg-black/30 border-t border-white/5 py-1.5 backdrop-blur-md">
-         <div className="max-w-[1440px] mx-auto px-6 flex items-center gap-6 overflow-x-auto no-scrollbar">
+      <div className="hidden md:block bg-black/40 border-t border-white/5 py-2 backdrop-blur-xl">
+         <div className="max-w-[1440px] mx-auto px-6 flex items-center gap-8 overflow-x-auto no-scrollbar">
             <button 
               onClick={() => setMobileOpen(true)}
-              className="flex items-center gap-1.5 text-xs font-black text-white hover:text-[#c9a962] uppercase tracking-tighter transition-colors shrink-0"
+              className="flex items-center gap-2 text-[11px] font-black text-white hover:text-[#c9a962] uppercase tracking-[0.15em] transition-all shrink-0 group"
             >
-               <Menu className="w-4 h-4" /> All
+               <Menu className="w-4 h-4 group-hover:rotate-90 transition-transform" /> All Categories
             </button>
             {NAV_LINKS.map(link => (
                link.isRoute
-                 ? <Link key={link.label} to={link.href} className="text-xs font-bold text-[#c9a962] hover:text-white uppercase tracking-tighter transition-colors shrink-0 border border-[#c9a962]/30 px-2 py-0.5 rounded-md">{link.label}</Link>
-                 : <a key={link.label} href={link.href} className="text-xs font-semibold text-white/70 hover:text-[#c9a962] uppercase tracking-tighter transition-colors shrink-0">{link.label}</a>
+                 ? <Link 
+                     key={link.label} 
+                     to={link.href} 
+                     className="text-[11px] font-black text-white/70 hover:text-[#c9a962] uppercase tracking-[0.1em] transition-all shrink-0 px-2 py-1"
+                   >
+                     {link.label}
+                   </Link>
+                 : <a 
+                     key={link.label} 
+                     href={link.href} 
+                     className="text-[11px] font-black text-white/70 hover:text-[#c9a962] uppercase tracking-[0.1em] transition-all shrink-0"
+                   >
+                     {link.label}
+                   </a>
             ))}
             <div className="ml-auto flex items-center gap-4">
                <span className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] animate-pulse">New Drop: Phantom V4</span>

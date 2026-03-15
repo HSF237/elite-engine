@@ -174,7 +174,7 @@ export default function Home() {
       {/* ——— Specialized Grid Cards (Amazon style) ——— */}
       <section className="py-12 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {/* Card 1: Under 999 */}
+          {/* Card 1: Today's Deals / Under 999 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -183,28 +183,31 @@ export default function Home() {
             onClick={() => navigate('/shop?filter=deals')}
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a962]/10 blur-3xl -mr-16 -mt-16" />
-            <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Under ₹999</h3>
-            <p className="text-[8px] sm:text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Curated Essentials</p>
+            <div className="mb-4">
+               <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Today's Deals</h3>
+               <p className="text-[8px] sm:text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Under ₹999 Essentials</p>
+            </div>
             <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
               {[
-                'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcRYTxsxwGjTDJT5M4NejgVnCN9Ewqg1XRgrwTLuXVZ_yyofgd2IrgYz-58iPLjWZGMHxAXWHYqMOC52-7h4QD2eV-Ou0YVGhfh7rm0h-GyQhLvnFMV9EY4IGQ',
-                'https://images.unsplash.com/photo-1691256676359-20e5c6d4bc92?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FwfGVufDB8fDB8fHww',
-                'https://images.unsplash.com/photo-1620625515032-6ed0c1790c75?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                'https://images.unsplash.com/photo-1523275335684-37898b6baf30',
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
+                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e',
+                'https://images.unsplash.com/photo-1572635196237-14b3f281503f'
               ].map((img, i) => (
                 <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                   <img
                     src={`${img}?auto=format&fit=crop&w=300&q=80`}
                     alt=""
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300' }}
                   />
                 </div>
               ))}
             </div>
             <div className="mt-6 flex items-center justify-between">
-              <span className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em]">Explore All</span>
-              <ChevronRight className="w-4 h-4 text-[#c9a962] group-hover:translate-x-1 transition-transform" />
+              <span className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em]">Shop All Deals</span>
+              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#c9a962] group-hover:text-black transition-all">
+                <ChevronRight className="w-4 h-4" />
+              </div>
             </div>
           </motion.div>
 
