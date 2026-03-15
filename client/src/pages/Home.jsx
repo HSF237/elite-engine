@@ -252,6 +252,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
             className="bg-[#1a1a1c] p-6 rounded-[2.5rem] border border-white/10 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all shadow-2xl relative overflow-hidden"
+            onClick={() => navigate('/shop?filter=deals')}
           >
             <div className="absolute top-0 right-0 p-4">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -267,9 +268,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <Link to="/shop?filter=deals" className="mt-8 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1 self-center">
+            <div className="mt-8 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 self-center">
               Unlock Deals <ChevronRight className="w-3 h-3" />
-            </Link>
+            </div>
           </motion.div>
 
           {/* Card 4: Sign in / Personalization */}

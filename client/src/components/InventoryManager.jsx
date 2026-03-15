@@ -317,47 +317,51 @@ export default function InventoryManager() {
                            <Upload className="w-3 h-3" /> Multi-Image Carousel (Upload or URL)
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                           {[1,2,3,4].map(i => (
-                              <div key={i} className="space-y-3">
-                                 <label className="aspect-square glass rounded-2xl flex flex-col items-center justify-center overflow-hidden border-dashed border-white/10 hover:border-[#c9a962]/40 cursor-pointer transition-all group relative">
-                                    {(imageFiles[i-1] || formData[`imageUrl${i}`]) ? (
-                                       <img 
-                                          src={imageFiles[i-1] ? URL.createObjectURL(imageFiles[i-1]) : formData[`imageUrl${i}`]} 
-                                          className="w-full h-full object-cover" 
-                                          alt=""
-                                       />
-                                    ) : (
-                                       <>
-                                          <Upload className="w-6 h-6 text-white/10 group-hover:text-[#c9a962]/60 transition-colors" />
-                                          <span className="text-[8px] text-white/20 mt-2 font-bold uppercase">Click to Upload</span>
-                                       </>
-                                    )}
-                                    <input 
-                                       type="file" 
-                                       accept="image/*"
-                                       className="hidden" 
-                                       onChange={e => handleFileChange(i-1, e.target.files[0])}
-                                    />
-                                 </label>
-                                 <input 
-                                    type="text" 
-                                    placeholder="...or paste Image URL"
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[10px] focus:border-[#c9a962]/50 outline-none transition-all"
-                                    value={formData[`imageUrl${i}`]}
-                                    onChange={e => setFormData({...formData, [`imageUrl${i}`]: e.target.value})}
-                                 />
-                                 {(imageFiles[i-1] || formData[`imageUrl${i}`]) && (
-                                    <button 
-                                       type="button"
-                                       onClick={() => { handleFileChange(i-1, null); setFormData({...formData, [`imageUrl${i}`]: ''}) }}
-                                       className="w-full py-1 rounded text-[8px] font-bold uppercase bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all"
-                                    >
-                                       Clear Slot
-                                    </button>
-                                 )}
-                              </div>
-                           ))}
-                        </div>
+                            {[1, 2, 3, 4].map(i => (
+                               <div key={i} className="space-y-3">
+                                  <label className="aspect-square glass rounded-2xl flex flex-col items-center justify-center overflow-hidden border-dashed border-white/10 hover:border-[#c9a962]/40 cursor-pointer transition-all group relative">
+                                     {(imageFiles[i - 1] || formData[`imageUrl${i}`]) ? (
+                                        <img
+                                           src={imageFiles[i - 1] ? URL.createObjectURL(imageFiles[i - 1]) : formData[`imageUrl${i}`]}
+                                           className="w-full h-full object-cover"
+                                           alt=""
+                                        />
+                                     ) : (
+                                        <>
+                                           <Upload className="w-6 h-6 text-white/10 group-hover:text-[#c9a962]/60 transition-colors" />
+                                           <span className="text-[10px] text-white/40 mt-2 font-black uppercase tracking-widest">Slot {i}</span>
+                                           <span className="text-[8px] text-white/20 mt-1 font-bold uppercase">Click to Upload</span>
+                                        </>
+                                     )}
+                                     <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={e => handleFileChange(i - 1, e.target.files[0])}
+                                     />
+                                  </label>
+                                  <div className="relative group">
+                                     <input
+                                        type="text"
+                                        placeholder={`Slot ${i} Image URL...`}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[10px] focus:border-[#c9a962]/50 outline-none transition-all pr-10"
+                                        value={formData[`imageUrl${i}`]}
+                                        onChange={e => setFormData({ ...formData, [`imageUrl${i}`]: e.target.value })}
+                                     />
+                                     <Layout className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/10 group-focus-within:text-[#c9a962]" />
+                                  </div>
+                                  {(imageFiles[i - 1] || formData[`imageUrl${i}`]) && (
+                                     <button
+                                        type="button"
+                                        onClick={() => { handleFileChange(i - 1, null); setFormData({ ...formData, [`imageUrl${i}`]: '' }) }}
+                                        className="w-full py-2 rounded-xl text-[9px] font-black uppercase tracking-widest bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all border border-red-500/20"
+                                     >
+                                        Remove {i}
+                                     </button>
+                                  )}
+                               </div>
+                            ))}
+                         </div>
                      </div>
 
                      {/* Section 5: Description */}
