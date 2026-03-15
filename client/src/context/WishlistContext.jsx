@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react'
+import { createContext, useContext, useReducer, useCallback, useEffect, useRef, useState } from 'react'
 import api from '../utils/api'
 import { useAuth } from './AuthContext'
 
@@ -23,11 +23,13 @@ function wishlistReducer(state, action) {
 export function WishlistProvider({ children }) {
   const { user } = useAuth()
   const [state, dispatch] = useReducer(wishlistReducer, { items: [] })
+  const [hasFetched, setHasFetched] = useState(false)
   const isInitialMount = useRef(true)
 
   // 1. Sync FROM server on Login
   useEffect(() => {
     if (user) {
+      setHasFetched(false)
       api.get('/api/user/sync')
         .then(res => {
           if (res.data.wishlist) {
@@ -37,24 +39,26 @@ export function WishlistProvider({ children }) {
             }))
             dispatch({ type: 'SET_WISHLIST', payload: mappedItems })
           }
+          setHasFetched(true)
         })
-        .catch(err => console.error('Failed to sync wishlist', err))
+        .catch(err => {
+          console.error('Failed to sync wishlist', err)
+          setHasFetched(true)
+        })
+    } else {
+      setHasFetched(false)
+      dispatch({ type: 'SET_WISHLIST', payload: [] })
     }
   }, [user])
 
   // 2. Sync TO server on Change
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-      return
-    }
+    if (!user || !hasFetched) return
 
-    if (user) {
-      const wishlistData = state.items.map(i => i._id || i.id)
-      api.post('/api/user/wishlist', { wishlist: wishlistData })
-        .catch(err => console.error('Failed to update remote wishlist', err))
-    }
-  }, [state.items, user])
+    const wishlistData = state.items.map(i => i._id || i.id)
+    api.post('/api/user/wishlist', { wishlist: wishlistData })
+      .catch(err => console.error('Failed to update remote wishlist', err))
+  }, [state.items, user, hasFetched])
 
   const toggleWishlist = useCallback((item) => {
     dispatch({ type: 'TOGGLE_WISHLIST', payload: item })

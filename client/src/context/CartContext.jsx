@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react'
+import { createContext, useContext, useReducer, useCallback, useEffect, useRef, useState } from 'react'
 import api from '../utils/api'
 import { useAuth } from './AuthContext'
 
@@ -48,11 +48,13 @@ function cartReducer(state, action) {
 export function CartProvider({ children }) {
   const { user } = useAuth()
   const [state, dispatch] = useReducer(cartReducer, { items: [], isOpen: false })
+  const [hasFetched, setHasFetched] = useState(false)
   const isInitialMount = useRef(true)
 
   // 1. Sync FROM server on Login
   useEffect(() => {
     if (user) {
+      setHasFetched(false) // Reset on user change
       api.get('/api/user/sync')
         .then(res => {
           if (res.data.cart) {
@@ -65,29 +67,32 @@ export function CartProvider({ children }) {
             }))
             dispatch({ type: 'SET_CART', payload: mappedItems })
           }
+          setHasFetched(true)
         })
-        .catch(err => console.error('Failed to sync cart', err))
+        .catch(err => {
+          console.error('Failed to sync cart', err)
+          setHasFetched(true) // Set true anyway so they can still save new items
+        })
+    } else {
+      setHasFetched(false)
+      dispatch({ type: 'SET_CART', payload: [] }) // Clear cart on logout
     }
   }, [user])
 
   // 2. Sync TO server on Change
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-      return
-    }
+    if (!user || !hasFetched) return
 
-    if (user) {
-      const cartData = state.items.map(i => ({
-        product: i._id || i.id,
-        qty: i.qty,
-        size: i.size,
-        color: i.color
-      }))
-      api.post('/api/user/cart', { cart: cartData })
-        .catch(err => console.error('Failed to update remote cart', err))
-    }
-  }, [state.items, user])
+    const cartData = state.items.map(i => ({
+      product: i._id || i.id,
+      qty: i.qty,
+      size: i.size,
+      color: i.color
+    }))
+    
+    api.post('/api/user/cart', { cart: cartData })
+      .catch(err => console.error('Failed to update remote cart', err))
+  }, [state.items, user, hasFetched])
 
   const addToCart = useCallback((item) => {
     dispatch({ type: 'ADD_ITEM', payload: item })

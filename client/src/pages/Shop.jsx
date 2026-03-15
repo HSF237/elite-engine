@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, ChevronDown, Star, Heart, ShoppingBag, X, Search, SlidersHorizontal, Check } from 'lucide-react'
 import { useCart } from '../context/CartContext'
