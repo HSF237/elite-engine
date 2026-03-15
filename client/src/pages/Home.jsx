@@ -21,9 +21,26 @@ const item = {
 
 export default function Home() {
   const [heroIndex, setHeroIndex] = useState(0)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
   const [quickViewProduct, setQuickViewProduct] = useState(null)
   const { addToCart } = useCart()
   const { isLiked, toggleWishlist } = useWishlist()
+
+  // Fetch live products
+  useEffect(() => {
+    import('axios').then(({ default: axios }) => {
+      axios.get('/api/products?limit=6')
+        .then(res => {
+          setProducts(res.data.products)
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error('Failed to fetch products:', err)
+          setLoading(false)
+        })
+    })
+  }, [])
 
   // Hero auto-play
   useEffect(() => {
@@ -286,86 +303,96 @@ export default function Home() {
             viewport={{ once: true, margin: '-80px' }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {ELITE_DROPS.map((product) => {
-              const price = product.discountPrice ?? product.regularPrice ?? 0
-              const liked = isLiked(product.id)
-              return (
-                <motion.article
-                  key={product.id}
-                  variants={item}
-                  className="group relative"
-                >
-                  <div
-                    className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
-                    onClick={() => setQuickViewProduct(product)}
+            {loading ? (
+              // Skeleton Loader
+              [...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[3/4] bg-white/5 rounded-2xl mb-4" />
+                  <div className="h-6 bg-white/5 rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-white/5 rounded w-1/4" />
+                </div>
+              ))
+            ) : products.length > 0 ? (
+              products.map((product) => {
+                const price = product.discountPrice ?? product.regularPrice ?? 0
+                const liked = isLiked(product._id || product.id)
+                return (
+                  <motion.article
+                    key={product._id || product.id}
+                    variants={item}
+                    className="group relative"
                   >
-                    <img
-                      src={product.images?.[0]}
-                      alt={product.retailHeading}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <p className="font-jakarta text-xs text-white/80 mb-1">
-                        Sizes: {product.sizes?.join(', ')}
-                      </p>
-                      <div className="flex gap-2">
-                        {product.colors?.slice(0, 4).map((c) => (
-                          <div
-                            key={c.hex ?? c.name}
-                            className="w-4 h-4 rounded-full border border-white/40"
-                            style={{ backgroundColor: c.hex ?? '#888' }}
-                            title={c.name}
-                          />
-                        ))}
+                    <div
+                      className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
+                      onClick={() => setQuickViewProduct(product)}
+                    >
+                      <img
+                        src={product.images?.[0] || 'https://via.placeholder.com/400x533?text=No+Image'}
+                        alt={product.retailHeading}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        {product.sizes?.length > 0 && (
+                          <p className="font-jakarta text-xs text-white/80 mb-1">
+                            Sizes: {product.sizes.join(', ')}
+                          </p>
+                        )}
+                        <div className="flex gap-2 text-white/40 text-[10px] uppercase font-bold">
+                          {product.category || 'Elite Product'}
+                        </div>
                       </div>
-                    </div>
-                    <motion.button
-                      type="button"
-                      aria-label="Add to wishlist"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleWishlist(product.id)
-                      }}
-                      className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 hover:bg-white/20 transition-opacity"
-                      whileTap={{ scale: 0.85 }}
-                    >
-                      <motion.div
-                        animate={{ scale: liked ? 1.2 : 1 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                      <motion.button
+                        type="button"
+                        aria-label="Add to wishlist"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleWishlist(product._id || product.id)
+                        }}
+                        className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 hover:bg-white/20 transition-opacity"
+                        whileTap={{ scale: 0.85 }}
                       >
-                        <Heart
-                          className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : 'text-white/90'}`}
-                        />
-                      </motion.div>
-                    </motion.button>
-                  </div>
-                  <div className="mt-4">
-                    <h3 className="font-outfit font-semibold text-lg text-white group-hover:text-[#c9a962] transition-colors">
-                      {product.retailHeading}
-                    </h3>
-                    <p className="font-jakarta text-[#c9a962] font-semibold mt-1">
-                      ₹{price.toLocaleString()}
-                      {product.regularPrice && product.discountPrice && (
-                        <span className="text-white/50 line-through text-sm ml-2">
-                          ₹{product.regularPrice.toLocaleString()}
-                        </span>
-                      )}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setQuickViewProduct(product)
-                      }}
-                      className="font-jakarta text-sm text-white/70 hover:text-white mt-1 underline underline-offset-2"
-                    >
-                      Quick View
-                    </button>
-                  </div>
-                </motion.article>
-              )
-            })}
+                        <motion.div
+                          animate={{ scale: liked ? 1.2 : 1 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                        >
+                          <Heart
+                            className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : 'text-white/90'}`}
+                          />
+                        </motion.div>
+                      </motion.button>
+                    </div>
+                    <div className="mt-4">
+                      <h3 className="font-outfit font-semibold text-lg text-white group-hover:text-[#c9a962] transition-colors line-clamp-1">
+                        {product.retailHeading}
+                      </h3>
+                      <p className="font-jakarta text-[#c9a962] font-semibold mt-1">
+                        ₹{price.toLocaleString()}
+                        {product.regularPrice && product.discountPrice && product.regularPrice > product.discountPrice && (
+                          <span className="text-white/50 line-through text-sm ml-2">
+                            ₹{product.regularPrice.toLocaleString()}
+                          </span>
+                        )}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setQuickViewProduct(product)
+                        }}
+                        className="font-jakarta text-sm text-white/70 hover:text-white mt-1 underline underline-offset-2"
+                      >
+                        Quick View
+                      </button>
+                    </div>
+                  </motion.article>
+                )
+              })
+            ) : (
+              <div className="col-span-full py-20 text-center border border-white/5 rounded-3xl bg-white/[0.02]">
+                <p className="text-white/40 font-jakarta">No products found. Start adding products from the staff dashboard!</p>
+              </div>
+            )}
           </motion.div>
         </div>
       </section>

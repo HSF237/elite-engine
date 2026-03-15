@@ -1,26 +1,36 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
+import { AuthProvider } from './context/AuthContext'
 import Layout from './components/Layout'
 import Home from './pages/Home'
+import Shop from './pages/Shop'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 import StaffGateway from './pages/StaffGateway'
 import StaffDashboard from './pages/StaffDashboard'
 
 export default function App() {
   return (
-    <WishlistProvider>
-      <CartProvider>
-        <Routes>
-          {/* Store: entry point */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-          </Route>
-          {/* Hidden staff access — no link in main nav */}
-          <Route path="/staff-gateway" element={<StaffGateway />} />
-          <Route path="/staff/dashboard" element={<StaffDashboard />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </CartProvider>
-    </WishlistProvider>
+    <AuthProvider>
+      <WishlistProvider>
+        <CartProvider>
+          <Routes>
+            {/* Store */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="shop" element={<Shop />} />
+            </Route>
+            {/* Auth */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            {/* Staff (hidden) */}
+            <Route path="/staff-gateway" element={<StaffGateway />} />
+            <Route path="/staff/dashboard" element={<StaffDashboard />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </CartProvider>
+      </WishlistProvider>
+    </AuthProvider>
   )
 }

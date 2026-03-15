@@ -42,7 +42,7 @@ export function WishlistProvider({ children }) {
   const isLiked = useCallback((id) => ids.includes(id), [ids])
 
   return (
-    <WishlistContext.Provider value={{ wishlistIds: ids, toggleWishlist: toggle, isLiked }}>
+    <WishlistContext.Provider value={{ wishlistIds: ids, toggleWishlist: toggle, isLiked, count: ids.length }}>
       {children}
     </WishlistContext.Provider>
   )

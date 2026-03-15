@@ -1,51 +1,34 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Lock, ArrowRight } from 'lucide-react'
+import { Lock, ArrowRight, ShieldCheck } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 /**
  * Hidden staff gateway — no link in main store UI.
- * Access only via direct URL: /staff-gateway
- * Backend should enforce Staff role via JWT.
+ * Access via: /staff-gateway
  */
 export default function StaffGateway() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
-    
-    // MOCK LOGIN FOR HASAN
-    if (email === 'hasan@elite.com' && password === 'elite123') {
-       setTimeout(() => {
-          localStorage.setItem('elite_staff_token', 'mock-token-hasan-123')
-          window.location.href = '/staff/dashboard'
-       }, 800)
-       return
-    }
-
     try {
-      // TODO: POST /api/auth/staff-login with { email, password }
-      // Expect JWT with role: 'Staff'; reject Customer tokens for admin routes
-      const res = await fetch('/api/auth/staff-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        setError(data.message || 'Access denied.')
-        return
+      const user = await login(email, password)
+      if (user.role === 'staff' || user.role === 'admin') {
+        navigate('/staff/dashboard')
+      } else {
+        setError('Access denied. This portal is for staff only.')
       }
-      if (data.token) {
-        localStorage.setItem('elite_staff_token', data.token)
-        window.location.href = '/staff/dashboard'
-      }
-    } catch (_) {
-      setError('Connection error. Try again.')
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Invalid credentials.')
     } finally {
       setLoading(false)
     }
@@ -61,71 +44,72 @@ export default function StaffGateway() {
       >
         <div className="glass rounded-2xl border border-white/10 p-8 shadow-2xl">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-              <Lock className="w-6 h-6 text-white/70" />
+            <div className="w-12 h-12 rounded-xl bg-[#c9a962]/10 border border-[#c9a962]/20 flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 text-[#c9a962]" />
             </div>
             <div>
-              <h1 className="font-outfit font-bold text-xl text-white">
-                Staff Gateway
-              </h1>
-              <p className="text-white/50 text-sm">
-                Authorized access only
-              </p>
+              <h1 className="font-outfit font-bold text-xl text-white">Staff Gateway</h1>
+              <p className="text-white/40 text-sm">Authorized access only</p>
             </div>
           </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm text-white/70 mb-2">
+              <label htmlFor="email" className="block text-xs font-black text-[#c9a962] uppercase tracking-widest mb-2">
                 Email
               </label>
               <input
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/15 text-white placeholder-white/40 focus:outline-none focus:border-[#c9a962]/50"
-                placeholder="you@company.com"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a962]/50 transition-all"
+                placeholder="staff@elitestore.com"
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="block text-sm text-white/70 mb-2">
+              <label htmlFor="password" className="block text-xs font-black text-[#c9a962] uppercase tracking-widest mb-2">
                 Password
               </label>
               <input
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/15 text-white placeholder-white/40 focus:outline-none focus:border-[#c9a962]/50"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a962]/50 transition-all"
                 placeholder="••••••••"
               />
             </div>
+
             {error && (
-              <p className="text-sm text-red-400">{error}</p>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2 font-bold">
+                {error}
+              </motion.p>
             )}
+
             <motion.button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-lg bg-white/10 border border-white/20 text-white font-outfit font-semibold flex items-center justify-center gap-2 hover:bg-white/15 disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-[#c9a962] text-black font-outfit font-black flex items-center justify-center gap-2 hover:bg-[#b09452] disabled:opacity-50 transition-all"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
             >
-              {loading ? 'Verifying…' : 'Sign in'}
+              {loading ? 'Verifying…' : 'Sign In to Staff Portal'}
               {!loading && <ArrowRight className="w-4 h-4" />}
             </motion.button>
           </form>
-          <p className="mt-6 text-center text-white/40 text-xs">
-            This area is not linked from the store. Backend must validate Staff role.
+
+          <p className="mt-6 text-center text-white/30 text-xs">
+            This area is not linked from the main store.
           </p>
         </div>
-        <a
-          href="/"
-          className="block text-center text-white/50 hover:text-white/80 text-sm mt-6"
-        >
-          ← Back to store
-        </a>
+
+        <Link to="/" className="block text-center text-white/40 hover:text-white/70 text-sm mt-6 transition-colors">
+          ← Back to Store
+        </Link>
       </motion.div>
     </div>
   )

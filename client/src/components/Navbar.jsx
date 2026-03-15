@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingBag, Menu, Search, Heart, User, ChevronDown, MapPin } from 'lucide-react'
 import { useCart } from '../context/CartContext'
@@ -7,19 +8,22 @@ import { useWishlist } from '../context/WishlistContext'
 const NAV_LINKS = [
   { label: 'Fresh', href: '#fresh' },
   { label: 'Elite Video', href: '#video' },
-  { label: 'Best Sellers', href: '#best' },
-  { label: 'Today\'s Deals', href: '#deals' },
-  { label: 'Mobiles', href: '#mobiles' },
-  { label: 'Customer Service', href: '#service' },
-  { label: 'Books', href: '#books' },
-  { label: 'Fashion', href: '#fashion' },
+  { label: 'Shop All', href: '/shop', isRoute: true },
+  { label: "Today's Deals", href: '#deals' },
+  { label: 'Footwear', href: '#footwear' },
+  { label: 'Apparel', href: '#apparel' },
+  { label: 'Electronics', href: '#electronics' },
+  { label: 'Beauty', href: '#beauty' },
 ]
+
+import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { openCart, count } = useCart()
   const { count: wishlistCount } = useWishlist()
+  const { user, logout } = useAuth()
   
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -39,12 +43,12 @@ export default function Navbar() {
       {/* Top Main Nav */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-4 sm:gap-8">
         {/* Logo */}
-        <a href="/" className="font-outfit font-bold text-2xl tracking-tighter text-white shrink-0 flex items-center gap-1 group">
+        <Link to="/" className="font-outfit font-bold text-2xl tracking-tighter text-white shrink-0 flex items-center gap-1 group">
           <div className="w-8 h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
              <ShoppingBag className="w-5 h-5 text-black" />
           </div>
           <span>ELITE<span className="text-[#c9a962]">STORE</span></span>
-        </a>
+        </Link>
 
         {/* Deliver to - Amazon style */}
         <div className="hidden lg:flex items-center gap-1 text-white/70 hover:text-white cursor-pointer transition-colors group">
@@ -74,10 +78,28 @@ export default function Navbar() {
 
         {/* Actions Icons */}
         <div className="flex items-center gap-1 sm:gap-3 ml-auto text-white/80">
-          <button className="hidden sm:flex flex-col items-center hover:text-white transition-colors px-2 group">
-             <User className="w-5 h-5 group-hover:text-[#c9a962]" />
-             <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">Account</span>
-          </button>
+          {user ? (
+            <div className="hidden sm:flex flex-col items-start px-2 group relative">
+              <div className="flex flex-col items-center cursor-pointer group-hover:text-[#c9a962] transition-colors">
+                <User className="w-5 h-5" />
+                <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">Hi, {user.name.split(' ')[0]}</span>
+              </div>
+              {/* Simple logout tooltip/dropdown on hover */}
+              <div className="absolute top-full right-0 mt-2 w-32 glass border border-white/10 rounded-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <button 
+                  onClick={logout}
+                  className="w-full text-left px-4 py-2 text-[10px] font-black uppercase text-red-400 hover:bg-white/10 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link to="/login" className="hidden sm:flex flex-col items-center hover:text-white transition-colors px-2 group">
+              <User className="w-5 h-5 group-hover:text-[#c9a962]" />
+              <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">Sign In</span>
+            </Link>
+          )}
 
           <a href="/wishlist" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
             <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'group-hover:text-red-400'}`} />
@@ -110,9 +132,9 @@ export default function Navbar() {
                <Menu className="w-4 h-4" /> All
             </button>
             {NAV_LINKS.map(link => (
-               <a key={link.label} href={link.href} className="text-xs font-semibold text-white/70 hover:text-[#c9a962] uppercase tracking-tighter transition-colors shrink-0">
-                  {link.label}
-               </a>
+               link.isRoute
+                 ? <Link key={link.label} to={link.href} className="text-xs font-bold text-[#c9a962] hover:text-white uppercase tracking-tighter transition-colors shrink-0 border border-[#c9a962]/30 px-2 py-0.5 rounded-md">{link.label}</Link>
+                 : <a key={link.label} href={link.href} className="text-xs font-semibold text-white/70 hover:text-[#c9a962] uppercase tracking-tighter transition-colors shrink-0">{link.label}</a>
             ))}
             <div className="ml-auto flex items-center gap-4">
                <span className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] animate-pulse">New Drop: Phantom V4</span>

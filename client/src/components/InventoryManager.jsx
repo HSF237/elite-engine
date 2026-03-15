@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck } from 'lucide-react'
+import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2 } from 'lucide-react'
+import axios from 'axios'
 
 export default function InventoryManager() {
   const [products, setProducts] = useState([])
   const [isAdding, setIsAdding] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   
+  const [imageFiles, setImageFiles] = useState([null, null, null, null])
   const [formData, setFormData] = useState({
     smallHeading: '',
     description: '',
@@ -15,24 +19,75 @@ export default function InventoryManager() {
     deliveryCharge: '0',
     sizes: [],
     colors: [],
-    images: ['', '', '', ''], // 4 slots like Amazon
   })
 
-  const handleAddProduct = (e) => {
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get('/api/products')
+      setProducts(res.data.products)
+    } catch (err) {
+      console.error('Failed to fetch products', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAddProduct = async (e) => {
     e.preventDefault()
-    setProducts([...products, { ...formData, id: Date.now() }])
-    setIsAdding(false)
-    setFormData({
-      smallHeading: '',
-      description: '',
-      category: 'Footwear',
-      price: '',
-      discountPrice: '',
-      deliveryCharge: '0',
-      sizes: [],
-      colors: [],
-      images: ['', '', '', ''],
-    })
+    setSubmitting(true)
+    
+    try {
+      const data = new FormData()
+      data.append('retailHeading', formData.smallHeading)
+      data.append('description', formData.description)
+      data.append('category', formData.category)
+      data.append('regularPrice', formData.price)
+      data.append('discountPrice', formData.discountPrice)
+      data.append('deliveryCharge', formData.deliveryCharge)
+      
+      formData.sizes.forEach(s => data.append('sizes', s))
+      // Handle colors if implemented
+      
+      imageFiles.forEach(file => {
+        if (file) data.append('images', file)
+      })
+
+      await axios.post('/api/products', data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+
+      setIsAdding(false)
+      setFormData({
+        smallHeading: '',
+        description: '',
+        category: 'Footwear',
+        price: '',
+        discountPrice: '',
+        deliveryCharge: '0',
+        sizes: [],
+        colors: [],
+      })
+      setImageFiles([null, null, null, null])
+      fetchProducts()
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to list product')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure?')) return
+    try {
+      await axios.delete(`/api/products/${id}`)
+      fetchProducts()
+    } catch (err) {
+      alert('Failed to delete product')
+    }
   }
 
   const toggleSize = (size) => {
@@ -42,6 +97,12 @@ export default function InventoryManager() {
         ? prev.sizes.filter(s => s !== size) 
         : [...prev.sizes, size]
     }))
+  }
+
+  const handleFileChange = (index, file) => {
+    const newFiles = [...imageFiles]
+    newFiles[index] = file
+    setImageFiles(newFiles)
   }
 
   return (
@@ -59,27 +120,35 @@ export default function InventoryManager() {
         </button>
       </div>
 
-      {/* Product List Mockup */}
+      {/* Product List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-         {products.length === 0 && (
+         {loading ? (
+            <div className="col-span-full py-20 flex justify-center">
+               <Loader2 className="w-8 h-8 text-[#c9a962] animate-spin" />
+            </div>
+         ) : products.length === 0 ? (
             <div className="col-span-full py-20 glass rounded-3xl flex flex-col items-center justify-center border-dashed border-white/10">
                <Package className="w-12 h-12 text-white/10 mb-4" />
                <p className="text-white/30 font-bold uppercase tracking-widest text-xs">No Items in Inventory</p>
             </div>
-         )}
-         {products.map(p => (
-            <div key={p.id} className="glass rounded-2xl p-4 flex gap-4 border-white/5 group relative">
-               <img src={p.images[0] || 'https://via.placeholder.com/100'} className="w-20 h-20 rounded-lg object-cover bg-white/5" alt="" />
-               <div>
-                  <h4 className="font-bold text-white text-sm line-clamp-1">{p.smallHeading}</h4>
-                  <p className="text-[10px] text-[#c9a962] font-black uppercase tracking-wider">{p.category}</p>
-                  <p className="text-xs font-bold text-white/50 mt-1">₹{p.discountPrice || p.price}</p>
+         ) : (
+            products.map(p => (
+               <div key={p._id} className="glass rounded-2xl p-4 flex gap-4 border-white/5 group relative">
+                  <img src={p.images?.[0] || 'https://via.placeholder.com/100'} className="w-20 h-20 rounded-lg object-cover bg-white/5" alt="" />
+                  <div>
+                     <h4 className="font-bold text-white text-sm line-clamp-1">{p.retailHeading}</h4>
+                     <p className="text-[10px] text-[#c9a962] font-black uppercase tracking-wider">{p.category}</p>
+                     <p className="text-xs font-bold text-white/50 mt-1">₹{(p.discountPrice || p.regularPrice)?.toLocaleString()}</p>
+                  </div>
+                  <button 
+                     onClick={() => handleDelete(p._id)}
+                     className="absolute top-2 right-2 p-1 text-white/20 hover:text-red-400 transition-colors"
+                  >
+                     <X className="w-4 h-4" />
+                  </button>
                </div>
-               <button className="absolute top-2 right-2 p-1 text-white/20 hover:text-red-400 transition-colors">
-                  <X className="w-4 h-4" />
-               </button>
-            </div>
-         ))}
+            ))
+         )}
       </div>
 
       {/* Add Product Modal (Amazon Seller Style) */}
@@ -238,20 +307,33 @@ export default function InventoryManager() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                            {[0,1,2,3].map(i => (
                               <div key={i} className="space-y-2">
-                                 <div className="aspect-square glass rounded-2xl flex items-center justify-center overflow-hidden border-dashed">
-                                    {formData.images[i] ? <img src={formData.images[i]} className="w-full h-full object-cover" /> : <Upload className="w-6 h-6 text-white/10" />}
-                                 </div>
-                                 <input 
-                                    type="text" 
-                                    placeholder="IMG URL" 
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-[8px] focus:border-[#c9a962]/50 outline-none"
-                                    value={formData.images[i]}
-                                    onChange={e => {
-                                       const newImages = [...formData.images]
-                                       newImages[i] = e.target.value
-                                       setFormData({...formData, images: newImages})
-                                    }}
-                                 />
+                                 <label className="aspect-square glass rounded-2xl flex flex-col items-center justify-center overflow-hidden border-dashed border-white/10 hover:border-[#c9a962]/40 cursor-pointer transition-all group">
+                                    {imageFiles[i] ? (
+                                       <img 
+                                          src={URL.createObjectURL(imageFiles[i])} 
+                                          className="w-full h-full object-cover" 
+                                          alt=""
+                                       />
+                                    ) : (
+                                       <>
+                                          <Upload className="w-6 h-6 text-white/10 group-hover:text-[#c9a962]/60 transition-colors" />
+                                          <span className="text-[8px] text-white/20 mt-2 font-bold uppercase">Slot {i+1}</span>
+                                       </>
+                                    )}
+                                    <input 
+                                       type="file" 
+                                       accept="image/*"
+                                       className="hidden" 
+                                       onChange={e => handleFileChange(i, e.target.files[0])}
+                                    />
+                                 </label>
+                                 <button 
+                                    type="button"
+                                    onClick={() => handleFileChange(i, null)}
+                                    className={`w-full py-1 rounded text-[8px] font-bold uppercase transition-all ${imageFiles[i] ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'text-white/5 opacity-0 pointer-events-none'}`}
+                                 >
+                                    Remove
+                                 </button>
                               </div>
                            ))}
                         </div>
@@ -283,9 +365,17 @@ export default function InventoryManager() {
                      </button>
                      <button 
                         type="submit"
-                        className="bg-[#c9a962] text-black font-black px-10 py-3 rounded-xl text-xs uppercase tracking-widest hover:bg-[#b09452] transition-colors shadow-xl shadow-[#c9a962]/10"
+                        disabled={submitting}
+                        className="bg-[#c9a962] text-black font-black px-10 py-3 rounded-xl text-xs uppercase tracking-widest hover:bg-[#b09452] transition-colors shadow-xl shadow-[#c9a962]/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                      >
-                        List Product
+                        {submitting ? (
+                           <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Listing...
+                           </>
+                        ) : (
+                           'List Product'
+                        )}
                      </button>
                   </div>
                </motion.form>
