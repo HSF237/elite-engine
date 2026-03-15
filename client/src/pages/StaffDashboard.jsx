@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Users, ShoppingCart, BarChart3, Settings, LogOut, Bell, Search } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import InventoryManager from '../components/InventoryManager'
 
 export default function StaffDashboard() {
   const navigate = useNavigate()
