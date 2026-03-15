@@ -5,7 +5,7 @@ export const HERO_SLIDES = [
     title: 'Ultralight Comfort',
     subtitle: 'Season 24 Collection',
     cta: 'Shop Now',
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1200&q=80',
+    image: '/hero-fashion.png',
     accent: '#c9a962',
   },
   {
@@ -13,7 +13,7 @@ export const HERO_SLIDES = [
     title: 'Elite Drops',
     subtitle: 'Limited Edition Drops',
     cta: 'Discover',
-    image: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=1200&q=80',
+    image: '/hero-tech.png',
     accent: '#1a1a1a',
   },
   {

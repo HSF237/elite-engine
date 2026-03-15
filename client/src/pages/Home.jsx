@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate, Link } from 'react-router-dom'
 import { Heart, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
@@ -22,6 +22,7 @@ const item = {
 import api from '../utils/api'
 
 export default function Home() {
+  const navigate = useNavigate()
   const [heroIndex, setHeroIndex] = useState(0)
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -212,12 +213,15 @@ export default function Home() {
             >
                <h3 className="font-outfit font-black text-2xl text-black leading-tight mb-2">Personalized For You</h3>
                <p className="text-sm text-black/70 mb-6 font-semibold">Get recommendations based on your unique style.</p>
-               <button className="bg-black text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-black/80 transition-all shadow-xl shadow-black/20 mt-auto">
-                  Sign In Securely
-               </button>
-               <a href="/register" className="mt-4 text-[10px] font-black text-black/50 text-center uppercase tracking-widest hover:text-black transition-colors">
-                  New? Start Here
-               </a>
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="bg-black text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-black/80 transition-all shadow-xl shadow-black/20 mt-auto"
+                >
+                   Sign In Securely
+                </button>
+                <Link to="/signup" className="mt-4 text-[10px] font-black text-black/50 text-center uppercase tracking-widest hover:text-black transition-colors">
+                   New? Start Here
+                </Link>
             </motion.div>
          </div>
       </section>
@@ -229,9 +233,12 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent flex flex-col justify-center px-8 sm:px-16">
                <span className="text-[#c9a962] font-black tracking-[0.3em] text-sm uppercase mb-4">Midnight Sale</span>
                <h2 className="text-4xl sm:text-6xl font-outfit font-black text-white max-w-lg leading-none mb-6">UNSTOPPABLE DEALS STARTING NOW</h2>
-               <button className="bg-white text-black font-black px-10 py-4 rounded-full text-xs uppercase tracking-widest hover:bg-[#c9a962] transition-colors self-start shadow-2xl">
-                  Grab The Offer
-               </button>
+                <button 
+                  onClick={() => navigate('/shop')}
+                  className="bg-white text-black font-black px-10 py-4 rounded-full text-xs uppercase tracking-widest hover:bg-[#c9a962] transition-colors self-start shadow-2xl"
+                >
+                   Grab The Offer
+                </button>
             </div>
          </div>
       </section>

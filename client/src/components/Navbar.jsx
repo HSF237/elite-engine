@@ -6,14 +6,12 @@ import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 
 const NAV_LINKS = [
-  { label: 'Fresh', href: '#fresh' },
-  { label: 'Elite Video', href: '#video' },
   { label: 'Shop All', href: '/shop', isRoute: true },
-  { label: "Today's Deals", href: '#deals' },
-  { label: 'Footwear', href: '#footwear' },
-  { label: 'Apparel', href: '#apparel' },
-  { label: 'Electronics', href: '#electronics' },
-  { label: 'Beauty', href: '#beauty' },
+  { label: "Today's Deals", href: '/shop?filter=deals', isRoute: true },
+  { label: 'Footwear', href: '/shop?category=Footwear', isRoute: true },
+  { label: 'Apparel', href: '/shop?category=Apparel', isRoute: true },
+  { label: 'Electronics', href: '/shop?category=Electronics', isRoute: true },
+  { label: 'Beauty', href: '/shop?category=Beauty', isRoute: true },
 ]
 
 import { useAuth } from '../context/AuthContext'
@@ -166,11 +164,17 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col gap-4">
                 {NAV_LINKS.map(link => (
-                  <a key={link.label} href={link.href} className="text-lg font-bold hover:text-[#c9a962] transition-colors" onClick={() => setMobileOpen(false)}>
-                    {link.label}
-                  </a>
+                  link.isRoute ? (
+                    <Link key={link.label} to={link.href} className="text-lg font-bold hover:text-[#c9a962] transition-colors" onClick={() => setMobileOpen(false)}>
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a key={link.label} href={link.href} className="text-lg font-bold hover:text-[#c9a962] transition-colors" onClick={() => setMobileOpen(false)}>
+                      {link.label}
+                    </a>
+                  )
                 ))}
-              </div>
+            </div>
             </motion.div>
           </>
         )}

@@ -7,6 +7,8 @@ import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Checkout from './pages/Checkout'
+import OrderSuccess from './pages/OrderSuccess'
 import StaffGateway from './pages/StaffGateway'
 import StaffDashboard from './pages/StaffDashboard'
 
@@ -24,6 +26,8 @@ export default function App() {
             {/* Auth */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
             {/* Staff (hidden) */}
             <Route path="/staff-gateway" element={<StaffGateway />} />
             <Route path="/staff/dashboard" element={<StaffDashboard />} />

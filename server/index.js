@@ -5,6 +5,8 @@ const connectDB = require('./config/db')
 
 const authRoutes = require('./routes/auth')
 const productRoutes = require('./routes/products')
+const userRoutes = require('./routes/user')
+const orderRoutes = require('./routes/order')
 
 const app = express()
 
@@ -22,6 +24,7 @@ const userRoutes = require('./routes/user')
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/user', userRoutes)
+app.use('/api/orders', orderRoutes)
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => res.status(404).json({ message: 'Route not found.' }))

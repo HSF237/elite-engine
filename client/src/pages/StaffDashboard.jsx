@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, ShoppingCart, BarChart3, Settings, LogOut, Bell, Search } from 'lucide-react'
+import { LayoutDashboard, Users, ShoppingCart, BarChart3, Settings, LogOut, Bell, Search, Truck, ShoppingBag } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import InventoryManager from '../components/InventoryManager'
 import CustomerManager from '../components/CustomerManager'
+import OrderManager from '../components/OrderManager'
 
 export default function StaffDashboard() {
   const navigate = useNavigate()
@@ -51,6 +52,12 @@ export default function StaffDashboard() {
               label="Customers" 
               active={activeTab === 'customers'} 
               onClick={() => setActiveTab('customers')} 
+           />
+           <SidebarLink 
+              icon={<Truck className="w-5 h-5" />} 
+              label="Orders" 
+              active={activeTab === 'orders'} 
+              onClick={() => setActiveTab('orders')} 
            />
            <SidebarLink 
               icon={<BarChart3 className="w-5 h-5" />} 
@@ -115,7 +122,8 @@ export default function StaffDashboard() {
          <div className="flex-1 overflow-y-auto p-8 no-scrollbar bg-gradient-to-b from-white/[0.02] to-transparent">
             {activeTab === 'inventory' && <InventoryManager />}
             {activeTab === 'customers' && <CustomerManager />}
-            {activeTab !== 'inventory' && activeTab !== 'customers' && (
+            {activeTab === 'orders' && <OrderManager />}
+            {activeTab !== 'inventory' && activeTab !== 'customers' && activeTab !== 'orders' && (
                <div className="h-full flex flex-col items-center justify-center opacity-50">
                   <h3 className="text-4xl font-outfit font-black mb-2 uppercase tracking-tighter">Under Core Development</h3>
                   <p className="text-xs font-black text-[#c9a962] uppercase tracking-widest">Building the future of Elite Commerce</p>

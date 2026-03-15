@@ -48,12 +48,63 @@ exports.updateWishlist = async (req, res) => {
   }
 }
 // GET /api/user/all (Staff/Admin only)
-exports.getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
-    // Only return non-sensitive fields
     const users = await User.find({}).select('name email role createdAt')
     res.json(users)
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching users' })
+  } catch (error) {
+    res.status(500).json({ message: 'Server error fetching users' })
   }
+}
+
+// ADDRESS MANAGEMENT
+const getAddresses = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    res.json(user.addresses || [])
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching addresses' })
+  }
+}
+
+const addAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    user.addresses.push(req.body)
+    
+    // If set as default, unset others
+    if (req.body.isDefault) {
+      user.addresses.forEach(addr => {
+        if (addr._id?.toString() !== user.addresses[user.addresses.length - 1]._id?.toString()) {
+          addr.isDefault = false
+        }
+      })
+    }
+    
+    await user.save()
+    res.json(user.addresses)
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding address' })
+  }
+}
+
+const removeAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    user.addresses = user.addresses.filter(addr => addr._id.toString() !== req.params.id)
+    await user.save()
+    res.json(user.addresses)
+  } catch (error) {
+    res.status(500).json({ message: 'Error removing address' })
+  }
+}
+
+module.exports = {
+  updateCart,
+  updateWishlist,
+  getSyncData,
+  getAllUsers,
+  getAddresses,
+  addAddress,
+  removeAddress
 }

@@ -1,4 +1,4 @@
-import { ChevronUp } from 'lucide-react'
+import { ChevronUp, Instagram, Twitter, Facebook } from 'lucide-react'
 
 export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -18,9 +18,13 @@ export default function Footer() {
             <h4 className="text-white font-outfit font-black text-lg uppercase tracking-wider">Elite Store</h4>
             <p className="text-sm leading-relaxed">The pinnacle of luxury shopping. Curated electronics, fashion, and home essentials delivered with elite precision.</p>
             <div className="flex gap-4">
-               {['ig', 'tw', 'fb'].map(icon => (
-                  <div key={icon} className="w-8 h-8 rounded-full glass flex items-center justify-center hover:bg-[#c9a962] hover:text-black transition-all cursor-pointer">
-                     <span className="text-[10px] font-black uppercase text-inherit">{icon}</span>
+               {[
+                 { id: 'ig', icon: <Instagram className="w-4 h-4" /> },
+                 { id: 'tw', icon: <Twitter className="w-4 h-4" /> },
+                 { id: 'fb', icon: <Facebook className="w-4 h-4" /> }
+               ].map(social => (
+                  <div key={social.id} className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-[#c9a962] hover:text-black transition-all cursor-pointer">
+                     {social.icon}
                   </div>
                ))}
             </div>

@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false, // never returned in queries by default
     },
+    phone: String,
     role: {
       type: String,
       enum: ['customer', 'staff', 'admin'],
@@ -36,6 +37,17 @@ const userSchema = new mongoose.Schema(
         size: String,
         color: String,
       },
+    ],
+    addresses: [
+      {
+        street: String,
+        city: String,
+        state: String,
+        zip: String,
+        country: { type: String, default: 'India' },
+        isDefault: { type: Boolean, default: false },
+        label: { type: String, default: 'Home' }, // Home, Office, etc.
+      }
     ],
   },
   { timestamps: true }
