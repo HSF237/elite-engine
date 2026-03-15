@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import QuickViewModal from '../components/QuickViewModal'
 import { HERO_SLIDES, CATEGORIES, ELITE_DROPS } from '../data/mockProducts'
+import { getRecentlyViewed } from '../utils/recentViewed'
 
 const container = {
   hidden: { opacity: 0 },
@@ -345,6 +346,47 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* ——— Recently Viewed Section ——— */}
+      {getRecentlyViewed().length > 0 && (
+        <section className="py-20 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-12">
+               <div>
+                  <h2 className="font-outfit font-black text-3xl text-white uppercase tracking-tighter">Recently Viewed</h2>
+                  <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Pick up right where you left off</p>
+               </div>
+               <button 
+                  onClick={() => localStorage.removeItem('elite_recently_viewed')}
+                  className="text-[10px] font-black uppercase text-white/20 hover:text-red-500 transition-colors"
+               >
+                 Clear History
+               </button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+               {getRecentlyViewed().map((product, i) => (
+                 <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    className="group cursor-pointer"
+                    onClick={() => setQuickViewProduct(product)}
+                 >
+                    <div className="aspect-[4/5] rounded-[2rem] overflow-hidden bg-white/5 border border-white/5 group-hover:border-[#c9a962]/30 transition-all relative">
+                       <img src={product.images?.[0] || product.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                          <p className="text-[10px] font-black text-[#c9a962] uppercase tracking-widest mb-1">Quick Revisit</p>
+                          <h4 className="text-white font-bold truncate text-sm">{product.name || product.title}</h4>
+                       </div>
+                    </div>
+                 </motion.div>
+               ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ——— Promotional Shop All Call-to-Action ——— */}
       <section className="py-20 px-4 sm:px-6 text-center border-t border-white/5">

@@ -7,6 +7,8 @@ const authRoutes = require('./routes/auth')
 const productRoutes = require('./routes/products')
 const userRoutes = require('./routes/user')
 const orderRoutes = require('./routes/order')
+const reviewRoutes = require('./routes/reviews')
+const analyticsRoutes = require('./routes/analytics')
 
 const app = express()
 
@@ -18,13 +20,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
 
-// ── Routes ────────────────────────────────────────────────────────────────────
-const userRoutes = require('./routes/user')
-
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/reviews', reviewRoutes)
+app.use('/api/analytics', analyticsRoutes)
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => res.status(404).json({ message: 'Route not found.' }))

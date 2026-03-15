@@ -20,27 +20,61 @@ export default function Checkout() {
   const [addresses, setAddresses] = useState([])
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [showAddForm, setShowAddForm] = useState(false)
-  const [newAddress, setNewAddress] = useState({
-    street: '', city: '', state: '', zip: '', label: 'Home', phone: '', age: '', dob: ''
-  })
-
+  const [isSettingPrimary, setIsSettingPrimary] = useState(true)
   // Payment State
   const [paymentMethod, setPaymentMethod] = useState('COD')
+  const [promoCode, setPromoCode] = useState('')
+  const [discount, setDiscount] = useState(0)
+  const [promoError, setPromoError] = useState('')
+
+  const applyPromo = () => {
+    setPromoError('')
+    if (promoCode.toUpperCase() === 'ELITE10') {
+      const amt = subtotal * 0.1
+      setDiscount(amt)
+    } else {
+      setPromoError('Invalid Voucher Code')
+      setDiscount(0)
+    }
+  }
+
+  const finalTotal = total - discount
 
   useEffect(() => {
-    if (!user) navigate('/login')
-    if (items.length === 0) navigate('/shop')
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    if (items.length === 0) {
+      navigate('/shop')
+      return
+    }
     
-    // Fetch addresses
+    // Fetch addresses and auto-select default or first
     api.get('/api/user/address')
       .then(res => {
         setAddresses(res.data)
         const def = res.data.find(a => a.isDefault) || res.data[0]
         if (def) setSelectedAddress(def)
+        
+        // If user already has profile details (age/dob), pre-fill newAddress state
+        api.get('/api/user/profile').then(profileRes => {
+           setNewAddress(prev => ({
+             ...prev,
+             phone: profileRes.data.phone || '',
+             age: profileRes.data.age || '',
+             dob: profileRes.data.dob || ''
+           }))
+        })
       })
   }, [user, items, navigate])
 
   const handleCreateOrder = async () => {
+    if (!selectedAddress) {
+      alert('Please select a target placement first.')
+      setStep(1)
+      return
+    }
     setLoading(true)
     try {
       const orderData = {
@@ -53,16 +87,23 @@ export default function Checkout() {
           color: i.color,
           image: i.image
         })),
-        shippingAddress: selectedAddress,
+        shippingAddress: {
+          ...selectedAddress,
+          phone: selectedAddress.phone || user.phone,
+          age: selectedAddress.age || user.age,
+          dob: selectedAddress.dob || user.dob
+        },
         paymentMethod,
-        totalAmount: total
+        totalAmount: finalTotal,
+        promoCode: discount > 0 ? promoCode : null,
+        discountAmount: discount
       }
       
       const { data } = await api.post('/api/orders', orderData)
       navigate('/order-success', { state: { order: data } })
     } catch (err) {
       console.error('Order creation failed', err)
-      alert('Something went wrong. Please try again.')
+      alert(err.response?.data?.message || 'Order settlement failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -71,9 +112,13 @@ export default function Checkout() {
   const handleAddAddress = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await api.post('/api/user/address', newAddress)
+      const { data } = await api.post('/api/user/address', { 
+        ...newAddress, 
+        isDefault: isSettingPrimary 
+      })
       setAddresses(data)
-      setSelectedAddress(data[data.length - 1])
+      const added = data.find(a => a.street === newAddress.street) || data[data.length - 1]
+      setSelectedAddress(added)
       setShowAddForm(false)
     } catch (err) {
       console.error('Add address failed', err)
@@ -84,84 +129,96 @@ export default function Checkout() {
     <div className="min-h-screen bg-[#0a0a0b] text-white pt-28 pb-20">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
         
-        {/* Progress Tracker (Mobile & Tablet) */}
-        <div className="lg:col-span-12 flex items-center justify-between mb-8 overflow-x-auto no-scrollbar py-2">
-           {[1, 2, 3].map(num => (
-             <div key={num} className="flex items-center gap-3">
-               <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs border-2 transition-all ${
-                 step === num ? 'bg-[#c9a962] border-[#c9a962] text-black' : 
-                 step > num ? 'bg-green-500 border-green-500 text-white' : 'border-white/10 text-white/40'
+        {/* Progress Tracker */}
+        <div className="lg:col-span-12 flex items-center justify-between mb-8 overflow-x-auto no-scrollbar py-2 border-b border-white/5 pb-6">
+           {[
+             { n: 1, l: 'Placement' },
+             { n: 2, l: 'Settlement' },
+             { n: 3, l: 'Verification' }
+           ].map(s => (
+             <div key={s.n} className="flex items-center gap-3">
+               <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs border-2 transition-all ${
+                 step === s.n ? 'bg-[#c9a962] border-[#c9a962] text-black shadow-lg shadow-[#c9a962]/20' : 
+                 step > s.n ? 'bg-green-500 border-green-500 text-white' : 'border-white/10 text-white/20'
                }`}>
-                 {step > num ? <CheckCircle2 className="w-4 h-4" /> : num}
+                 {step > s.n ? <CheckCircle2 className="w-5 h-5" /> : s.n}
                </div>
-               <span className={`text-[10px] uppercase font-black tracking-widest ${step === num ? 'text-white' : 'text-white/20'}`}>
-                 {num === 1 ? 'Shipping' : num === 2 ? 'Payment' : 'Review'}
+               <span className={`text-[10px] uppercase font-black tracking-[0.2em] ${step === s.n ? 'text-white' : 'text-white/20'}`}>
+                 {s.l}
                </span>
-               {num < 3 && <div className="w-12 h-px bg-white/5 mx-2" />}
+               {s.n < 3 && <div className={`w-16 h-px mx-4 ${step > s.n ? 'bg-green-500' : 'bg-white/5'}`} />}
              </div>
            ))}
         </div>
 
-        {/* Left: Interactive Section */}
-        <div className="lg:col-span-8 space-y-8">
-          
+        {/* Left Section */}
+        <div className="lg:col-span-8">
           <AnimatePresence mode="wait">
             {step === 1 && (
               <motion.div 
                 key="step1"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-8"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-3xl font-outfit font-black uppercase tracking-tighter">Shipping Address</h2>
-                    <p className="text-xs text-white/40 font-bold tracking-widest uppercase mt-1">Select your delivery place</p>
+                    <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter">Target Placement</h2>
+                    <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Where should we deliver the excellence?</p>
                   </div>
                   <button 
                     onClick={() => setShowAddForm(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#c9a962]/30 text-[#c9a962] text-[10px] font-black uppercase hover:bg-[#c9a962] hover:text-black transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all"
                   >
-                    <Plus className="w-3 h-3" /> New Address
+                    <Plus className="w-4 h-4" /> Add Destination
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {addresses.map(addr => (
                     <div 
                       key={addr._id}
                       onClick={() => setSelectedAddress(addr)}
-                      className={`relative p-5 rounded-3xl border-2 cursor-pointer transition-all ${
-                        selectedAddress?._id === addr._id ? 'border-[#c9a962] bg-[#c9a962]/5' : 'border-white/5 bg-white/[0.02] hover:border-white/20'
+                      className={`relative p-8 rounded-[2.5rem] border-2 cursor-pointer transition-all group ${
+                        selectedAddress?._id === addr._id ? 'border-[#c9a962] bg-[#c9a962]/5 shadow-2xl shadow-[#c9a962]/10' : 'border-white/5 bg-white/[0.02] hover:border-white/20'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                           {addr.label === 'Home' ? <Home className="w-4 h-4 text-[#c9a962]" /> : <Briefcase className="w-4 h-4 text-[#c9a962]" />}
-                           <span className="text-[10px] font-black uppercase tracking-widest">{addr.label}</span>
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#c9a962]">
+                             {addr.label === 'Home' ? <Home className="w-5 h-5" /> : <Briefcase className="w-5 h-5" />}
+                           </div>
+                           <span className="text-[10px] font-black uppercase tracking-[0.2em]">{addr.label}</span>
                         </div>
-                        {selectedAddress?._id === addr._id && <CheckCircle2 className="w-5 h-5 text-[#c9a962]" />}
+                        {selectedAddress?._id === addr._id && (
+                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                            <CheckCircle2 className="w-6 h-6 text-[#c9a962]" />
+                          </motion.div>
+                        )}
                       </div>
-                      <p className="text-sm font-bold text-white/90 leading-relaxed mb-1">{addr.street}</p>
-                      <p className="text-xs text-white/40 font-medium">{addr.city}, {addr.state} - {addr.zip}</p>
+                      <p className="text-base font-bold text-white mb-2 leading-tight">{addr.street}</p>
+                      <p className="text-xs text-white/40 font-medium leading-relaxed">{addr.city}, {addr.state} - {addr.zip}</p>
+                      <div className="mt-6 pt-6 border-t border-white/5 flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                         <span className="text-[8px] font-black uppercase tracking-widest text-[#c9a962]">Select for Dispatch</span>
+                      </div>
                     </div>
                   ))}
                 </div>
 
                 {addresses.length === 0 && !showAddForm && (
-                  <div className="py-12 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-3xl bg-white/[0.01]">
-                    <MapPinLine className="w-12 h-12 text-white/10 mb-4" />
-                    <p className="text-sm font-bold text-white/40">No saved addresses found.</p>
+                  <div className="py-24 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
+                    <MapPinLine className="w-16 h-16 text-white/10 mb-6" />
+                    <p className="text-sm font-black uppercase tracking-widest text-white/20">Your placement list is currently empty.</p>
                   </div>
                 )}
 
                 <button 
                   disabled={!selectedAddress}
                   onClick={() => setStep(2)}
-                  className="w-full h-16 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-sm hover:bg-[#c9a962] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8 flex items-center justify-center gap-2"
+                  className="w-full h-20 bg-white text-black rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs hover:bg-[#c9a962] transition-all disabled:opacity-20 disabled:cursor-not-allowed mt-12 flex items-center justify-center gap-3"
                 >
-                  Continue to Payment <ChevronRight className="w-4 h-4" />
+                  Proceed to Settlement <ChevronRight className="w-5 h-5" />
                 </button>
               </motion.div>
             )}
@@ -169,59 +226,60 @@ export default function Checkout() {
             {step === 2 && (
               <motion.div 
                 key="step2"
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6"
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
               >
                 <div>
-                  <h2 className="text-3xl font-outfit font-black uppercase tracking-tighter">Payment Method</h2>
-                  <p className="text-xs text-white/40 font-bold tracking-widest uppercase mt-1">Choose how you want to pay</p>
+                  <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter">Settlement Portal</h2>
+                  <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Select your preferred transaction protocol</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
                    {[
-                     { id: 'UPI', name: 'UPI / Google Pay', desc: 'Secure digital payment', icon: '⚡' },
-                     { id: 'COD', name: 'Cash on Delivery', desc: 'Pay when items arrive', icon: '📦' },
-                     { id: 'CARD', name: 'Debit / Credit Card', desc: 'All major cards accepted', icon: '💳' }
+                     { id: 'UPI', name: 'Digital UPI / GPay', desc: 'Instant verification for priority processing', icon: '💎', color: 'from-blue-500/20' },
+                     { id: 'COD', name: 'Elite Cash on Delivery', desc: 'Settle upon successful arrival', icon: '📦', color: 'from-[#c9a962]/20' },
+                     { id: 'CARD', name: 'Global Credit Infrastructure', desc: 'Secure encryption for all major networks', icon: '💳', color: 'from-purple-500/20' }
                    ].map(method => (
                      <div 
                         key={method.id}
                         onClick={() => setPaymentMethod(method.id)}
-                        className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex items-center justify-between ${
-                          paymentMethod === method.id ? 'border-[#c9a962] bg-[#c9a962]/5' : 'border-white/5 bg-white/[0.02] hover:border-white/20'
+                        className={`p-8 rounded-[2.5rem] border-2 cursor-pointer transition-all flex items-center justify-between group overflow-hidden relative ${
+                          paymentMethod === method.id ? 'border-[#c9a962] bg-[#c9a962]/5' : 'border-white/5 bg-white/[0.02] hover:border-white/10'
                         }`}
                      >
-                       <div className="flex items-center gap-4">
-                         <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-2xl">
+                       <div className={`absolute inset-y-0 left-0 w-32 bg-gradient-to-r ${method.color} to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
+                       <div className="flex items-center gap-6 relative z-10">
+                         <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
                            {method.icon}
                          </div>
                          <div>
-                            <h4 className="font-bold text-white tracking-tight">{method.name}</h4>
-                            <p className="text-xs text-white/30 font-medium">{method.desc}</p>
+                            <h4 className="text-lg font-black text-white tracking-tight uppercase">{method.name}</h4>
+                            <p className="text-xs text-white/30 font-bold tracking-wide mt-1">{method.desc}</p>
                          </div>
                        </div>
-                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                         paymentMethod === method.id ? 'border-[#c9a962]' : 'border-white/10'
+                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center relative z-10 transition-all ${
+                         paymentMethod === method.id ? 'border-[#c9a962] bg-[#c9a962]/10' : 'border-white/10'
                        }`}>
-                         {paymentMethod === method.id && <div className="w-3 h-3 rounded-full bg-[#c9a962]" />}
+                         {paymentMethod === method.id && <div className="w-4 h-4 rounded-full bg-[#c9a962]" />}
                        </div>
                      </div>
                    ))}
                 </div>
 
-                <div className="flex gap-4 mt-8">
+                <div className="flex gap-6 mt-12">
                   <button 
                     onClick={() => setStep(1)}
-                    className="flex-1 h-16 border border-white/10 rounded-2xl text-white/40 font-black uppercase tracking-widest text-xs hover:text-white hover:bg-white/5 transition-all"
+                    className="flex-1 h-20 border border-white/10 rounded-[2rem] text-white/40 font-black uppercase tracking-widest text-[10px] hover:text-white hover:bg-white/5 transition-all"
                   >
-                    Back to Address
+                    Adjust Placement
                   </button>
                   <button 
                     onClick={() => setStep(3)}
-                    className="flex-[2] h-16 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-sm hover:bg-[#c9a962] transition-all flex items-center justify-center gap-2"
+                    className="flex-[2] h-20 bg-white text-black rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs hover:bg-[#c9a962] transition-all flex items-center justify-center gap-3"
                   >
-                    Review Order <ChevronRight className="w-4 h-4" />
+                    Review Manifest <ChevronRight className="w-5 h-5" />
                   </button>
                 </div>
               </motion.div>
@@ -230,47 +288,49 @@ export default function Checkout() {
             {step === 3 && (
               <motion.div 
                 key="step3"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                className="space-y-8"
               >
                 <div>
-                  <h2 className="text-3xl font-outfit font-black uppercase tracking-tighter">Final Review</h2>
-                  <p className="text-xs text-white/40 font-bold tracking-widest uppercase mt-1">One last check before placing order</p>
+                  <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter">Elite Manifest</h2>
+                  <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Final verification of your premium request</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5">
-                    <div className="flex items-center gap-2 mb-4">
-                       <MapPin className="w-4 h-4 text-[#c9a962]" />
-                       <span className="text-[10px] font-black uppercase text-[#c9a962] tracking-widest">Delivery To</span>
+                  <motion.div whileHover={{ y: -5 }} className="p-8 rounded-[2.5rem] bg-white/[0.02] border border-white/5 group">
+                    <div className="flex items-center gap-3 mb-6">
+                       <MapPin className="w-5 h-5 text-[#c9a962]" />
+                       <span className="text-[10px] font-black uppercase text-[#c9a962] tracking-[0.3em]">Destination Info</span>
                     </div>
-                    <p className="text-sm font-bold mb-1">{selectedAddress.street}</p>
-                    <p className="text-xs text-white/40 font-medium">{selectedAddress.city}, {selectedAddress.state} - {selectedAddress.zip}</p>
-                  </div>
+                    <p className="text-lg font-bold mb-2 group-hover:text-white transition-colors">{selectedAddress?.street}</p>
+                    <p className="text-sm text-white/40 font-medium italic">{selectedAddress?.city}, {selectedAddress?.state} - {selectedAddress?.zip}</p>
+                    <p className="text-[8px] font-black uppercase text-white/20 mt-6 tracking-widest">Phone: {selectedAddress?.phone || user.phone}</p>
+                  </motion.div>
 
-                  <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5">
-                    <div className="flex items-center gap-2 mb-4">
-                       <CreditCard className="w-4 h-4 text-[#c9a962]" />
-                       <span className="text-[10px] font-black uppercase text-[#c9a962] tracking-widest">Payment Method</span>
+                  <motion.div whileHover={{ y: -5 }} className="p-8 rounded-[2.5rem] bg-white/[0.02] border border-white/5 group">
+                    <div className="flex items-center gap-3 mb-6">
+                       <CreditCard className="w-5 h-5 text-[#c9a962]" />
+                       <span className="text-[10px] font-black uppercase text-[#c9a962] tracking-[0.3em]">Settlement Method</span>
                     </div>
-                    <p className="text-sm font-bold mb-1">{paymentMethod}</p>
-                    <p className="text-xs text-white/40 font-medium">Safe & Secure Checkout</p>
-                  </div>
+                    <p className="text-lg font-bold mb-2 group-hover:text-white transition-colors uppercase">{paymentMethod}</p>
+                    <p className="text-sm text-white/40 font-medium italic">Verified secure transaction channel</p>
+                  </motion.div>
                 </div>
 
-                <div className="p-8 rounded-[40px] bg-gradient-to-br from-[#c9a962]/20 to-transparent border border-[#c9a962]/20 flex flex-col md:flex-row items-center justify-between gap-8">
-                   <div className="text-center md:text-left">
-                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#c9a962] mb-2">Total Payable</p>
-                     <h3 className="text-5xl font-outfit font-black tracking-tighter">₹{total.toLocaleString()}</h3>
+                <div className="p-10 rounded-[3.5rem] bg-gradient-to-br from-[#c9a962]/20 to-transparent border border-[#c9a962]/20 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden group">
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a962]/5 blur-[100px] -mr-32 -mt-32" />
+                   <div className="text-center md:text-left relative z-10">
+                     <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#c9a962] mb-3">Total Manifest Value</p>
+                     <h3 className="text-6xl font-outfit font-black tracking-tighter">₹{finalTotal.toLocaleString()}</h3>
                    </div>
                    <button 
                     onClick={handleCreateOrder}
                     disabled={loading}
-                    className="w-full md:w-auto px-12 h-16 bg-[#c9a962] text-black rounded-2xl font-black uppercase tracking-[0.2em] text-sm hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-2xl shadow-[#c9a962]/30"
+                    className="w-full md:w-auto px-16 h-20 bg-white text-black rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs hover:bg-[#c9a962] hover:scale-105 transition-all flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(201,169,98,0.2)] relative z-10"
                   >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Confirm Order & Pay'}
+                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Confirm Placement'}
                   </button>
                 </div>
               </motion.div>
@@ -278,52 +338,79 @@ export default function Checkout() {
           </AnimatePresence>
         </div>
 
-        {/* Right: Summary Bucket */}
-        <div className="lg:col-span-4 lg:sticky lg:top-32 self-start space-y-6">
-          <div className="glass p-8 rounded-[3rem] border-white/10 shadow-2xl">
-            <h3 className="font-outfit font-black text-xl uppercase tracking-tighter mb-6">Order Summary</h3>
-            
-            <div className="space-y-4 mb-8 max-h-60 overflow-y-auto pr-2 no-scrollbar">
-              {items.map(item => (
-                <div key={`${item.id}-${item.size}`} className="flex gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-white/5 p-1 shrink-0 overflow-hidden">
-                    <img src={item.image} alt="" className="w-full h-full object-cover rounded-xl" />
+        {/* Right Summary */}
+        <div className="lg:col-span-4 lg:sticky lg:top-32 self-start">
+           <div className="bg-[#111113] p-10 rounded-[3.5rem] border border-white/5 shadow-3xl">
+              <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
+                 <h3 className="font-outfit font-black text-2xl uppercase tracking-tighter">Shopping Bag</h3>
+                 <span className="bg-[#c9a962]/10 text-[#c9a962] text-[10px] font-black px-3 py-1 rounded-lg">{items.length} Items</span>
+              </div>
+              
+              <div className="space-y-6 mb-10 max-h-[40vh] overflow-y-auto pr-4 no-scrollbar">
+                {items.map(item => (
+                  <div key={`${item.id}-${item.size}`} className="flex gap-5 group">
+                    <div className="w-20 h-20 rounded-2xl bg-white/5 p-1 shrink-0 overflow-hidden border border-white/5 group-hover:border-[#c9a962]/30 transition-colors">
+                      <img src={item.image} alt="" className="w-full h-full object-cover rounded-xl" />
+                    </div>
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <h5 className="text-sm font-bold text-white/90 truncate pr-2 group-hover:text-white transition-colors">{item.title}</h5>
+                      <p className="text-[9px] text-[#c9a962] font-black uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                        <span>{item.size}</span>
+                        <span className="w-1 h-1 rounded-full bg-white/20" />
+                        <span>Qty: {item.qty}</span>
+                      </p>
+                      <p className="text-sm font-black text-white mt-2">₹{item.price.toLocaleString()}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h5 className="text-xs font-bold truncate pr-4">{item.title}</h5>
-                    <p className="text-[9px] text-white/30 font-black uppercase tracking-widest mt-1">
-                      {item.size} • {item.qty} Unit
-                    </p>
-                    <p className="text-xs font-bold text-[#c9a962] mt-1">₹{item.price.toLocaleString()}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="space-y-4 border-t border-white/5 pt-6 text-[10px] font-black uppercase tracking-widest">
-              <div className="flex justify-between text-white/40">
-                <span>Subtotal</span>
-                <span>₹{subtotal.toLocaleString()}</span>
+              {/* Promo Section */}
+              <div className="border-t border-white/5 pt-8 mb-8">
+                 <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4 ml-2">Secure Voucher</p>
+                 <div className="flex gap-3">
+                    <input 
+                      type="text" 
+                      placeholder="e.g. ELITE10"
+                      className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-xs outline-none focus:border-[#c9a962]/40 transition-all uppercase placeholder:text-white/10"
+                      value={promoCode}
+                      onChange={e => setPromoCode(e.target.value)}
+                    />
+                    <button 
+                      onClick={applyPromo}
+                      className="px-6 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-[#c9a962] hover:text-black transition-all"
+                    >
+                      Apply
+                    </button>
+                 </div>
+                 {promoError && <p className="text-[9px] font-bold text-red-500 mt-2 ml-2 uppercase tracking-tighter">{promoError}</p>}
+                 {discount > 0 && <p className="text-[9px] font-bold text-green-500 mt-2 ml-2 uppercase tracking-tighter">Voucher applied: -₹{discount.toLocaleString()}</p>}
               </div>
-              <div className="flex justify-between text-white/40">
-                <span>GST (12%)</span>
-                <span>₹{tax.toLocaleString()}</span>
+
+              <div className="space-y-5 border-t border-white/5 pt-8 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
+                <div className="flex justify-between hover:text-white transition-colors">
+                  <span>Elite Subtotal</span>
+                  <span>₹{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between hover:text-white transition-colors">
+                  <span>Taxation (Included)</span>
+                  <span>₹{tax.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between hover:text-[#c9a962] transition-colors">
+                  <span>Priority Shipping</span>
+                  <span className="text-green-500">{delivery > 0 ? `₹${delivery}` : 'FREE'}</span>
+                </div>
+                <div className="flex justify-between text-2xl text-white border-white/5 pt-6 border-t font-outfit">
+                  <span className="tracking-tighter">Total Due</span>
+                  <span className="font-black text-[#c9a962]">₹{finalTotal.toLocaleString()}</span>
+                </div>
               </div>
-              <div className="flex justify-between text-white/40">
-                <span>Delivery</span>
-                <span>{delivery > 0 ? `₹${delivery}` : 'FREE'}</span>
-              </div>
-              <div className="flex justify-between text-lg text-white border-t border-white/5 pt-4">
-                <span className="font-outfit">Total</span>
-                <span className="font-outfit text-[#c9a962]">₹{total.toLocaleString()}</span>
-              </div>
-            </div>
-          </div>
+           </div>
         </div>
 
       </div>
 
-      {/* Add Address Modal */}
+      {/* Add Placement Modal */}
       <AnimatePresence>
         {showAddForm && (
           <>
@@ -331,86 +418,108 @@ export default function Checkout() {
                initial={{ opacity: 0 }} 
                animate={{ opacity: 1 }} 
                exit={{ opacity: 0 }}
-               className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[100]"
+               className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[150]"
                onClick={() => setShowAddForm(false)}
             />
             <motion.div 
-               initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+               initial={{ opacity: 0, scale: 0.95, y: 30 }} 
                animate={{ opacity: 1, scale: 1, y: 0 }} 
-               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-               className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-lg bg-[#111113] p-8 rounded-[2.5rem] border border-white/10 z-[110] shadow-2xl"
+               exit={{ opacity: 0, scale: 0.95, y: 30 }}
+               className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl bg-[#0a0a0b] p-10 md:p-14 rounded-[4rem] border border-white/10 z-[160] shadow-3xl overflow-y-auto max-h-[90vh] no-scrollbar"
             >
-               <div className="flex items-center justify-between mb-8">
-                 <h3 className="text-2xl font-outfit font-black uppercase tracking-tighter">Add Placement</h3>
-                 <button onClick={() => setShowAddForm(false)} className="p-2 glass rounded-full hover:bg-red-500/10 hover:text-red-500 transition-all">
-                   <X className="w-5 h-5" />
+               <div className="flex items-center justify-between mb-10">
+                 <div>
+                    <h3 className="text-3xl font-outfit font-black uppercase tracking-tighter">Define Placement</h3>
+                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.3em] mt-2 italic">Register a new target destination</p>
+                 </div>
+                 <button onClick={() => setShowAddForm(false)} className="p-4 glass rounded-full hover:bg-red-500/10 hover:text-red-500 transition-all">
+                   <X className="w-6 h-6" />
                  </button>
                </div>
 
-               <form onSubmit={handleAddAddress} className="space-y-4">
-                 <div className="flex gap-2">
+               <form onSubmit={handleAddAddress} className="space-y-6">
+                 <div className="grid grid-cols-3 gap-3">
                    {['Home', 'Office', 'Other'].map(l => (
                      <button 
                         key={l}
                         type="button"
                         onClick={() => setNewAddress({...newAddress, label: l})}
-                        className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${
-                          newAddress.label === l ? 'bg-[#c9a962] border-[#c9a962] text-black' : 'border-white/10 text-white/30 hover:border-white/20'
+                        className={`py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border transition-all ${
+                          newAddress.label === l ? 'bg-[#c9a962] border-[#c9a962] text-black shadow-lg shadow-[#c9a962]/20' : 'border-white/10 text-white/20 hover:border-white/40'
                         }`}
                      >
                        {l}
                      </button>
                    ))}
+                  </div>
+
+                 <div className="space-y-4">
+                    <div className="relative group">
+                      <input 
+                        required placeholder="Street Address / Building" 
+                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                        value={newAddress.street}
+                        onChange={e => setNewAddress({...newAddress, street: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <input 
+                          required placeholder="City Domain" 
+                          className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                          value={newAddress.city}
+                          onChange={e => setNewAddress({...newAddress, city: e.target.value})}
+                        />
+                        <input 
+                          required placeholder="State Territory" 
+                          className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                          value={newAddress.state}
+                          onChange={e => setNewAddress({...newAddress, state: e.target.value})}
+                        />
+                    </div>
+                    <input 
+                        required placeholder="Postal / ZIP Code" 
+                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                        value={newAddress.zip}
+                        onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        <input 
+                           required placeholder="Mandator Age" type="number"
+                           className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                           value={newAddress.age}
+                           onChange={e => setNewAddress({...newAddress, age: e.target.value})}
+                        />
+                        <input 
+                           required placeholder="Date of Birth" 
+                           className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                           value={newAddress.dob}
+                           onChange={e => setNewAddress({...newAddress, dob: e.target.value})}
+                        />
+                    </div>
                  </div>
-                 <input 
-                    required placeholder="Street Address / House No." 
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                    value={newAddress.street}
-                    onChange={e => setNewAddress({...newAddress, street: e.target.value})}
-                 />
-                 <div className="grid grid-cols-2 gap-4">
-                    <input 
-                      required placeholder="City" 
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                      value={newAddress.city}
-                      onChange={e => setNewAddress({...newAddress, city: e.target.value})}
-                    />
-                    <input 
-                      required placeholder="State" 
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                      value={newAddress.state}
-                      onChange={e => setNewAddress({...newAddress, state: e.target.value})}
-                    />
+
+                 {/* Set as Primary Toggle */}
+                 <div 
+                   onClick={() => setIsSettingPrimary(!isSettingPrimary)}
+                   className="flex items-center justify-between p-6 rounded-3xl bg-white/[0.03] border border-white/10 cursor-pointer group hover:border-[#c9a962]/30 transition-all"
+                 >
+                    <div>
+                       <p className="text-xs font-black uppercase text-white tracking-widest">Mark as Primary Placement</p>
+                       <p className="text-[9px] text-white/30 font-bold uppercase mt-1">Automatically selected for future dispatch</p>
+                    </div>
+                    <div className={`w-12 h-6 rounded-full relative transition-all ${isSettingPrimary ? 'bg-[#c9a962]' : 'bg-white/10'}`}>
+                       <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all shadow-lg ${isSettingPrimary ? 'right-1' : 'left-1'}`} />
+                    </div>
                  </div>
-                 <input 
-                    required placeholder="ZIP / Pincode" 
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                    value={newAddress.zip}
-                    onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
-                 />
-                 <div className="grid grid-cols-2 gap-4">
-                    <input 
-                       required placeholder="Age" type="number"
-                       className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                       value={newAddress.age}
-                       onChange={e => setNewAddress({...newAddress, age: e.target.value})}
-                    />
-                    <input 
-                       required placeholder="DOB (DD/MM/YYYY)" 
-                       className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                       value={newAddress.dob}
-                       onChange={e => setNewAddress({...newAddress, dob: e.target.value})}
-                    />
-                 </div>
-                 <button className="w-full h-16 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-sm mt-4 hover:bg-[#c9a962] transition-colors">
-                   Save Placement
+
+                 <button className="w-full h-20 bg-white text-black rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs mt-6 hover:bg-[#c9a962] transition-all shadow-2xl">
+                   Secure Placement
                  </button>
                </form>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-
     </div>
   )
 }

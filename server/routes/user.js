@@ -1,19 +1,26 @@
 const express = require('express')
 const router = express.Router()
-const { updateCart, updateWishlist, getSyncData, getAllUsers, getAddresses, addAddress, removeAddress } = require('../controllers/userController')
+const userController = require('../controllers/userController')
 const { verifyToken, requireStaff } = require('../middleware/auth')
 
 // All routes require authentication
 router.use(verifyToken)
 
-router.get('/sync', getSyncData)
-router.post('/cart', updateCart)
-router.post('/wishlist', updateWishlist)
-router.get('/all', requireStaff, getAllUsers)
+// Sync cart/wishlist
+router.get('/sync', userController.getSyncData)
+router.post('/cart', userController.updateCart)
+router.post('/wishlist', userController.updateWishlist)
 
-// Address routes
-router.get('/address', verifyToken, getAddresses)
-router.post('/address', verifyToken, addAddress)
-router.delete('/address/:id', verifyToken, removeAddress)
+// Profile & Settings
+router.get('/profile', userController.getProfile)
+router.put('/profile', userController.updateProfile)
+
+// Address Management
+router.get('/address', userController.getAddresses)
+router.post('/address', userController.addAddress)
+router.delete('/address/:id', userController.removeAddress)
+
+// Staff/Admin
+router.get('/all', requireStaff, userController.getAllUsers)
 
 module.exports = router

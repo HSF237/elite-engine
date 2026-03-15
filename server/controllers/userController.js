@@ -47,7 +47,33 @@ exports.updateWishlist = async (req, res) => {
     res.status(500).json({ message: 'Error updating wishlist' })
   }
 }
-// GET /api/user/all (Staff/Admin only)
+// PROFILE MANAGEMENT
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-passwordHash')
+    if (!user) return res.status(404).json({ message: 'User not found' })
+    res.json(user)
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching profile' })
+  }
+}
+
+const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, age, dob, avatar } = req.body
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: { name, phone, age, dob, avatar } },
+      { new: true, runValidators: true }
+    ).select('-passwordHash')
+    
+    res.json(user)
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating profile' })
+  }
+}
+
+// GET /api/user/all
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}).select('name email role createdAt')
@@ -106,5 +132,7 @@ module.exports = {
   getAllUsers,
   getAddresses,
   addAddress,
-  removeAddress
+  removeAddress,
+  getProfile,
+  updateProfile
 }

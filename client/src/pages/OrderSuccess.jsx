@@ -91,7 +91,7 @@ export default function OrderSuccess() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl mb-12">
         {[
-          { icon: <Package />, label: 'Confirmed', val: 'Order ID: ' + order.orderCode.slice(0, 8) },
+          { icon: <Package />, label: 'Confirmed', val: 'Order ID: #' + (order.orderCode || order._id).slice(-8) },
           { icon: <Truck />, label: 'Delivery', val: 'Processing' },
           { icon: <ShoppingBag />, label: 'Items', val: order.items.length + ' Premium Goods' }
         ].map((stat, i) => (
@@ -119,7 +119,7 @@ export default function OrderSuccess() {
           <ShoppingBag className="w-4 h-4" /> Continue Shopping
         </Link>
         <button 
-          onClick={() => navigate('/shop')} // Could be /account/orders later
+          onClick={() => navigate('/profile', { state: { tab: 'orders' } })}
           className="flex-1 h-16 border border-white/10 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-white/5 transition-all"
         >
           Track My Order <ArrowRight className="w-4 h-4" />

@@ -113,31 +113,35 @@ export default function OrderManager() {
                <Package className="w-8 h-8 group-hover:text-[#c9a962] group-hover:scale-110 transition-all" />
             </div>
 
-            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
-               <div>
-                  <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Mandate ID</p>
-                  <h4 className="font-bold text-white tracking-tight">#{order.orderCode}</h4>
-               </div>
+                <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
+                   <div>
+                      <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Elite Mandate</p>
+                      <h4 className="font-bold text-white tracking-tight">#{order.orderCode}</h4>
+                   </div>
 
-               <div>
-                  <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Customer</p>
-                  <div className="flex items-center gap-2">
-                    <User className="w-3 h-3 text-[#c9a962]" />
-                    <h4 className="font-bold text-white/80">{order.customer?.name || 'Anonymous'}</h4>
-                  </div>
-               </div>
+                   <div className="flex-1">
+                      <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Customer & Origin</p>
+                      <div className="flex items-center gap-2">
+                        <User className="w-3 h-3 text-[#c9a962]" />
+                        <h4 className="font-bold text-white/80 line-clamp-1">{order.customer?.name} / {order.shippingAddress?.city}</h4>
+                      </div>
+                   </div>
 
-               <div>
-                  <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Value</p>
-                  <h4 className="font-bold text-[#c9a962]">₹{order.totalAmount.toLocaleString()}</h4>
-               </div>
+                   <div className="hidden lg:block shrink-0">
+                      <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Primary Asset</p>
+                      <h4 className="text-xs font-bold text-white/40 line-clamp-1">{order.items[0]?.name} {order.items.length > 1 ? `+${order.items.length-1}` : ''}</h4>
+                   </div>
 
-               <div className="ml-auto">
-                  <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/5 ${getStatusColor(order.orderStatus)}`}>
-                    {order.orderStatus}
-                  </div>
-               </div>
-            </div>
+                   <div className="ml-auto flex items-center gap-6">
+                      <div className="text-right">
+                         <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Value</p>
+                         <h4 className="font-bold text-[#c9a962]">₹{order.totalAmount.toLocaleString()}</h4>
+                      </div>
+                      <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/5 ${getStatusColor(order.orderStatus)}`}>
+                        {order.orderStatus}
+                      </div>
+                   </div>
+                </div>
 
             <div className="flex items-center gap-3">
                <div className="h-10 w-[1px] bg-white/5 hidden md:block" />

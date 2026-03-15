@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingBag, Menu, Search, Heart, User, ChevronDown, MapPin } from 'lucide-react'
+import { ShoppingBag, Menu, Search, Heart, User, ChevronDown, MapPin, LogOut } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 
@@ -87,20 +87,20 @@ export default function Navbar() {
         {/* Actions Icons */}
         <div className="flex items-center gap-1 sm:gap-3 ml-auto text-white/80">
           {user ? (
-            <div className="hidden sm:flex flex-col items-start px-2 group relative">
-              <div className="flex flex-col items-center cursor-pointer group-hover:text-[#c9a962] transition-colors">
-                <User className="w-5 h-5" />
-                <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">Hi, {user.name.split(' ')[0]}</span>
-              </div>
-              {/* Simple logout tooltip/dropdown on hover */}
-              <div className="absolute top-full right-0 mt-2 w-32 glass border border-white/10 rounded-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                <button 
-                  onClick={logout}
-                  className="w-full text-left px-4 py-2 text-[10px] font-black uppercase text-red-400 hover:bg-white/10 transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
+            <div className="flex items-center gap-4">
+              <Link to="/profile" className="flex items-center gap-2 group p-2 rounded-xl hover:bg-white/5 transition-all">
+                 <div className="w-8 h-8 rounded-lg bg-[#c9a962] flex items-center justify-center font-black text-xs text-black uppercase">
+                    {user.name?.[0] || 'U'}
+                 </div>
+                 <span className="hidden md:block text-[10px] uppercase font-black tracking-widest text-white/40 group-hover:text-white transition-colors">Profile</span>
+              </Link>
+              <button 
+                onClick={logout}
+                className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-red-500/10 hover:text-red-500 transition-all"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           ) : (
             <Link to="/login" className="hidden sm:flex flex-col items-center hover:text-white transition-colors px-2 group">
@@ -116,7 +116,7 @@ export default function Navbar() {
                 {wishlistCount}
               </span>
             )}
-          </a>
+          </Link>
 
           <button onClick={openCart} className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
             <ShoppingBag className="w-5 h-5 group-hover:text-[#c9a962]" />
@@ -182,9 +182,9 @@ export default function Navbar() {
                       {link.label}
                     </Link>
                   ) : (
-                    <a key={link.label} href={link.href} className="text-lg font-bold hover:text-[#c9a962] transition-colors" onClick={() => setMobileOpen(false)}>
+                    <Link key={link.label} to={link.href} className="text-lg font-bold hover:text-[#c9a962] transition-colors" onClick={() => setMobileOpen(false)}>
                       {link.label}
-                    </a>
+                    </Link>
                   )
                 ))}
             </div>

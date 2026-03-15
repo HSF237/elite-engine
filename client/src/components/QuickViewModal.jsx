@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, ShoppingBag, Star, Truck, ShieldCheck, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
+import api from '../utils/api'
+import { addToRecentlyViewed } from '../utils/recentViewed'
 
 export default function QuickViewModal({ product, onClose }) {
   const { addToCart } = useCart()
@@ -12,6 +14,12 @@ export default function QuickViewModal({ product, onClose }) {
   const [imgIndex, setImgIndex] = useState(0)
   const [added, setAdded] = useState(false)
 
+  useEffect(() => {
+    if (product) {
+      addToRecentlyViewed(product)
+    }
+  }, [product])
+  
   if (!product) return null
 
   const price = product.discountPrice ?? product.regularPrice ?? product.price ?? 0
@@ -225,9 +233,129 @@ export default function QuickViewModal({ product, onClose }) {
                 <Heart className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : 'text-white/60'}`} />
               </motion.button>
             </div>
+
+            {/* ── Reviews Expansion ── */}
+            <ReviewsSection productId={product._id || product.id} />
           </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+function ReviewsSection({ productId }) {
+  const [reviews, setReviews] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [newReview, setNewReview] = useState({ rating: 5, comment: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    setLoading(true)
+    api.get(`/api/reviews/product/${productId}`)
+      .then(res => setReviews(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false))
+  }, [productId])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setError('')
+    try {
+      const res = await api.post('/api/reviews', { productId, ...newReview })
+      setReviews([res.data, ...reviews])
+      setShowForm(false)
+      setNewReview({ rating: 5, comment: '' })
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to submit review. Verified purchase required.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="mt-8 border-t border-white/5 pt-8">
+      <div className="flex items-center justify-between mb-6">
+        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#c9a962]">Verified Feedback</h4>
+        <button 
+          onClick={() => setShowForm(!showForm)}
+          className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors"
+        >
+          {showForm ? 'Cancel' : 'Leave Review'}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {showForm && (
+          <motion.form 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            onSubmit={handleSubmit}
+            className="mb-8 p-6 rounded-3xl bg-white/[0.02] border border-white/5 space-y-4 overflow-hidden"
+          >
+            <div className="flex items-center gap-2">
+              {[1, 2, 3, 4, 5].map(r => (
+                <button 
+                  key={r} type="button" 
+                  onClick={() => setNewReview({...newReview, rating: r})}
+                  className="p-1 focus:outline-none"
+                >
+                  <Star className={`w-5 h-5 ${r <= newReview.rating ? 'fill-[#c9a962] text-[#c9a962]' : 'text-white/10'}`} />
+                </button>
+              ))}
+            </div>
+            <textarea 
+              required
+              placeholder="Share your elite experience..."
+              className="w-full bg-black border border-white/10 rounded-2xl p-4 text-sm text-white placeholder:text-white/20 outline-none focus:border-[#c9a962]/40 min-h-[100px] resize-none"
+              value={newReview.comment}
+              onChange={e => setNewReview({...newReview, comment: e.target.value})}
+            />
+            {error && <p className="text-[10px] font-bold text-red-500 uppercase tracking-tighter">{error}</p>}
+            <button 
+              disabled={submitting}
+              className="w-full py-3 bg-white text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#c9a962] disabled:opacity-50 transition-all"
+            >
+              {submitting ? 'Dispatching...' : 'Secure Feedback'}
+            </button>
+          </motion.form>
+        )}
+      </AnimatePresence>
+
+      <div className="space-y-6">
+        {loading ? (
+          <div className="space-y-4 animate-pulse">
+            {[1, 2].map(i => <div key={i} className="h-20 bg-white/5 rounded-2xl" />)}
+          </div>
+        ) : reviews.length > 0 ? (
+          reviews.map((r, i) => (
+            <div key={i} className="group">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black text-[#c9a962]">
+                    {r.user?.name?.[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white/80">{r.user?.name}</p>
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, idx) => (
+                        <Star key={idx} className={`w-2 h-2 ${idx < r.rating ? 'fill-[#c9a962] text-[#c9a962]' : 'text-white/10'}`} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[9px] font-black text-white/20 uppercase">{new Date(r.createdAt).toLocaleDateString()}</span>
+              </div>
+              <p className="text-sm text-white/40 leading-relaxed italic ml-9">"{r.comment}"</p>
+            </div>
+          ))
+        ) : (
+          <p className="text-xs text-center text-white/20 font-medium py-4">No reviews yet. Be the first to verify this asset.</p>
+        )}
+      </div>
+    </div>
   )
 }

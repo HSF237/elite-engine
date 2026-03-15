@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import InventoryManager from '../components/InventoryManager'
 import CustomerManager from '../components/CustomerManager'
 import OrderManager from '../components/OrderManager'
+import AnalyticsDashboard from '../components/AnalyticsDashboard'
 
 export default function StaffDashboard() {
   const navigate = useNavigate()
@@ -120,13 +121,14 @@ export default function StaffDashboard() {
 
          {/* Scrollable View Area */}
          <div className="flex-1 overflow-y-auto p-8 no-scrollbar bg-gradient-to-b from-white/[0.02] to-transparent">
+            {(activeTab === 'overview' || activeTab === 'sales') && <AnalyticsDashboard />}
             {activeTab === 'inventory' && <InventoryManager />}
             {activeTab === 'customers' && <CustomerManager />}
             {activeTab === 'orders' && <OrderManager />}
-            {activeTab !== 'inventory' && activeTab !== 'customers' && activeTab !== 'orders' && (
+            {activeTab === 'settings' && (
                <div className="h-full flex flex-col items-center justify-center opacity-50">
-                  <h3 className="text-4xl font-outfit font-black mb-2 uppercase tracking-tighter">Under Core Development</h3>
-                  <p className="text-xs font-black text-[#c9a962] uppercase tracking-widest">Building the future of Elite Commerce</p>
+                  <h3 className="text-4xl font-outfit font-black mb-2 uppercase tracking-tighter">System Settings</h3>
+                  <p className="text-xs font-black text-[#c9a962] uppercase tracking-widest">Configuration module encrypted.</p>
                </div>
             )}
          </div>

@@ -33,6 +33,11 @@ const orderSchema = new mongoose.Schema(
       enum: ['COD', 'UPI', 'GPAY', 'CARD'],
       default: 'COD',
     },
+    promoCode: String,
+    discountAmount: {
+      type: Number,
+      default: 0
+    },
     paymentStatus: {
       type: String,
       enum: ['Pending', 'Completed', 'Failed', 'Refunded'],

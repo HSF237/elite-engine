@@ -2,28 +2,20 @@
 export const HERO_SLIDES = [
   {
     id: 'h1',
-    title: 'Precision Luxury',
-    subtitle: 'Fall/Winter 2026 Collection',
-    cta: 'Explore Collection',
-    image: '/hero-fashion.png',
-    accent: '#c9a962',
+    image: '/brain/68f1a24e-8bb6-4277-8f1b-ab5682b204a7/elite_hero_precision_luxury_v2_1773571206913.png',
+    title: 'PRECISION LUXURY',
+    subtitle: 'THE ELITE COLLECTION 2026',
+    cta: 'Explore Excellence',
+    accent: '#c9a962'
   },
   {
     id: 'h2',
-    title: 'Future Tech',
-    subtitle: 'Elite Wearables released',
-    cta: 'Pre-Order Now',
-    image: '/hero-tech.png',
-    accent: '#1a1a1a',
-  },
-  {
-    id: 'h3',
-    title: 'Urban Performance',
-    subtitle: 'Next-Gen Activewear',
-    cta: 'Shop Performance',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&q=80',
-    accent: '#0f0f0f',
-  },
+    image: '/brain/68f1a24e-8bb6-4277-8f1b-ab5682b204a7/elite_category_fashion_avantgarde_1773571232065.png',
+    title: 'AVANT-GARDE STYLE',
+    subtitle: 'STREET LUXURY EVOLVED',
+    cta: 'Shop Apparel',
+    accent: '#1a1a1a'
+  }
 ]
 
 export const CATEGORIES = [
