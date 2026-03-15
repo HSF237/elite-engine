@@ -47,3 +47,13 @@ exports.updateWishlist = async (req, res) => {
     res.status(500).json({ message: 'Error updating wishlist' })
   }
 }
+// GET /api/user/all (Staff/Admin only)
+exports.getAllUsers = async (req, res) => {
+  try {
+    // Only return non-sensitive fields
+    const users = await User.find({}).select('name email role createdAt')
+    res.json(users)
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching users' })
+  }
+}
