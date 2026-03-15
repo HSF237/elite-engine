@@ -19,6 +19,8 @@ const item = {
   show: { opacity: 1, y: 0 },
 }
 
+import api from '../utils/api'
+
 export default function Home() {
   const [heroIndex, setHeroIndex] = useState(0)
   const [products, setProducts] = useState([])
@@ -29,17 +31,15 @@ export default function Home() {
 
   // Fetch live products
   useEffect(() => {
-    import('axios').then(({ default: axios }) => {
-      axios.get('/api/products?limit=6')
-        .then(res => {
-          setProducts(res.data.products)
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error('Failed to fetch products:', err)
-          setLoading(false)
-        })
-    })
+    api.get('/api/products?limit=6')
+      .then(res => {
+        setProducts(res.data.products)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Failed to fetch products:', err)
+        setLoading(false)
+      })
   }, [])
 
   // Hero auto-play

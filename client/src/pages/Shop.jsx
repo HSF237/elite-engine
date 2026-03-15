@@ -45,6 +45,8 @@ function FilterSection({ title, children, defaultOpen = true }) {
   )
 }
 
+import api from '../utils/api'
+
 export default function Shop() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [quickViewProduct, setQuickViewProduct] = useState(null)
@@ -65,18 +67,16 @@ export default function Shop() {
   const { isLiked, toggleWishlist } = useWishlist()
 
   // Fetch live products
-  useState(() => {
-    import('axios').then(({ default: axios }) => {
-      axios.get('/api/products?limit=100')
-        .then(res => {
-          setProducts(res.data.products)
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error('Fetch error:', err)
-          setLoading(false)
-        })
-    })
+  useEffect(() => {
+    api.get('/api/products?limit=100')
+      .then(res => {
+        setProducts(res.data.products)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Fetch error:', err)
+        setLoading(false)
+      })
   }, [])
 
   const toggleBrand = (b) => setSelectedBrands(prev => prev.includes(b) ? prev.filter(x => x !== b) : [...prev, b])

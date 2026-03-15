@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
+import api from '../utils/api'
 
 const AuthContext = createContext(null)
-
 const TOKEN_KEY = 'elite_token'
 
 export function AuthProvider({ children }) {
@@ -13,10 +12,9 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY)
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      axios.get('/api/auth/me')
+      api.get('/api/auth/me')
         .then(res => setUser(res.data.user))
-        .catch(() => { localStorage.removeItem(TOKEN_KEY); delete axios.defaults.headers.common['Authorization'] })
+        .catch(() => { localStorage.removeItem(TOKEN_KEY) })
         .finally(() => setLoading(false))
     } else {
       setLoading(false)
@@ -24,24 +22,21 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = useCallback(async (email, password) => {
-    const { data } = await axios.post('/api/auth/login', { email, password })
+    const { data } = await api.post('/api/auth/login', { email, password })
     localStorage.setItem(TOKEN_KEY, data.token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
     setUser(data.user)
     return data.user
   }, [])
 
   const signup = useCallback(async (name, email, password) => {
-    const { data } = await axios.post('/api/auth/signup', { name, email, password })
+    const { data } = await api.post('/api/auth/signup', { name, email, password })
     localStorage.setItem(TOKEN_KEY, data.token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
     setUser(data.user)
     return data.user
   }, [])
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
-    delete axios.defaults.headers.common['Authorization']
     setUser(null)
   }, [])
 

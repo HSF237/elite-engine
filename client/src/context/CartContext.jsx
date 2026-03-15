@@ -1,4 +1,6 @@
-import { createContext, useContext, useReducer, useCallback } from 'react'
+import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react'
+import api from '../utils/api'
+import { useAuth } from './AuthContext'
 
 const CartContext = createContext(null)
 
@@ -7,6 +9,8 @@ const DELIVERY_BASE = 99
 
 function cartReducer(state, action) {
   switch (action.type) {
+    case 'SET_CART':
+      return { ...state, items: action.payload }
     case 'ADD_ITEM': {
       const existing = state.items.find(
         (i) => i.id === action.payload.id && i.size === action.payload.size && i.color === action.payload.color
@@ -42,7 +46,48 @@ function cartReducer(state, action) {
 }
 
 export function CartProvider({ children }) {
+  const { user } = useAuth()
   const [state, dispatch] = useReducer(cartReducer, { items: [], isOpen: false })
+  const isInitialMount = useRef(true)
+
+  // 1. Sync FROM server on Login
+  useEffect(() => {
+    if (user) {
+      api.get('/api/user/sync')
+        .then(res => {
+          if (res.data.cart) {
+            const mappedItems = res.data.cart.map(item => ({
+              ...item.product,
+              id: item.product._id,
+              qty: item.qty,
+              size: item.size,
+              color: item.color
+            }))
+            dispatch({ type: 'SET_CART', payload: mappedItems })
+          }
+        })
+        .catch(err => console.error('Failed to sync cart', err))
+    }
+  }, [user])
+
+  // 2. Sync TO server on Change
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
+    if (user) {
+      const cartData = state.items.map(i => ({
+        product: i._id || i.id,
+        qty: i.qty,
+        size: i.size,
+        color: i.color
+      }))
+      api.post('/api/user/cart', { cart: cartData })
+        .catch(err => console.error('Failed to update remote cart', err))
+    }
+  }, [state.items, user])
 
   const addToCart = useCallback((item) => {
     dispatch({ type: 'ADD_ITEM', payload: item })

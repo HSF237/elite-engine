@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2 } from 'lucide-react'
-import axios from 'axios'
+import api from '../utils/api'
 
 export default function InventoryManager() {
   const [products, setProducts] = useState([])
@@ -27,7 +27,7 @@ export default function InventoryManager() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('/api/products')
+      const res = await api.get('/api/products')
       setProducts(res.data.products)
     } catch (err) {
       console.error('Failed to fetch products', err)
@@ -56,7 +56,7 @@ export default function InventoryManager() {
         if (file) data.append('images', file)
       })
 
-      await axios.post('/api/products', data, {
+      await api.post('/api/products', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
@@ -83,7 +83,7 @@ export default function InventoryManager() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure?')) return
     try {
-      await axios.delete(`/api/products/${id}`)
+      await api.delete(`/api/products/${id}`)
       fetchProducts()
     } catch (err) {
       alert('Failed to delete product')

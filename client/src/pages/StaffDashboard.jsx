@@ -2,23 +2,22 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Users, ShoppingCart, BarChart3, Settings, LogOut, Bell, Search } from 'lucide-react'
-import InventoryManager from '../components/InventoryManager'
+import { useAuth } from '../context/AuthContext'
 
 export default function StaffDashboard() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('inventory')
-  const [staffInfo, setStaffInfo] = useState({ name: 'Muhammad Hasan', role: 'Elite Administrator' })
+  const { user, loading, logout } = useAuth()
 
-  // Simple auth check mockup
+  // Real auth check
   useEffect(() => {
-    const token = localStorage.getItem('elite_staff_token')
-    if (!token && process.env.NODE_ENV === 'production') {
+    if (!loading && (!user || (user.role !== 'staff' && user.role !== 'admin'))) {
       navigate('/staff-gateway')
     }
-  }, [navigate])
+  }, [user, loading, navigate])
 
   const handleLogout = () => {
-    localStorage.removeItem('elite_staff_token')
+    logout()
     navigate('/staff-gateway')
   }
 
@@ -97,10 +96,10 @@ export default function StaffDashboard() {
                </div>
                <div className="h-8 w-px bg-white/5" />
                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                     <p className="text-sm font-bold text-white">{staffInfo.name}</p>
-                     <p className="text-[10px] font-black text-[#c9a962] uppercase tracking-tighter">{staffInfo.role}</p>
-                  </div>
+                   <div className="text-right">
+                      <p className="text-sm font-bold text-white">{user?.name || 'Staff Member'}</p>
+                      <p className="text-[10px] font-black text-[#c9a962] uppercase tracking-tighter">{user?.role || 'Authorized Personnel'}</p>
+                   </div>
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#c9a962] to-[#b09452] p-0.5">
                      <div className="w-full h-full rounded-full bg-[#0a0a0b] flex items-center justify-center font-outfit font-black text-xs">
                         MH
