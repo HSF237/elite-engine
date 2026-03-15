@@ -187,14 +187,19 @@ export default function Home() {
                <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Under ₹999</h3>
                <p className="text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Curated Essentials</p>
                <div className="grid grid-cols-2 gap-3 flex-1">
-                  {[
-                    'https://images.unsplash.com/photo-1582966271819-75e4871e9b5e?w=300&q=80', 
-                    'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=300&q=80', 
-                    'https://images.unsplash.com/photo-1602143399827-70349babc0e7?w=300&q=80', 
-                    'https://images.unsplash.com/photo-1549439602-43ebca2327af?w=300&q=80'
+                  [
+                     'https://images.unsplash.com/photo-1583394838336-acd977736f90', 
+                     'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9', 
+                     'https://images.unsplash.com/photo-1505740420928-5e560c06d30e', 
+                     'https://images.unsplash.com/photo-1542291026-7eec264c27ff'
                   ].map((img, i) => (
                      <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/5">
-                        <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <img 
+                           src={`${img}?auto=format&fit=crop&w=300&q=80`} 
+                           alt="" 
+                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                           onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300' }}
+                        />
                      </div>
                   ))}
                </div>
@@ -216,14 +221,19 @@ export default function Home() {
                <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Elite Spaces</h3>
                <p className="text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Smart Interior</p>
                <div className="grid grid-cols-2 gap-3 flex-1">
-                  {[
-                    'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=300&q=80', 
-                    'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=300&q=80', 
-                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=80', 
-                    'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=300&q=80'
+                  [
+                     'https://images.unsplash.com/photo-1586023492125-27b2c045efd7', 
+                     'https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e', 
+                     'https://images.unsplash.com/photo-1616489953149-924040974585', 
+                     'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92'
                   ].map((img, i) => (
                      <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/5">
-                        <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <img 
+                           src={`${img}?auto=format&fit=crop&w=300&q=80`} 
+                           alt="" 
+                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                           onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1513584684374-8bdb74838a0f?w=300' }}
+                        />
                      </div>
                   ))}
                </div>
