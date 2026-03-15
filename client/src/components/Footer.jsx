@@ -14,10 +14,32 @@ export default function Footer() {
         <ChevronUp className="w-4 h-4" /> Back to top
       </button>
 
+      {/* Newsletter */}
+      <div className="border-t border-white/5 bg-black/20">
+         <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="max-w-md">
+               <h3 className="text-white font-outfit font-black text-2xl uppercase tracking-tighter mb-2">Join the Elite Club</h3>
+               <p className="text-white/40 text-sm font-medium leading-relaxed">Sign up for early access to drops, exclusive luxury offers, and the latest in premium tech.</p>
+            </div>
+            <div className="flex w-full md:w-auto gap-2">
+               <input 
+                  type="email" 
+                  placeholder="elite@example.com" 
+                  className="flex-1 md:w-80 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-sm focus:outline-none focus:border-[#c9a962]/40 text-white"
+               />
+               <button className="bg-[#c9a962] text-black font-black px-8 py-4 rounded-xl text-xs uppercase tracking-widest hover:bg-[#b09452] transition-all whitespace-nowrap">
+                  Subscribe
+               </button>
+            </div>
+         </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
          <div className="flex flex-col gap-6">
-            <h4 className="text-white font-outfit font-black text-lg uppercase tracking-wider">Elite Store</h4>
-            <p className="text-sm leading-relaxed">The pinnacle of luxury shopping. Curated electronics, fashion, and home essentials delivered with elite precision.</p>
+            <div className="font-outfit font-black text-2xl text-white">
+               ELITE <span className="text-[#c9a962]">STORE</span>
+            </div>
+            <p className="text-sm leading-relaxed text-white/40 font-medium">The pinnacle of luxury shopping. Curated electronics, fashion, and home essentials delivered with elite precision.</p>
             <div className="flex gap-4">
                {[
                  { id: 'ig', icon: <Instagram className="w-4 h-4" /> },
@@ -32,47 +54,46 @@ export default function Footer() {
          </div>
 
          <div>
-            <h4 className="text-white font-outfit font-black text-sm uppercase tracking-widest mb-6">Get to Know Us</h4>
-            <ul className="flex flex-col gap-3 text-sm">
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">About Elite</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Careers</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Press Releases</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Elite Science</Link></li>
+            <h4 className="text-white font-outfit font-black text-xs uppercase tracking-[0.2em] mb-8">Get to Know Us</h4>
+            <ul className="flex flex-col gap-4 text-sm font-medium text-white/40">
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">About Elite</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Careers</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Press Releases</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Elite Science</Link></li>
             </ul>
          </div>
 
          <div>
-            <h4 className="text-white font-outfit font-black text-sm uppercase tracking-widest mb-6">Connect with Us</h4>
-            <ul className="flex flex-col gap-3 text-sm">
-               <li><a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] hover:underline transition-all">Facebook</a></li>
-               <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] hover:underline transition-all">Twitter</a></li>
-               <li><a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] hover:underline transition-all">Instagram</a></li>
+            <h4 className="text-white font-outfit font-black text-xs uppercase tracking-[0.2em] mb-8">Connect with Us</h4>
+            <ul className="flex flex-col gap-4 text-sm font-medium text-white/40">
+               <li><a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] transition-all">Facebook</a></li>
+               <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] transition-all">Twitter</a></li>
+               <li><a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] transition-all">Instagram</a></li>
             </ul>
          </div>
 
          <div>
-            <h4 className="text-white font-outfit font-black text-sm uppercase tracking-widest mb-6">Let Us Help You</h4>
-            <ul className="flex flex-col gap-3 text-sm">
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Your Account</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Returns Centre</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">100% Purchase Protection</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Elite App Download</Link></li>
-               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Help</Link></li>
+            <h4 className="text-white font-outfit font-black text-xs uppercase tracking-[0.2em] mb-8">Let Us Help You</h4>
+            <ul className="flex flex-col gap-4 text-sm font-medium text-white/40">
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Your Account</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Returns Centre</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">100% Protection</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Elite App</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] transition-all">Help Center</Link></li>
             </ul>
          </div>
       </div>
 
-      <div className="border-t border-white/5 py-8">
-         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="font-outfit font-bold text-xl text-white">
-               ELITE <span className="text-[#c9a962]">STORE</span>
+      <div className="border-t border-white/5 py-12 bg-black/40">
+         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex gap-8 text-[10px] uppercase font-black tracking-[0.2em] text-white/30">
+               <Link to="/shop" className="hover:text-white transition-colors">Conditions of Use</Link>
+               <Link to="/shop" className="hover:text-white transition-colors">Privacy Notice</Link>
+               <Link to="/shop" className="hover:text-white transition-colors">Elite Ads</Link>
             </div>
-            <div className="flex gap-6 text-[10px] uppercase font-bold tracking-widest text-white/30">
-               <a href="#">Conditions of Use</a>
-               <a href="#">Privacy Notice</a>
-               <a href="#">Elite Ads</a>
-            </div>
-            <p className="text-[10px] text-white/20 tracking-tighter uppercase">© 2024–2026, Elite Store, Inc. or its affiliates — Built by Muhammad Hasan</p>
+            <p className="text-[10px] text-white/10 tracking-[0.1em] uppercase font-bold text-center md:text-right">
+               © 2024–2026, Elite Store, Inc. — Precision Built by Muhammad Hasan
+            </p>
          </div>
       </div>
     </footer>

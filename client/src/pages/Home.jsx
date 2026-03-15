@@ -22,6 +22,30 @@ const item = {
 
 import api from '../utils/api'
 
+const FlashDealCountdown = () => {
+  const [timeLeft, setTimeLeft] = useState({ h: 12, m: 45, s: 0 })
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.s > 0) return { ...prev, s: prev.s - 1 }
+        if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 }
+        if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 }
+        return prev
+      })
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+  return (
+    <div className="flex gap-2 text-white font-black text-xl">
+      <div className="bg-black/40 backdrop-blur-md px-3 py-2 rounded-xl border border-white/10 w-12 text-center">{timeLeft.h}</div>
+      <span className="text-[#c9a962]">:</span>
+      <div className="bg-black/40 backdrop-blur-md px-3 py-2 rounded-xl border border-white/10 w-12 text-center">{timeLeft.m}</div>
+      <span className="text-[#c9a962]">:</span>
+      <div className="bg-black/40 backdrop-blur-md px-3 py-2 rounded-xl border border-white/10 w-12 text-center">{timeLeft.s}</div>
+    </div>
+  )
+}
+
 export default function Home() {
   const navigate = useNavigate()
   const [heroIndex, setHeroIndex] = useState(0)
@@ -53,7 +77,20 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b]">
+    <div className="min-h-screen bg-[#0a0a0b] overflow-x-hidden">
+      {/* Premium Notification Bar */}
+      <div className="bg-gradient-to-r from-[#c9a962] to-[#b09452] text-black py-2 px-4 overflow-hidden hidden sm:block">
+         <motion.div 
+            animate={{ x: [1000, -1000] }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            className="whitespace-nowrap flex gap-12 font-black text-[10px] uppercase tracking-[0.3em]"
+         >
+            <span>✨ Flash Sale Live: Up to 70% Off Elite Tech</span>
+            <span>🚀 Free Express Shipping on all orders above ₹4,999</span>
+            <span>💎 New Membership Program Launched: Join Elite Club Now</span>
+            <span>⚡ Next Drop: Phantom Watch V2 in 04:12:00</span>
+         </motion.div>
+      </div>
       {/* ——— Hero Slider ——— */}
       <section className="relative h-[85vh] min-h-[520px] overflow-hidden">
         <AnimatePresence mode="wait">
@@ -142,20 +179,28 @@ export default function Home() {
                initial={{ opacity: 0, y: 20 }} 
                whileInView={{ opacity: 1, y: 0 }} 
                viewport={{ once: true }}
-               className="bg-[#1a1a1c] p-5 rounded-2xl border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all"
+               className="bg-[#1a1a1c] p-6 rounded-[2.5rem] border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all shadow-2xl relative overflow-hidden"
+               onClick={() => navigate('/shop?filter=deals')}
             >
-               <h3 className="font-outfit font-bold text-xl mb-1 text-white">Under ₹999</h3>
-               <p className="text-xs text-white/50 mb-4 uppercase tracking-widest">Daily Essentials</p>
-               <div className="grid grid-cols-2 gap-2 flex-1">
-                  {['https://images.unsplash.com/photo-1582966271819-75e4871e9b5e?w=200', 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=200', 'https://images.unsplash.com/photo-1602143399827-70349babc0e7?w=200', 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=200'].map((img, i) => (
-                     <div key={i} className="aspect-square rounded-lg overflow-hidden bg-white/5">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a962]/10 blur-3xl -mr-16 -mt-16" />
+               <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Under ₹999</h3>
+               <p className="text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Curated Essentials</p>
+               <div className="grid grid-cols-2 gap-3 flex-1">
+                  {[
+                    'https://images.unsplash.com/photo-1582966271819-75e4871e9b5e?w=300&q=80', 
+                    'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=300&q=80', 
+                    'https://images.unsplash.com/photo-1602143399827-70349babc0e7?w=300&q=80', 
+                    'https://images.unsplash.com/photo-1549439602-43ebca2327af?w=300&q=80'
+                  ].map((img, i) => (
+                     <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                         <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                      </div>
                   ))}
                </div>
-               <Link to="/shop?filter=deals" className="mt-4 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  Explore All <ChevronRight className="w-3 h-3" />
-               </Link>
+               <div className="mt-6 flex items-center justify-between">
+                  <span className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em]">Explore All</span>
+                  <ChevronRight className="w-4 h-4 text-[#c9a962] group-hover:translate-x-1 transition-transform" />
+               </div>
             </motion.div>
 
             {/* Card 2: Home Revamp */}
@@ -164,40 +209,53 @@ export default function Home() {
                whileInView={{ opacity: 1, y: 0 }} 
                viewport={{ once: true }}
                transition={{ delay: 0.1 }}
-               className="bg-[#1a1a1c] p-5 rounded-2xl border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all"
+               className="bg-[#1a1a1c] p-6 rounded-[2.5rem] border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all shadow-2xl"
+               onClick={() => navigate('/shop?category=Home')}
             >
-               <h3 className="font-outfit font-bold text-xl mb-1 text-white">Revamp Home</h3>
-               <p className="text-xs text-white/50 mb-4 uppercase tracking-widest">Smart Living</p>
-               <div className="grid grid-cols-2 gap-2 flex-1">
-                  {['https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=200', 'https://images.unsplash.com/photo-1602872030219-cbf948a98718?w=200', 'https://images.unsplash.com/photo-1584100936595-c0654b55a4e2?w=200', 'https://images.unsplash.com/photo-1594396041774-7264a7c067e4?w=200'].map((img, i) => (
-                     <div key={i} className="aspect-square rounded-lg overflow-hidden bg-white/5">
+               <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Elite Spaces</h3>
+               <p className="text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Smart Interior</p>
+               <div className="grid grid-cols-2 gap-3 flex-1">
+                  {[
+                    'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=300&q=80', 
+                    'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=300&q=80', 
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=80', 
+                    'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=300&q=80'
+                  ].map((img, i) => (
+                     <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                         <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                      </div>
                   ))}
                </div>
-               <Link to="/shop?category=Home" className="mt-4 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  Shop Now <ChevronRight className="w-3 h-3" />
-               </Link>
+               <div className="mt-6 flex items-center justify-between">
+                  <span className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em]">View Designs</span>
+                  <ChevronRight className="w-4 h-4 text-[#c9a962] group-hover:translate-x-1 transition-transform" />
+               </div>
             </motion.div>
 
-            {/* Card 3: Trending Now */}
+            {/* Card 3: Trending Now - Interactive Countdown */}
             <motion.div 
                initial={{ opacity: 0, y: 20 }} 
                whileInView={{ opacity: 1, y: 0 }} 
                viewport={{ once: true }}
                transition={{ delay: 0.2 }}
-               className="bg-[#1a1a1c] p-5 rounded-2xl border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all"
+               className="bg-[#1a1a1c] p-6 rounded-[2.5rem] border border-white/10 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all shadow-2xl relative overflow-hidden"
             >
-               <h3 className="font-outfit font-bold text-xl mb-1 text-white">Trending Now</h3>
-               <p className="text-xs text-white/50 mb-4 uppercase tracking-widest">Style Guide</p>
-               <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-white/5 flex-1">
-                  <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                     <span className="text-[10px] font-bold text-[#c9a962]">UP TO 60% OFF</span>
+               <div className="absolute top-0 right-0 p-4">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+               </div>
+               <h3 className="font-outfit font-black text-2xl mb-1 text-white uppercase tracking-tighter">Flash Deal</h3>
+               <p className="text-[10px] text-red-500 mb-6 font-black uppercase tracking-[0.2em]">Ends In:</p>
+               <div className="flex-1 flex flex-col justify-center gap-6">
+                  <FlashDealCountdown />
+                  <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10">
+                     <img src="https://images.unsplash.com/photo-1549439602-43ebca2327af?w=400" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="text-white font-black text-[10px] uppercase tracking-widest bg-[#c9a962]/40 backdrop-blur-md px-4 py-2 rounded-full">Save 70%</span>
+                     </div>
                   </div>
                </div>
-               <Link to="/shop?category=Apparel" className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  View Collection <ChevronRight className="w-3 h-3" />
+               <Link to="/shop?filter=deals" className="mt-8 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1 self-center">
+                  Unlock Deals <ChevronRight className="w-3 h-3" />
                </Link>
             </motion.div>
 
@@ -207,19 +265,26 @@ export default function Home() {
                whileInView={{ opacity: 1, y: 0 }} 
                viewport={{ once: true }}
                transition={{ delay: 0.3 }}
-               className="bg-gradient-to-br from-[#c9a962] to-[#b09452] p-6 rounded-2xl flex flex-col shrink-0"
+               className="bg-gradient-to-br from-[#c9a962] to-[#b09452] p-8 rounded-[2.5rem] flex flex-col justify-between"
             >
-               <h3 className="font-outfit font-black text-2xl text-black leading-tight mb-2">Personalized For You</h3>
-               <p className="text-sm text-black/70 mb-6 font-semibold">Get recommendations based on your unique style.</p>
-                <button 
-                  onClick={() => navigate('/login')}
-                  className="bg-black text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-black/80 transition-all shadow-xl shadow-black/20 mt-auto"
-                >
-                   Sign In Securely
-                </button>
-                <Link to="/signup" className="mt-4 text-[10px] font-black text-black/50 text-center uppercase tracking-widest hover:text-black transition-colors">
-                   New? Start Here
-                </Link>
+               <div>
+                  <h3 className="font-outfit font-black text-3xl text-black leading-none mb-3 uppercase tracking-tighter">Your Elite Profile</h3>
+                  <p className="text-xs text-black/70 font-bold uppercase tracking-wide">Sign in for exclusive drops and faster checkout.</p>
+               </div>
+               <div className="space-y-3">
+                  <button 
+                    onClick={() => navigate('/login')}
+                    className="w-full bg-black text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-black/20"
+                  >
+                     Sign In Securely
+                  </button>
+                  <button 
+                    onClick={() => navigate('/signup')}
+                    className="w-full bg-white/20 backdrop-blur-md text-black border border-black/10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/30 transition-all"
+                  >
+                     New Account
+                  </button>
+               </div>
             </motion.div>
          </div>
       </section>

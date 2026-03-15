@@ -72,13 +72,13 @@ export default function Shop() {
 
   // Sync with URL params
   useEffect(() => {
-    const q = searchParams.get('q')
-    const cat = searchParams.get('category')
+    const q = searchParams.get('q') || ''
+    const cat = searchParams.get('category') || 'All'
     const deals = searchParams.get('filter') === 'deals'
     
-    if (q) setSearchQuery(q)
-    if (cat) setSelectedCategory(cat)
-    if (deals) setIsDealsOnly(true)
+    setSearchQuery(q)
+    setSelectedCategory(cat)
+    setIsDealsOnly(deals)
   }, [searchParams])
 
   // Fetch live products
@@ -106,7 +106,12 @@ export default function Shop() {
     const price = (p) => p.discountPrice ?? p.regularPrice ?? 0
 
     if (searchQuery) result = result.filter(p => p.retailHeading?.toLowerCase().includes(searchQuery.toLowerCase()))
-    if (selectedCategory !== 'All') result = result.filter(p => p.category === selectedCategory || p.department === selectedCategory)
+    if (selectedCategory !== 'All') {
+      result = result.filter(p => 
+        p.category?.toLowerCase() === selectedCategory.toLowerCase() || 
+        p.department?.toLowerCase() === selectedCategory.toLowerCase()
+      )
+    }
     
     if (isDealsOnly) {
       result = result.filter(p => p.regularPrice > p.discountPrice)

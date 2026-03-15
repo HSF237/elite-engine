@@ -2,36 +2,36 @@
 export const HERO_SLIDES = [
   {
     id: 'h1',
-    title: 'Ultralight Comfort',
-    subtitle: 'Season 24 Collection',
-    cta: 'Shop Now',
+    title: 'Precision Luxury',
+    subtitle: 'Fall/Winter 2026 Collection',
+    cta: 'Explore Collection',
     image: '/hero-fashion.png',
     accent: '#c9a962',
   },
   {
     id: 'h2',
-    title: 'Elite Drops',
-    subtitle: 'Limited Edition Drops',
-    cta: 'Discover',
+    title: 'Future Tech',
+    subtitle: 'Elite Wearables released',
+    cta: 'Pre-Order Now',
     image: '/hero-tech.png',
     accent: '#1a1a1a',
   },
   {
     id: 'h3',
-    title: 'Precision Tech',
-    subtitle: 'Next-Gen Wearables',
-    cta: 'Explore',
-    image: 'https://images.unsplash.com/photo-1544117518-30dd5ff7a4b0?w=1200&q=80',
+    title: 'Urban Performance',
+    subtitle: 'Next-Gen Activewear',
+    cta: 'Shop Performance',
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&q=80',
     accent: '#0f0f0f',
   },
 ]
 
 export const CATEGORIES = [
-  { id: 'footwear', label: 'Footwear', slug: '#footwear', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
-  { id: 'apparel', label: 'Apparel', slug: '#apparel', image: 'https://images.unsplash.com/photo-1558769132-cb1aea3c8b42?w=400&q=80' },
-  { id: 'electronics', label: 'Tech', slug: '#electronics', image: 'https://images.unsplash.com/photo-1526733155153-897334397034?w=400&q=80' },
-  { id: 'beauty', label: 'Beauty', slug: '#beauty', image: 'https://images.unsplash.com/photo-1522335789183-b1522276365c?w=400&q=80' },
-  { id: 'home', label: 'Home', slug: '#home', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80' },
+  { id: 'footwear', label: 'Footwear', slug: 'Footwear', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80' },
+  { id: 'apparel', label: 'Apparel', slug: 'Apparel', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&q=80' },
+  { id: 'electronics', label: 'Electronics', slug: 'Electronics', image: 'https://images.unsplash.com/photo-1526733155153-897334397034?w=800&q=80' },
+  { id: 'beauty', label: 'Beauty', slug: 'Beauty', image: 'https://images.unsplash.com/photo-1522335789183-be0e47b28db1?w=800&q=80' },
+  { id: 'home', label: 'Home', slug: 'Home', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800&q=80' },
 ]
 
 export const ELITE_DROPS = [
