@@ -98,10 +98,14 @@ export default function Checkout() {
           image: i.image
         })),
         shippingAddress: {
-          ...selectedAddress,
-          phone: selectedAddress.phone || user.phone,
-          age: selectedAddress.age || user.age,
-          dob: selectedAddress.dob || user.dob
+          street: selectedAddress.street,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          zip: selectedAddress.zip,
+          country: selectedAddress.country || 'India',
+          phone: selectedAddress.phone || user?.phone || '',
+          age: Number(selectedAddress.age || user?.age || 0),
+          dob: selectedAddress.dob || user?.dob || ''
         },
         paymentMethod,
         totalAmount: finalTotal,
@@ -124,14 +128,18 @@ export default function Checkout() {
     try {
       const { data } = await api.post('/api/user/address', { 
         ...newAddress, 
+        age: Number(newAddress.age),
         isDefault: isSettingPrimary 
       })
       setAddresses(data)
+      // Find the newly added address in the list
       const added = data.find(a => a.street === newAddress.street) || data[data.length - 1]
       setSelectedAddress(added)
       setShowAddForm(false)
+      alert('Destination successfully registered.')
     } catch (err) {
       console.error('Add address failed', err)
+      alert(err.response?.data?.message || 'Failed to register placement. Please check all fields.')
     }
   }
 

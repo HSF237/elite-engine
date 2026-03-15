@@ -269,11 +269,6 @@ export default function QuickViewModal({ product, onClose }) {
             <ReviewsSection productId={product._id || product.id} />
           </div>
         </motion.div>
-
-            {/* ── Reviews Expansion ── */}
-            <ReviewsSection productId={product._id || product.id} />
-          </div>
-        </motion.div>
       </motion.div>
     </AnimatePresence>
   )

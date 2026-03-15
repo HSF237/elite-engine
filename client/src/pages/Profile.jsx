@@ -25,7 +25,7 @@ export default function Profile() {
       try {
         const [profileRes, ordersRes, addressesRes] = await Promise.all([
           api.get('/api/user/profile'),
-          api.get('/api/orders/my-orders'),
+          api.get('/api/orders/me'),
           api.get('/api/user/address')
         ])
         setProfileData(profileRes.data)
