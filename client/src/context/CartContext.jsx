@@ -47,14 +47,24 @@ function cartReducer(state, action) {
 
 export function CartProvider({ children }) {
   const { user } = useAuth()
-  const [state, dispatch] = useReducer(cartReducer, { items: [], isOpen: false })
+  const [state, dispatch] = useReducer(cartReducer, { 
+    items: (() => {
+      try {
+        const local = localStorage.getItem('elite_cart')
+        return local ? JSON.parse(local) : []
+      } catch (e) {
+        return []
+      }
+    })(), 
+    isOpen: false 
+  })
   const [hasFetched, setHasFetched] = useState(false)
-  const isInitialMount = useRef(true)
+  const prevUserRef = useRef(null)
 
   // 1. Sync FROM server on Login
   useEffect(() => {
     if (user) {
-      setHasFetched(false) // Reset on user change
+      setHasFetched(false)
       api.get('/api/user/sync')
         .then(res => {
           if (res.data.cart) {
@@ -71,15 +81,22 @@ export function CartProvider({ children }) {
         })
         .catch(err => {
           console.error('Failed to sync cart', err)
-          setHasFetched(true) // Set true anyway so they can still save new items
+          setHasFetched(true)
         })
-    } else {
+    } else if (prevUserRef.current && !user) {
+      // ONLY clear cart if they were logged in and now they aren't (explicit logout)
       setHasFetched(false)
-      dispatch({ type: 'SET_CART', payload: [] }) // Clear cart on logout
+      dispatch({ type: 'SET_CART', payload: [] })
     }
+    prevUserRef.current = user
   }, [user])
 
-  // 2. Sync TO server on Change
+  // 2. Persist to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('elite_cart', JSON.stringify(state.items))
+  }, [state.items])
+
+  // 3. Sync TO server on Change
   useEffect(() => {
     if (!user || !hasFetched) return
 
