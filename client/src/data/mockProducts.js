@@ -1,0 +1,147 @@
+// Mock data for hero slider and Elite Drops — replace with API later
+export const HERO_SLIDES = [
+  {
+    id: 'h1',
+    title: 'Ultralight Comfort',
+    subtitle: 'Season 24 Collection',
+    cta: 'Shop Now',
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1200&q=80',
+    accent: '#c9a962',
+  },
+  {
+    id: 'h2',
+    title: 'Elite Drops',
+    subtitle: 'Limited Edition Drops',
+    cta: 'Discover',
+    image: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=1200&q=80',
+    accent: '#1a1a1a',
+  },
+  {
+    id: 'h3',
+    title: 'Precision Tech',
+    subtitle: 'Next-Gen Wearables',
+    cta: 'Explore',
+    image: 'https://images.unsplash.com/photo-1544117518-30dd5ff7a4b0?w=1200&q=80',
+    accent: '#0f0f0f',
+  },
+]
+
+export const CATEGORIES = [
+  { id: 'footwear', label: 'Footwear', slug: '#footwear', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
+  { id: 'apparel', label: 'Apparel', slug: '#apparel', image: 'https://images.unsplash.com/photo-1558769132-cb1aea3c8b42?w=400&q=80' },
+  { id: 'electronics', label: 'Tech', slug: '#electronics', image: 'https://images.unsplash.com/photo-1526733155153-897334397034?w=400&q=80' },
+  { id: 'beauty', label: 'Beauty', slug: '#beauty', image: 'https://images.unsplash.com/photo-1522335789183-b1522276365c?w=400&q=80' },
+  { id: 'home', label: 'Home', slug: '#home', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80' },
+]
+
+export const ELITE_DROPS = [
+  {
+    id: 'p1',
+    retailHeading: 'Ultralight Comfort',
+    longDescription: 'Premium sneakers with breathable mesh and cushioned sole. Designed for all-day wear.',
+    regularPrice: 12999,
+    discountPrice: 9999,
+    images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80'],
+    sizes: ['8', '9', '10', '11'],
+    colors: [{ name: 'White', hex: '#f5f5f5' }, { name: 'Black', hex: '#1a1a1a' }, { name: 'Navy', hex: '#1e3a5f' }],
+    department: 'Footwear',
+    deliveryCharge: 0,
+    rating: 4.8,
+    reviews: 1240,
+  },
+  {
+    id: 'p2',
+    retailHeading: 'Noise Cancel Elite',
+    longDescription: 'Studio-grade audio with active noise cancellation and 40-hour battery life.',
+    regularPrice: 29999,
+    discountPrice: 24999,
+    images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80'],
+    sizes: ['One Size'],
+    colors: [{ name: 'Silver', hex: '#c0c0c0' }, { name: 'Space Grey', hex: '#2f2f2f' }],
+    department: 'Electronics',
+    deliveryCharge: 99,
+    rating: 4.9,
+    reviews: 850,
+  },
+  {
+    id: 'p3',
+    retailHeading: 'Minimalist Sneaker',
+    longDescription: 'Clean lines and premium leather. A statement in simplicity.',
+    regularPrice: 17999,
+    discountPrice: 14999,
+    images: ['https://images.unsplash.com/photo-1556906781-9a412961c28c?w=600&q=80'],
+    sizes: ['8', '9', '10'],
+    colors: [{ name: 'Cream', hex: '#faf6f0' }, { name: 'Black', hex: '#111' }],
+    department: 'Footwear',
+    deliveryCharge: 0,
+    rating: 4.5,
+    reviews: 320,
+  },
+  {
+    id: 'p4',
+    retailHeading: 'Elite Hoodie',
+    longDescription: 'Heavyweight cotton blend with refined fit. Limited run.',
+    regularPrice: 5999,
+    discountPrice: 4499,
+    images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=80'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: [{ name: 'Black', hex: '#0a0a0a' }, { name: 'Charcoal', hex: '#374151' }],
+    department: 'Apparel',
+    deliveryCharge: 0,
+    rating: 4.7,
+    reviews: 156,
+  },
+  {
+    id: 'p5',
+    retailHeading: 'Radiance Serum',
+    longDescription: 'Elite skincare formula for glowing skin. Dermatologically tested.',
+    regularPrice: 3999,
+    discountPrice: 2499,
+    images: ['https://images.unsplash.com/photo-1570194065650-d99fb4b8ccb0?w=600&q=80'],
+    sizes: ['30ml'],
+    colors: [{ name: 'Amber', hex: '#ffbf00' }],
+    department: 'Beauty',
+    deliveryCharge: 49,
+    rating: 4.8,
+    reviews: 2100,
+  },
+  {
+    id: 'p6',
+    retailHeading: 'Leather Crossbody',
+    longDescription: 'Full-grain leather, compact design. For the essentials.',
+    regularPrice: 8999,
+    discountPrice: 7499,
+    images: ['https://images.unsplash.com/photo-1591561954557-26941169b49e?w=600&q=80'],
+    sizes: ['One Size'],
+    colors: [{ name: 'Tan', hex: '#c4a574' }, { name: 'Black', hex: '#0a0a0a' }],
+    department: 'Accessories',
+    deliveryCharge: 0,
+    rating: 4.6,
+    reviews: 88,
+  },
+]
+
+export const COLLECTIONS = [
+  {
+    id: 'c1',
+    title: 'Under ₹999',
+    subtitle: 'Daily Essentials',
+    items: [
+      { id: 'i1', name: 'Elite Socks', price: 499, image: 'https://images.unsplash.com/photo-1582966271819-75e4871e9b5e?w=200' },
+      { id: 'i2', name: 'Cotton Cap', price: 799, image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=200' },
+      { id: 'i3', name: 'Water Bottle', price: 899, image: 'https://images.unsplash.com/photo-1602143399827-70349babc0e7?w=200' },
+      { id: 'i4', name: 'Note Book', price: 599, image: 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=200' },
+    ]
+  },
+  {
+    id: 'c2',
+    title: 'Home Revamp',
+    subtitle: 'Smart Living',
+    items: [
+      { id: 'i5', name: 'Glass Vase', price: 1299, image: 'https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=200' },
+      { id: 'i6', name: 'Candle Holder', price: 899, image: 'https://images.unsplash.com/photo-1602872030219-cbf948a98718?w=200' },
+      { id: 'i7', name: 'Linen Pillow', price: 1599, image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a4e2?w=200' },
+      { id: 'i8', name: 'Woven Basket', price: 999, image: 'https://images.unsplash.com/photo-1594396041774-7264a7c067e4?w=200' },
+    ]
+  }
+]
