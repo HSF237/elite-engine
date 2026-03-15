@@ -19,6 +19,10 @@ export default function InventoryManager() {
     deliveryCharge: '0',
     sizes: [],
     colors: [],
+    imageUrl1: '',
+    imageUrl2: '',
+    imageUrl3: '',
+    imageUrl4: '',
   })
 
   useEffect(() => {
@@ -56,6 +60,10 @@ export default function InventoryManager() {
         if (file) data.append('images', file)
       })
 
+      // Also append URLs
+      const urls = [formData.imageUrl1, formData.imageUrl2, formData.imageUrl3, formData.imageUrl4].filter(Boolean)
+      urls.forEach(url => data.append('images', url))
+
       await api.post('/api/products', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
@@ -70,6 +78,10 @@ export default function InventoryManager() {
         deliveryCharge: '0',
         sizes: [],
         colors: [],
+        imageUrl1: '',
+        imageUrl2: '',
+        imageUrl3: '',
+        imageUrl4: '',
       })
       setImageFiles([null, null, null, null])
       fetchProducts()
@@ -302,38 +314,47 @@ export default function InventoryManager() {
                      {/* Section 4: Media */}
                      <div className="space-y-4">
                         <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
-                           <Upload className="w-3 h-3" /> Multi-Image Carousel (4 slots)
+                           <Upload className="w-3 h-3" /> Multi-Image Carousel (Upload or URL)
                         </label>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                           {[0,1,2,3].map(i => (
-                              <div key={i} className="space-y-2">
-                                 <label className="aspect-square glass rounded-2xl flex flex-col items-center justify-center overflow-hidden border-dashed border-white/10 hover:border-[#c9a962]/40 cursor-pointer transition-all group">
-                                    {imageFiles[i] ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                           {[1,2,3,4].map(i => (
+                              <div key={i} className="space-y-3">
+                                 <label className="aspect-square glass rounded-2xl flex flex-col items-center justify-center overflow-hidden border-dashed border-white/10 hover:border-[#c9a962]/40 cursor-pointer transition-all group relative">
+                                    {(imageFiles[i-1] || formData[`imageUrl${i}`]) ? (
                                        <img 
-                                          src={URL.createObjectURL(imageFiles[i])} 
+                                          src={imageFiles[i-1] ? URL.createObjectURL(imageFiles[i-1]) : formData[`imageUrl${i}`]} 
                                           className="w-full h-full object-cover" 
                                           alt=""
                                        />
                                     ) : (
                                        <>
                                           <Upload className="w-6 h-6 text-white/10 group-hover:text-[#c9a962]/60 transition-colors" />
-                                          <span className="text-[8px] text-white/20 mt-2 font-bold uppercase">Slot {i+1}</span>
+                                          <span className="text-[8px] text-white/20 mt-2 font-bold uppercase">Click to Upload</span>
                                        </>
                                     )}
                                     <input 
                                        type="file" 
                                        accept="image/*"
                                        className="hidden" 
-                                       onChange={e => handleFileChange(i, e.target.files[0])}
+                                       onChange={e => handleFileChange(i-1, e.target.files[0])}
                                     />
                                  </label>
-                                 <button 
-                                    type="button"
-                                    onClick={() => handleFileChange(i, null)}
-                                    className={`w-full py-1 rounded text-[8px] font-bold uppercase transition-all ${imageFiles[i] ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'text-white/5 opacity-0 pointer-events-none'}`}
-                                 >
-                                    Remove
-                                 </button>
+                                 <input 
+                                    type="text" 
+                                    placeholder="...or paste Image URL"
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[10px] focus:border-[#c9a962]/50 outline-none transition-all"
+                                    value={formData[`imageUrl${i}`]}
+                                    onChange={e => setFormData({...formData, [`imageUrl${i}`]: e.target.value})}
+                                 />
+                                 {(imageFiles[i-1] || formData[`imageUrl${i}`]) && (
+                                    <button 
+                                       type="button"
+                                       onClick={() => { handleFileChange(i-1, null); setFormData({...formData, [`imageUrl${i}`]: ''}) }}
+                                       className="w-full py-1 rounded text-[8px] font-bold uppercase bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all"
+                                    >
+                                       Clear Slot
+                                    </button>
+                                 )}
                               </div>
                            ))}
                         </div>

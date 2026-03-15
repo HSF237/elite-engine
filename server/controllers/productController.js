@@ -7,7 +7,10 @@ const getProducts = async (req, res) => {
     const { category, minPrice, maxPrice, sort, limit = 50 } = req.query
     let query = Product.find({ inStock: true })
 
-    if (category && category !== 'All') query = query.where('category').equals(category)
+    if (category && category !== 'All') {
+      const regex = new RegExp(`^${category}$`, 'i')
+      query = query.or([{ category: regex }, { department: regex }])
+    }
     if (minPrice) query = query.where('discountPrice').gte(Number(minPrice))
     if (maxPrice) query = query.where('discountPrice').lte(Number(maxPrice))
 

@@ -6,10 +6,16 @@ exports.getDashboardStats = async (req, res) => {
   try {
     // Basic aggregation
     const totalOrders = await Order.countDocuments();
-    const totalRevenue = await Order.aggregate([
-      { $match: { paymentStatus: 'Completed' } },
-      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+    const revenueStats = await Order.aggregate([
+      { $group: { 
+          _id: '$paymentStatus', 
+          total: { $sum: '$totalAmount' },
+          count: { $sum: 1 }
+      } }
     ]);
+
+    const completedRevenue = revenueStats.find(s => s._id === 'Completed')?.total || 0;
+    const pendingRevenue = revenueStats.find(s => s._id === 'Pending')?.total || 0;
 
     const totalCustomers = await User.countDocuments({ role: 'customer' });
     const totalProducts = await Product.countDocuments();
@@ -26,7 +32,8 @@ exports.getDashboardStats = async (req, res) => {
     ]);
 
     res.json({
-      revenue: totalRevenue[0]?.total || 0,
+      revenue: completedRevenue,
+      pendingRevenue,
       ordersCount: totalOrders,
       customerCount: totalCustomers,
       productCount: totalProducts,

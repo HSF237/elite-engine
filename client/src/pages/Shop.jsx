@@ -85,7 +85,7 @@ export default function Shop() {
   useEffect(() => {
     api.get('/api/products?limit=100')
       .then(res => {
-        setProducts(res.data.products)
+        setProducts(res.data.products?.length > 0 ? res.data.products : ELITE_DROPS)
         setLoading(false)
       })
       .catch(err => {

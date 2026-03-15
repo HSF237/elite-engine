@@ -60,7 +60,7 @@ export default function Home() {
   useEffect(() => {
     api.get('/api/products?limit=6')
       .then(res => {
-        setProducts(res.data.products)
+        setProducts(res.data.products?.length > 0 ? res.data.products : ELITE_DROPS.slice(0, 6))
         setLoading(false)
       })
       .catch(err => {

@@ -22,9 +22,9 @@ export default function AnalyticsDashboard() {
 
   const cards = [
     { label: 'Net Revenue', value: `₹${stats.revenue.toLocaleString()}`, icon: <CreditCard />, color: 'text-green-400', trend: '+12.5%' },
+    { label: 'Pending Settlement', value: `₹${stats.pendingRevenue.toLocaleString()}`, icon: <Clock />, color: 'text-yellow-400', trend: 'Processing' },
     { label: 'Total Mandates', value: stats.ordersCount, icon: <ShoppingBag />, color: 'text-blue-400', trend: '+5.2%' },
     { label: 'Elite Customers', value: stats.customerCount, icon: <Users />, color: 'text-[#c9a962]', trend: '+8.1%' },
-    { label: 'Active Assets', value: stats.productCount, icon: <Package />, color: 'text-purple-400', trend: 'Stable' },
   ]
 
   return (
