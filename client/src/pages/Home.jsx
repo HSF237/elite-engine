@@ -188,10 +188,10 @@ export default function Home() {
                <p className="text-[8px] sm:text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Curated Essentials</p>
                <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
                   {[
-                     'https://images.unsplash.com/photo-1583394838336-acd977736f90', 
-                     'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9', 
+                     'https://images.unsplash.com/photo-1523275335684-37898b6baf30', 
                      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e', 
-                     'https://images.unsplash.com/photo-1542291026-7eec264c27ff'
+                     'https://images.unsplash.com/photo-1542291026-7eec264c27ff', 
+                     'https://images.unsplash.com/photo-1572635196237-14b3f281503f'
                   ].map((img, i) => (
                      <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                         <img 
@@ -223,9 +223,9 @@ export default function Home() {
                <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
                   {[
                      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7', 
-                     'https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e', 
-                     'https://images.unsplash.com/photo-1616489953149-924040974585', 
-                     'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92'
+                     'https://images.unsplash.com/photo-1513694203232-719a280e022f', 
+                     'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6', 
+                     'https://images.unsplash.com/photo-1558882224-cca162730a91'
                   ].map((img, i) => (
                      <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                         <img 
