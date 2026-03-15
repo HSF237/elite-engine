@@ -26,6 +26,16 @@ export default function Checkout() {
   const [promoCode, setPromoCode] = useState('')
   const [discount, setDiscount] = useState(0)
   const [promoError, setPromoError] = useState('')
+  const [newAddress, setNewAddress] = useState({
+    label: 'Home',
+    street: '',
+    city: '',
+    state: '',
+    zip: '',
+    phone: '',
+    age: '',
+    dob: ''
+  })
 
   const applyPromo = () => {
     setPromoError('')
