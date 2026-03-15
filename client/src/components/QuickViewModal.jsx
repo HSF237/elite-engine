@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, ShoppingBag, Star, Truck, ShieldCheck, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart } from '../context/CartContext'
@@ -52,15 +52,50 @@ export default function QuickViewModal({ product, onClose }) {
         onClick={onClose}
       >
         <motion.div
-          initial={{ scale: 0.9, opacity: 0, y: 30 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: 30 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="bg-[#111112] border border-white/10 rounded-3xl max-w-5xl w-full max-h-[92vh] overflow-hidden flex flex-col md:flex-row shadow-2xl shadow-black/50"
-          onClick={e => e.stopPropagation()}
+           initial={{ scale: 0.9, opacity: 0, y: 30 }}
+           animate={{ scale: 1, opacity: 1, y: 0 }}
+           exit={{ scale: 0.9, opacity: 0, y: 30 }}
+           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+           className="bg-[#111112] border border-white/10 rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl shadow-black/50 overflow-hidden"
+           onClick={e => e.stopPropagation()}
         >
-          {/* ── Left: Image Gallery ── */}
-          <div className="md:w-[48%] shrink-0 relative flex flex-col bg-black/20">
+          {/* Mobile Top Header (Image + Name + Price) */}
+          <div className="flex shrink-0 p-4 sm:p-8 gap-4 border-b border-white/5 md:hidden">
+             <div className="w-1/3 aspect-[4/5] rounded-2xl overflow-hidden bg-black/40 border border-white/5 relative">
+               <img src={images[imgIndex]} alt="" className="w-full h-full object-cover" />
+               {discount > 0 && (
+                 <div className="absolute top-2 left-0 bg-[#c9a962] text-black text-[7px] font-black px-1.5 py-0.5 uppercase tracking-tight rounded-r-lg">
+                   -{discount}%
+                 </div>
+               )}
+             </div>
+             <div className="flex-1 flex flex-col justify-center min-w-0">
+               <div>
+                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#c9a962]">{product.department}</span>
+                  <h2 className="font-outfit font-black text-base text-white mt-0.5 leading-tight truncate">
+                    {product.retailHeading ?? product.name}
+                  </h2>
+               </div>
+               <div className="flex items-center gap-2 mt-1.5">
+                  <div className="flex gap-0.5">
+                    <Star className="w-2.5 h-2.5 fill-[#c9a962] text-[#c9a962]" />
+                  </div>
+                  <span className="text-[10px] font-bold text-white">{product.rating ?? '4.6'}</span>
+               </div>
+               <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-lg font-outfit font-black text-white">₹{price.toLocaleString()}</span>
+                  {product.regularPrice && product.discountPrice && (
+                    <span className="text-[10px] text-white/30 line-through">₹{product.regularPrice.toLocaleString()}</span>
+                  )}
+               </div>
+               <button onClick={onClose} className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/40 flex items-center justify-center">
+                 <X className="w-3.5 h-3.5 text-white" />
+               </button>
+             </div>
+          </div>
+
+          {/* ── Desktop Left: Image Gallery (Hidden on Mobile Top, visible on Desktop) ── */}
+          <div className="hidden md:flex md:w-[48%] shrink-0 relative flex-col bg-black/20">
             {/* Main Image */}
             <div className="relative aspect-[4/5] md:flex-1 overflow-hidden">
               <AnimatePresence mode="wait">
@@ -113,49 +148,42 @@ export default function QuickViewModal({ product, onClose }) {
             )}
           </div>
 
-          {/* ── Right: Product Details ── */}
-          <div className="md:w-[52%] flex flex-col overflow-y-auto no-scrollbar p-6 sm:p-8 gap-5">
+          {/* ── Scrollable Content Area ── */}
+          <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar p-6 sm:p-8 gap-6 md:w-[52%]">
             
-            {/* Badge + Name */}
-            <div>
+            {/* Desktop Only Header Details */}
+            <div className="hidden md:block">
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#c9a962]">{product.department}</span>
-              <h2 className="font-outfit font-black text-2xl sm:text-3xl text-white mt-1 leading-tight">
+              <h2 className="font-outfit font-black text-3xl text-white mt-1 leading-tight">
                 {product.retailHeading ?? product.name}
               </h2>
-            </div>
-
-            {/* Rating Row */}
-            <div className="flex items-center gap-3">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`w-4 h-4 ${i < Math.round(product.rating ?? 4) ? 'fill-[#c9a962] text-[#c9a962]' : 'text-white/10'}`} />
-                ))}
+              <div className="flex items-center gap-3 mt-4">
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className={`w-4 h-4 ${i < Math.round(product.rating ?? 4) ? 'fill-[#c9a962] text-[#c9a962]' : 'text-white/10'}`} />
+                  ))}
+                </div>
+                <span className="text-sm font-bold text-white">{product.rating ?? '4.6'}</span>
+                <span className="text-xs text-white/30 font-medium">({product.reviews ?? 248} reviews)</span>
               </div>
-              <span className="text-sm font-bold text-white">{product.rating ?? '4.6'}</span>
-              <span className="text-xs text-white/30 font-medium">({product.reviews ?? 248} reviews)</span>
-            </div>
-
-            {/* Price Block */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <div className="flex items-end gap-3">
-                <span className="text-3xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
-                {product.regularPrice && product.discountPrice && (
-                  <span className="text-base text-white/30 line-through font-medium">₹{product.regularPrice.toLocaleString()}</span>
-                )}
-                {discount > 0 && (
-                  <span className="text-sm font-black text-green-400 ml-auto">{discount}% off</span>
-                )}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mt-6">
+                <div className="flex items-end gap-3">
+                  <span className="text-3xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
+                  {product.regularPrice && product.discountPrice && (
+                    <span className="text-base text-white/30 line-through font-medium">₹{product.regularPrice.toLocaleString()}</span>
+                  )}
+                  {discount > 0 && (
+                    <span className="text-sm font-black text-green-400 ml-auto">{discount}% off</span>
+                  )}
+                </div>
               </div>
-              <p className="text-[10px] font-black text-[#c9a962] uppercase mt-2 tracking-tighter">
-                {product.deliveryCharge === 0 ? '🚀 FREE Priority Elite Delivery' : `+ ₹${product.deliveryCharge} Delivery Charge`}
-              </p>
             </div>
 
             {/* Color Selector */}
             {product.colors?.length > 0 && (
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-3">
-                  Colour: <span className="text-white">{selectedColor?.name ?? 'Choose'}</span>
+                  Colour <span className="text-white ml-2">{selectedColor?.name ?? ''}</span>
                 </p>
                 <div className="flex gap-3 flex-wrap">
                   {product.colors.map(c => (
@@ -163,7 +191,7 @@ export default function QuickViewModal({ product, onClose }) {
                       key={c.hex ?? c.name}
                       onClick={() => setSelectedColor(c)}
                       title={c.name}
-                      className={`w-9 h-9 rounded-full border-2 transition-all ${selectedColor?.name === c.name ? 'border-[#c9a962] scale-110 shadow-lg' : 'border-white/20 hover:border-white/50'}`}
+                      className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 transition-all ${selectedColor?.name === c.name ? 'border-[#c9a962] scale-105 shadow-lg' : 'border-white/20 hover:border-white/50'}`}
                       style={{ backgroundColor: c.hex ?? '#888' }}
                     />
                   ))}
@@ -171,12 +199,12 @@ export default function QuickViewModal({ product, onClose }) {
               </div>
             )}
 
-            {/* Size Selector (Myntra style) */}
+            {/* Size Selector */}
             {product.sizes?.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40">
-                    Size: <span className="text-white">{selectedSize ?? 'Choose'}</span>
+                    Select Size <span className="text-white ml-2">{selectedSize ?? ''}</span>
                   </p>
                   <button className="text-[9px] font-black uppercase tracking-widest text-[#c9a962] underline">Size Guide</button>
                 </div>
@@ -185,7 +213,7 @@ export default function QuickViewModal({ product, onClose }) {
                     <button
                       key={s}
                       onClick={() => setSelectedSize(s)}
-                      className={`min-w-[44px] px-3 h-10 rounded-xl border text-xs font-black transition-all ${selectedSize === s ? 'border-[#c9a962] bg-[#c9a962] text-black shadow-lg shadow-[#c9a962]/20' : 'border-white/10 bg-white/5 text-white/60 hover:border-[#c9a962]/50 hover:text-white'}`}
+                      className={`min-w-[40px] sm:min-w-[48px] px-3 h-10 sm:h-12 rounded-xl border text-[10px] sm:text-xs font-black transition-all ${selectedSize === s ? 'border-[#c9a962] bg-[#c9a962] text-black shadow-lg shadow-[#c9a962]/20' : 'border-white/10 bg-white/5 text-white/60 hover:border-[#c9a962]/50 hover:text-white'}`}
                     >
                       {s}
                     </button>
@@ -194,45 +222,53 @@ export default function QuickViewModal({ product, onClose }) {
               </div>
             )}
 
-            {/* Description */}
-            {product.longDescription && (
-              <p className="text-sm text-white/50 leading-relaxed font-medium">{product.longDescription}</p>
-            )}
-
-            {/* Trust Badges */}
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { icon: <Truck className="w-4 h-4" />, label: 'Fast Delivery' },
-                { icon: <ShieldCheck className="w-4 h-4" />, label: '100% Genuine' },
-                { icon: <RotateCcw className="w-4 h-4" />, label: '7-Day Returns' },
-              ].map(badge => (
-                <div key={badge.label} className="flex flex-col items-center gap-1.5 bg-white/5 rounded-xl p-3 border border-white/5">
-                  <div className="text-[#c9a962]">{badge.icon}</div>
-                  <span className="text-[9px] font-black uppercase tracking-wider text-white/40 text-center leading-tight">{badge.label}</span>
-                </div>
-              ))}
-            </div>
-
             {/* CTA Buttons */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 sticky bottom-0 bg-[#111112]/95 backdrop-blur-md pt-4 pb-2 mt-auto md:relative md:bg-transparent md:pt-0">
               <motion.button
                 onClick={handleAddToCart}
-                className={`flex-1 py-4 rounded-2xl font-outfit font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg ${added ? 'bg-green-500 text-white' : 'bg-[#c9a962] text-black hover:bg-[#b09452]'} shadow-[#c9a962]/20`}
+                className={`flex-1 h-14 sm:h-16 rounded-2xl font-outfit font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg ${added ? 'bg-green-500 text-white' : 'bg-[#c9a962] text-black hover:bg-[#b09452]'} shadow-[#c9a962]/20`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
               >
                 <ShoppingBag className="w-5 h-5" />
-                {added ? 'Added! ✓' : 'Add to Bag'}
+                {added ? 'Added to Bag! ✓' : 'Add to Bag'}
               </motion.button>
 
               <motion.button
                 onClick={() => toggleWishlist(product.id)}
-                className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all ${liked ? 'border-red-500 bg-red-500/10' : 'border-white/10 hover:border-red-400 hover:bg-red-400/10'}`}
+                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border flex items-center justify-center transition-all ${liked ? 'border-red-500 bg-red-500/10' : 'border-white/10 hover:border-red-400 hover:bg-red-400/10'}`}
                 whileTap={{ scale: 0.88 }}
               >
                 <Heart className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : 'text-white/60'}`} />
               </motion.button>
             </div>
+
+            {/* Description */}
+            {product.longDescription && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-3">Product Description</p>
+                <p className="text-xs sm:text-sm text-white/50 leading-relaxed font-medium">{product.longDescription}</p>
+              </div>
+            )}
+
+            {/* Delivery Info (Mobile Style) */}
+            <div className="space-y-3 bg-white/[0.02] border border-white/5 rounded-2xl p-4">
+               <div className="flex items-center gap-3">
+                 <Truck className="w-4 h-4 text-[#c9a962]" />
+                 <p className="text-[10px] font-black text-white uppercase tracking-tight">
+                   {product.deliveryCharge === 0 ? 'FREE Elite Delivery by Tomorrow' : `+ ₹${product.deliveryCharge} Shipping Fee`}
+                 </p>
+               </div>
+               <div className="flex items-center gap-3">
+                 <ShieldCheck className="w-4 h-4 text-[#c9a962]" />
+                 <p className="text-[10px] font-black text-white/60 uppercase tracking-tight">100% Genuine Luxury Asset</p>
+               </div>
+            </div>
+
+            {/* ── Reviews ── */}
+            <ReviewsSection productId={product._id || product.id} />
+          </div>
+        </motion.div>
 
             {/* ── Reviews Expansion ── */}
             <ReviewsSection productId={product._id || product.id} />
