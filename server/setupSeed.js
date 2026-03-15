@@ -1,9 +1,5 @@
-require('dotenv').config()
-const mongoose = require('mongoose')
-const dns = require('dns')
-const Product = require('./models/Product')
-
-dns.setServers(['8.8.8.8', '8.8.4.4'])
+const fs = require('fs');
+const path = require('path');
 
 const categories = ['Footwear', 'Apparel', 'Electronics', 'Beauty', 'Accessories', 'Home'];
 const terms = {
@@ -15,7 +11,7 @@ const terms = {
   'Home': ['sofa', 'lamp', 'interior', 'minimalist', 'decor']
 };
 
-const imagesMap = {
+const images = {
   'Footwear': [
     'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
     'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a',
@@ -67,12 +63,12 @@ for (let i = 1; i <= 50; i++) {
   const term = termList[i % termList.length];
   const price = Math.floor(Math.random() * 40000) + 5000;
   
-  const catImages = imagesMap[cat];
+  const catImages = images[cat];
   const imgUrl = catImages[i % catImages.length] + '?auto=format&fit=crop&q=80&w=800';
 
   products.push({
-    retailHeading: 'Elite ' + term.charAt(0).toUpperCase() + term.slice(1) + ' ' + (200 + i),
-    longDescription: 'Premium ' + cat + ' product curated for the elite lifestyle. Features sustainable materials and avant-garde design aesthetics.',
+    retailHeading: 'Elite ' + term.charAt(0).toUpperCase() + term.slice(1) + ' ' + (100 + i),
+    longDescription: 'Premium ' + cat + ' asset with bespoke architectural design and sustainable materials. Engineered for the elite lifestyle.',
     regularPrice: price,
     discountPrice: Math.floor(price * 0.85),
     category: cat,
@@ -84,16 +80,27 @@ for (let i = 1; i <= 50; i++) {
   });
 }
 
+const seedFileContent = \`require('dotenv').config()
+const mongoose = require('mongoose')
+const dns = require('dns')
+const Product = require('./models/Product')
+
+dns.setServers(['8.8.8.8', '8.8.4.4'])
+
+const PRODUCTS = \${JSON.stringify(products, null, 2)}
+
 async function seed() {
   try {
-    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    await mongoose.connect(process.env.MONGO_URI)
     console.log('✅ Connected to MongoDB')
 
     console.log('🧹 Clearing existing products...')
     await Product.deleteMany({})
 
-    console.log('🚀 Seeding 50 products...')
-    await Product.insertMany(products)
+    for (const product of PRODUCTS) {
+      await Product.create(product)
+      console.log(\\\`🚀 Created: \\\${product.retailHeading}\\\`)
+    }
 
     console.log('🎉 Seeding Complete! 50 Elite products are now live.')
     process.exit(0)
@@ -104,3 +111,7 @@ async function seed() {
 }
 
 seed()
+\`;
+
+fs.writeFileSync(path.join('c:', 'Users', 'HI', 'Desktop', 'elite-engine', 'server', 'seedProducts.js'), seedFileContent);
+console.log('✅ Generated seedProducts.js');
