@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
 export default function CartSidebar() {
+  const navigate = useNavigate()
   const { isOpen, closeCart, items, removeFromCart, updateQty, subtotal, tax, delivery, total } = useCart()
 
   return (
@@ -114,6 +116,7 @@ export default function CartSidebar() {
                 </div>
                 <button
                   type="button"
+                  onClick={() => { closeCart(); navigate('/checkout') }}
                   className="w-full mt-4 py-3 rounded-lg bg-[#c9a962] text-black font-outfit font-semibold hover:bg-[#d4b872] transition-colors"
                 >
                   Checkout

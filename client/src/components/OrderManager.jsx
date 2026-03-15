@@ -191,6 +191,7 @@ export default function OrderManager() {
                            <p className="text-sm font-bold">{selectedOrder.customer?.name}</p>
                            <p className="text-xs text-white/40 font-medium italic mb-1">{selectedOrder.customer?.email}</p>
                            <p className="text-xs text-[#c9a962] font-black uppercase tracking-tighter">Tel: {selectedOrder.shippingAddress?.phone || 'Not Provided'}</p>
+                           <p className="text-[10px] text-white/40 font-bold uppercase mt-1">Age: {selectedOrder.shippingAddress?.age} | DOB: {selectedOrder.shippingAddress?.dob}</p>
                         </div>
                         <div className="p-6 rounded-3xl bg-white/5 border border-white/5">
                            <div className="flex items-center gap-2 mb-3">

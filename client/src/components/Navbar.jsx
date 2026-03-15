@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingBag, Menu, Search, Heart, User, ChevronDown, MapPin } from 'lucide-react'
 import { useCart } from '../context/CartContext'
@@ -17,8 +17,10 @@ const NAV_LINKS = [
 import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
+  const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const { openCart, count } = useCart()
   const { count: wishlistCount } = useWishlist()
   const { user, logout } = useAuth()
@@ -59,19 +61,27 @@ export default function Navbar() {
 
         {/* Search Bar - Amazon style */}
         <div className="flex-1 max-w-2xl relative hidden sm:flex">
-          <div className="flex w-full rounded-xl overflow-hidden glass border border-white/10 group focus-within:ring-2 focus-within:ring-[#c9a962]/50 transition-all">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (searchQuery.trim()) navigate(`/shop?q=${encodeURIComponent(searchQuery)}`)
+            }}
+            className="flex w-full rounded-xl overflow-hidden glass border border-white/10 group focus-within:ring-2 focus-within:ring-[#c9a962]/50 transition-all"
+          >
             <div className="bg-white/5 border-r border-white/10 px-3 flex items-center gap-1 text-xs text-white/60 hover:bg-white/10 cursor-pointer transition-colors">
                All <ChevronDown className="w-3 h-3" />
             </div>
             <input 
               type="text" 
               placeholder="Search Elite Products, Brands and Categories"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent px-4 py-2 text-sm text-white focus:outline-none placeholder:text-white/30"
             />
-            <button className="bg-[#c9a962] hover:bg-[#b09452] px-5 flex items-center justify-center transition-colors">
+            <button type="submit" className="bg-[#c9a962] hover:bg-[#b09452] px-5 flex items-center justify-center transition-colors">
                <Search className="w-5 h-5 text-black" />
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Actions Icons */}
@@ -99,7 +109,7 @@ export default function Navbar() {
             </Link>
           )}
 
-          <a href="/wishlist" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
+          <Link to="/shop" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
             <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'group-hover:text-red-400'}`} />
             {wishlistCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">
@@ -126,7 +136,10 @@ export default function Navbar() {
       {/* Bottom Sub Nav - Flipkart/Amazon style */}
       <div className="hidden md:block bg-black/30 border-t border-white/5 py-1.5 backdrop-blur-md">
          <div className="max-w-[1440px] mx-auto px-6 flex items-center gap-6 overflow-x-auto no-scrollbar">
-            <button className="flex items-center gap-1.5 text-xs font-black text-white hover:text-[#c9a962] uppercase tracking-tighter transition-colors shrink-0">
+            <button 
+              onClick={() => setMobileOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-black text-white hover:text-[#c9a962] uppercase tracking-tighter transition-colors shrink-0"
+            >
                <Menu className="w-4 h-4" /> All
             </button>
             {NAV_LINKS.map(link => (

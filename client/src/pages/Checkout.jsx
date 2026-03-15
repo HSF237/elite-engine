@@ -21,7 +21,7 @@ export default function Checkout() {
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [showAddForm, setShowAddForm] = useState(false)
   const [newAddress, setNewAddress] = useState({
-    street: '', city: '', state: '', zip: '', label: 'Home', phone: ''
+    street: '', city: '', state: '', zip: '', label: 'Home', phone: '', age: '', dob: ''
   })
 
   // Payment State
@@ -388,12 +388,20 @@ export default function Checkout() {
                     value={newAddress.zip}
                     onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
                  />
-                 <input 
-                    required placeholder="Contact Phone Number" 
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
-                    value={newAddress.phone}
-                    onChange={e => setNewAddress({...newAddress, phone: e.target.value})}
-                 />
+                 <div className="grid grid-cols-2 gap-4">
+                    <input 
+                       required placeholder="Age" type="number"
+                       className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
+                       value={newAddress.age}
+                       onChange={e => setNewAddress({...newAddress, age: e.target.value})}
+                    />
+                    <input 
+                       required placeholder="DOB (DD/MM/YYYY)" 
+                       className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#c9a962]/50"
+                       value={newAddress.dob}
+                       onChange={e => setNewAddress({...newAddress, dob: e.target.value})}
+                    />
+                 </div>
                  <button className="w-full h-16 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-sm mt-4 hover:bg-[#c9a962] transition-colors">
                    Save Placement
                  </button>

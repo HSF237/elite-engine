@@ -25,6 +25,8 @@ const orderSchema = new mongoose.Schema(
       zip: String,
       country: String,
       phone: String,
+      age: Number,
+      dob: String,
     },
     paymentMethod: {
       type: String,

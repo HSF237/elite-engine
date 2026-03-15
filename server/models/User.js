@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
       select: false, // never returned in queries by default
     },
     phone: String,
+    age: Number,
+    dob: String,
     role: {
       type: String,
       enum: ['customer', 'staff', 'admin'],

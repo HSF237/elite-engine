@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, Link } from 'react-router-dom'
 import { Heart, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -89,15 +90,12 @@ export default function Home() {
                   >
                     {slide.title}
                   </motion.h1>
-                  <motion.a
-                    href="#elite-drops"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
+                  <button
+                    onClick={() => navigate('/shop')}
                     className="mt-8 inline-block px-8 py-3 rounded-full bg-white/15 backdrop-blur-md border border-white/20 font-outfit font-semibold text-white hover:bg-white/25 transition-all"
                   >
                     {slide.cta}
-                  </motion.a>
+                  </button>
                 </div>
               </motion.div>
             ) : null
@@ -155,9 +153,9 @@ export default function Home() {
                      </div>
                   ))}
                </div>
-               <a href="#deals" className="mt-4 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+               <Link to="/shop?filter=deals" className="mt-4 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                   Explore All <ChevronRight className="w-3 h-3" />
-               </a>
+               </Link>
             </motion.div>
 
             {/* Card 2: Home Revamp */}
@@ -177,9 +175,9 @@ export default function Home() {
                      </div>
                   ))}
                </div>
-               <a href="#home" className="mt-4 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+               <Link to="/shop?category=Home" className="mt-4 text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                   Shop Now <ChevronRight className="w-3 h-3" />
-               </a>
+               </Link>
             </motion.div>
 
             {/* Card 3: Trending Now */}
@@ -198,9 +196,9 @@ export default function Home() {
                      <span className="text-[10px] font-bold text-[#c9a962]">UP TO 60% OFF</span>
                   </div>
                </div>
-               <a href="#fashion" className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+               <Link to="/shop?category=Apparel" className="text-[10px] font-black text-[#c9a962] uppercase tracking-[0.2em] hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                   View Collection <ChevronRight className="w-3 h-3" />
-               </a>
+               </Link>
             </motion.div>
 
             {/* Card 4: Sign in / Personalization */}
@@ -262,13 +260,10 @@ export default function Home() {
             className="flex flex-wrap justify-center gap-6 sm:gap-8"
           >
             {CATEGORIES.map((cat) => (
-              <motion.a
+              <Link
                 key={cat.id}
-                href={cat.slug}
-                variants={item}
+                to={`/shop?category=${cat.label}`}
                 className="group flex flex-col items-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
               >
                 <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-white/20 shadow-xl bg-white/5 backdrop-blur-sm group-hover:border-[#c9a962]/50 transition-colors">
                   <img
@@ -280,128 +275,22 @@ export default function Home() {
                 <span className="font-jakarta font-medium text-white/90 mt-3 group-hover:text-[#c9a962] transition-colors">
                   {cat.label}
                 </span>
-              </motion.a>
+              </Link>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* ——— Elite Drops ——— */}
-      <section id="elite-drops" className="py-20 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <p className="font-jakarta text-[#c9a962] text-sm uppercase tracking-[0.25em] mb-2">
-              Curated for you
-            </p>
-            <h2 className="font-outfit font-bold text-3xl sm:text-4xl text-white">
-              Elite Drops
-            </h2>
-          </motion.div>
-
-          <motion.div
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-80px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {loading ? (
-              // Skeleton Loader
-              [...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="aspect-[3/4] bg-white/5 rounded-2xl mb-4" />
-                  <div className="h-6 bg-white/5 rounded w-3/4 mb-2" />
-                  <div className="h-4 bg-white/5 rounded w-1/4" />
-                </div>
-              ))
-            ) : products.length > 0 ? (
-              products.map((product) => {
-                const price = product.discountPrice ?? product.regularPrice ?? 0
-                const liked = isLiked(product._id || product.id)
-                return (
-                  <motion.article
-                    key={product._id || product.id}
-                    variants={item}
-                    className="group relative"
-                  >
-                    <div
-                      className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
-                      onClick={() => setQuickViewProduct(product)}
-                    >
-                      <img
-                        src={product.images?.[0] || 'https://via.placeholder.com/400x533?text=No+Image'}
-                        alt={product.retailHeading}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                        {product.sizes?.length > 0 && (
-                          <p className="font-jakarta text-xs text-white/80 mb-1">
-                            Sizes: {product.sizes.join(', ')}
-                          </p>
-                        )}
-                        <div className="flex gap-2 text-white/40 text-[10px] uppercase font-bold">
-                          {product.category || 'Elite Product'}
-                        </div>
-                      </div>
-                      <motion.button
-                        type="button"
-                        aria-label="Add to wishlist"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          toggleWishlist(product._id || product.id)
-                        }}
-                        className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 hover:bg-white/20 transition-opacity"
-                        whileTap={{ scale: 0.85 }}
-                      >
-                        <motion.div
-                          animate={{ scale: liked ? 1.2 : 1 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                        >
-                          <Heart
-                            className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : 'text-white/90'}`}
-                          />
-                        </motion.div>
-                      </motion.button>
-                    </div>
-                    <div className="mt-4">
-                      <h3 className="font-outfit font-semibold text-lg text-white group-hover:text-[#c9a962] transition-colors line-clamp-1">
-                        {product.retailHeading}
-                      </h3>
-                      <p className="font-jakarta text-[#c9a962] font-semibold mt-1">
-                        ₹{price.toLocaleString()}
-                        {product.regularPrice && product.discountPrice && product.regularPrice > product.discountPrice && (
-                          <span className="text-white/50 line-through text-sm ml-2">
-                            ₹{product.regularPrice.toLocaleString()}
-                          </span>
-                        )}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setQuickViewProduct(product)
-                        }}
-                        className="font-jakarta text-sm text-white/70 hover:text-white mt-1 underline underline-offset-2"
-                      >
-                        Quick View
-                      </button>
-                    </div>
-                  </motion.article>
-                )
-              })
-            ) : (
-              <div className="col-span-full py-20 text-center border border-white/5 rounded-3xl bg-white/[0.02]">
-                <p className="text-white/40 font-jakarta">No products found. Start adding products from the staff dashboard!</p>
-              </div>
-            )}
-          </motion.div>
-        </div>
+      {/* ——— Promotional Shop All Call-to-Action ——— */}
+      <section className="py-20 px-4 sm:px-6 text-center border-t border-white/5">
+        <h2 className="font-outfit font-black text-4xl text-white mb-6 uppercase tracking-tighter">Ready to Upgrade?</h2>
+        <p className="text-white/40 mb-10 max-w-lg mx-auto font-medium">Browse our full collection of premium tech, fashion, and lifestyle essentials.</p>
+        <button 
+          onClick={() => navigate('/shop')}
+          className="bg-[#c9a962] text-black font-black px-12 py-5 rounded-2xl text-base uppercase tracking-widest hover:bg-[#d4b872] transition-all shadow-xl shadow-[#c9a962]/10"
+        >
+          Explore Full Marketplace
+        </button>
       </section>
 
       {/* ——— Elite Trust Section ——— */}

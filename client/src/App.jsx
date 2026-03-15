@@ -22,12 +22,12 @@ export default function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="shop" element={<Shop />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="order-success" element={<OrderSuccess />} />
             </Route>
             {/* Auth */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
             {/* Staff (hidden) */}
             <Route path="/staff-gateway" element={<StaffGateway />} />
             <Route path="/staff/dashboard" element={<StaffDashboard />} />

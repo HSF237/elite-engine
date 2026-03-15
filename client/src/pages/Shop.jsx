@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, ChevronDown, Star, Heart, ShoppingBag, X, Search, SlidersHorizontal, Check } from 'lucide-react'
 import { useCart } from '../context/CartContext'
@@ -48,6 +49,7 @@ function FilterSection({ title, children, defaultOpen = true }) {
 import api from '../utils/api'
 
 export default function Shop() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [quickViewProduct, setQuickViewProduct] = useState(null)
   const [sortBy, setSortBy] = useState('featured')
@@ -56,15 +58,28 @@ export default function Shop() {
   
   // Filters state
   const [priceMax, setPriceMax] = useState(100000)
-  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All')
   const [selectedBrands, setSelectedBrands] = useState([])
   const [selectedSizes, setSelectedSizes] = useState([])
   const [minRating, setMinRating] = useState(0)
   const [freeDelivery, setFreeDelivery] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
+
+  const [isDealsOnly, setIsDealsOnly] = useState(searchParams.get('filter') === 'deals')
 
   const { addToCart } = useCart()
   const { isLiked, toggleWishlist } = useWishlist()
+
+  // Sync with URL params
+  useEffect(() => {
+    const q = searchParams.get('q')
+    const cat = searchParams.get('category')
+    const deals = searchParams.get('filter') === 'deals'
+    
+    if (q) setSearchQuery(q)
+    if (cat) setSelectedCategory(cat)
+    if (deals) setIsDealsOnly(true)
+  }, [searchParams])
 
   // Fetch live products
   useEffect(() => {
@@ -92,6 +107,11 @@ export default function Shop() {
 
     if (searchQuery) result = result.filter(p => p.retailHeading?.toLowerCase().includes(searchQuery.toLowerCase()))
     if (selectedCategory !== 'All') result = result.filter(p => p.category === selectedCategory || p.department === selectedCategory)
+    
+    if (isDealsOnly) {
+      result = result.filter(p => p.regularPrice > p.discountPrice)
+    }
+
     result = result.filter(p => price(p) <= priceMax)
     if (freeDelivery) result = result.filter(p => p.deliveryCharge === 0)
     if (selectedSizes.length) result = result.filter(p => p.sizes?.some(s => selectedSizes.includes(s)))
@@ -105,7 +125,7 @@ export default function Shop() {
       default: break
     }
     return result
-  }, [products, searchQuery, selectedCategory, priceMax, freeDelivery, selectedSizes, minRating, sortBy])
+  }, [products, searchQuery, selectedCategory, isDealsOnly, priceMax, freeDelivery, selectedSizes, minRating, sortBy])
 
   const activeFiltersCount = [
     selectedCategory !== 'All',

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ChevronUp, Instagram, Twitter, Facebook } from 'lucide-react'
 
 export default function Footer() {
@@ -33,30 +34,30 @@ export default function Footer() {
          <div>
             <h4 className="text-white font-outfit font-black text-sm uppercase tracking-widest mb-6">Get to Know Us</h4>
             <ul className="flex flex-col gap-3 text-sm">
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">About Elite</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Careers</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Press Releases</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Elite Science</a></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">About Elite</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Careers</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Press Releases</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Elite Science</Link></li>
             </ul>
          </div>
 
          <div>
             <h4 className="text-white font-outfit font-black text-sm uppercase tracking-widest mb-6">Connect with Us</h4>
             <ul className="flex flex-col gap-3 text-sm">
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Facebook</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Twitter</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Instagram</a></li>
+               <li><a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] hover:underline transition-all">Facebook</a></li>
+               <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] hover:underline transition-all">Twitter</a></li>
+               <li><a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-[#c9a962] hover:underline transition-all">Instagram</a></li>
             </ul>
          </div>
 
          <div>
             <h4 className="text-white font-outfit font-black text-sm uppercase tracking-widest mb-6">Let Us Help You</h4>
             <ul className="flex flex-col gap-3 text-sm">
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Your Account</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Returns Centre</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">100% Purchase Protection</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Elite App Download</a></li>
-               <li><a href="#" className="hover:text-[#c9a962] hover:underline transition-all">Help</a></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Your Account</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Returns Centre</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">100% Purchase Protection</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Elite App Download</Link></li>
+               <li><Link to="/shop" className="hover:text-[#c9a962] hover:underline transition-all">Help</Link></li>
             </ul>
          </div>
       </div>
