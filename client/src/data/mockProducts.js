@@ -2,10 +2,10 @@
 export const HERO_SLIDES = [
   {
     id: 'h1',
-    image: '/brain/68f1a24e-8bb6-4277-8f1b-ab5682b204a7/elite_hero_precision_luxury_v2_1773571206913.png',
-    title: 'PRECISION LUXURY',
-    subtitle: 'THE ELITE COLLECTION 2026',
-    cta: 'Explore Excellence',
+    image: '/hero-science-lab-ai.jpg',
+    title: 'SCIENCE IN MOTION',
+    subtitle: 'DISCOVER OUR PREMIUM APPAREL',
+    cta: 'Explore Collection',
     accent: '#c9a962'
   },
   {
