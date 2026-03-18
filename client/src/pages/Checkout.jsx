@@ -135,7 +135,9 @@ export default function Checkout() {
       alert('Destination successfully registered.')
     } catch (err) {
       console.error('Add address failed', err)
-      alert(err.response?.data?.message || 'Failed to register placement. Please check all fields.')
+      const errorMsg = err.response?.data?.message || 'Failed to register placement.'
+      const errorDetails = err.response?.data?.details ? ` Path: ${err.response.data.details.url}` : ''
+      alert(`${errorMsg}${errorDetails} - Please check all fields or try again.`)
     }
   }
 

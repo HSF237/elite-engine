@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const mongoose = require('mongoose')
 const connectDB = require('./config/db')
 
 const authRoutes = require('./routes/auth')
@@ -17,46 +18,68 @@ app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// ── Unified API Router ────────────────────────────────────────────────────────
+// ── Database Connection Cache (Serverless Optimization) ──────────────────────
+let isConnected = false
+const ensureDB = async (req, res, next) => {
+  if (isConnected && mongoose.connection.readyState === 1) return next()
+  try {
+    await connectDB()
+    isConnected = true
+    next()
+  } catch (err) {
+    console.error('Database connection failed:', err)
+    res.status(500).json({ message: 'Core initialization failure.' })
+  }
+}
+
+// ── Shared Routes Mounting ─────────────────────────────────────────────────────
 const apiRouter = express.Router()
-
 // Health Check
-apiRouter.get('/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
+apiRouter.get('/health', (req, res) => res.json({ status: 'Elite Server Online 💎' }))
 
-// Attach specific routes (all without /api prefix internally)
-apiRouter.use('/auth', authRoutes)
-apiRouter.use('/products', productRoutes)
-apiRouter.use('/user', userRoutes)
-apiRouter.use('/orders', orderRoutes)
-apiRouter.use('/reviews', reviewRoutes)
-apiRouter.use('/analytics', analyticsRoutes)
+// Protected & Open Routes
+apiRouter.use('/auth', ensureDB, authRoutes)
+apiRouter.use('/products', ensureDB, productRoutes)
+apiRouter.use('/user', ensureDB, userRoutes)
+apiRouter.use('/orders', ensureDB, orderRoutes)
+apiRouter.use('/reviews', ensureDB, reviewRoutes)
+apiRouter.use('/analytics', ensureDB, analyticsRoutes)
 
-// Mount the router on both /api (standard) and / (Vercel re-based cases)
+// Support both /api/path and /path (for Vercel rewrites)
 app.use('/api', apiRouter)
 app.use('/', apiRouter)
 
-// ── 404 handler ───────────────────────────────────────────────────────────────
+// ── Diagnostic 404 Handler ─────────────────────────────────────────────────────
 app.use((req, res) => {
-  // Only respond with JSON if it's an API attempt or explicitly for routes we know
   res.status(404).json({ 
     message: 'Route not found.', 
-    path: req.originalUrl,
-    method: req.method
+    details: {
+      url: req.url,
+      method: req.method,
+      originalUrl: req.originalUrl,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    }
   })
 })
 
 // ── Global Error Handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(err.status || 500).json({ message: err.message || 'Server Error' })
+  console.error('Global Error:', err.stack)
+  res.status(err.status || 500).json({ 
+    message: err.message || 'Vault access error.',
+    error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  })
 })
 
 module.exports = app
-if (process.env.NODE_ENV !== 'production' || require.main === module) {
+
+// Only start listener if run directly (Local Development)
+if (require.main === module || process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000
-  connectDB().then(() => {
+  ensureDB({ }, { }, () => {
     app.listen(PORT, () => {
-      console.log(`🔥 Elite Server running on http://localhost:${PORT}`)
+      console.log(`🔥 Elite System Active at http://localhost:${PORT}`)
     })
   })
 }
