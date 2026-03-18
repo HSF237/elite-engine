@@ -39,9 +39,9 @@ export default function Navbar() {
         scrolled ? 'bg-[#0a0a0b]/98 backdrop-blur-2xl border-b border-white/10' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-[1440px] mx-auto px-4 py-2">
+      <div className="max-w-[1440px] mx-auto px-4 py-1.5 sm:py-2">
         {/* Row 1: Logo & Top Actions */}
-        <div className="flex items-center justify-between gap-4 h-11">
+        <div className="flex items-center justify-between gap-4 h-10 sm:h-11">
           <Link to="/" className="font-outfit font-black text-lg sm:text-2xl tracking-tighter text-white flex items-center gap-1 group">
             <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
                <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
@@ -67,8 +67,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Row 2: Search Bar & Account Controls (Critical Fix: Always Visible) */}
-        <div className="flex items-center gap-2 mt-2 py-0.5">
+        {/* Row 2: Search Bar & Account Controls */}
+        <div className="flex items-center gap-2 mt-1.5 py-0.5">
            <form 
               onSubmit={(e) => {
                 e.preventDefault()
@@ -136,11 +136,11 @@ export default function Navbar() {
       </div>
 
       {/* Bottom Sub Nav categories bar */}
-      <div className="block bg-black/40 border-t border-white/5 py-1.5 backdrop-blur-xl w-full text-left overflow-x-auto no-scrollbar">
+      <div className="block bg-black/40 border-t border-white/5 py-1 backdrop-blur-xl w-full text-left overflow-x-auto no-scrollbar">
          <div className="max-w-[1440px] w-max mx-auto px-4 flex items-center gap-3">
             <button 
               onClick={() => setMobileOpen(true)}
-              className="flex items-center gap-2 text-[10px] font-black text-white hover:text-[#c9a962] uppercase tracking-widest transition-all shrink-0 group px-2"
+              className="flex items-center gap-1.5 text-[9px] font-black text-white hover:text-[#c9a962] uppercase tracking-widest transition-all shrink-0 group px-2"
             >
                <Menu className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform" /> ALL
             </button>

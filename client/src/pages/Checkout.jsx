@@ -141,7 +141,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0b] text-white pb-20">
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
         
         {/* Progress Tracker */}
         <div className="lg:col-span-12 flex items-center justify-between mb-8 overflow-x-auto no-scrollbar py-2 border-b border-white/5 pb-6">
@@ -176,14 +176,14 @@ export default function Checkout() {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-8"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                   <div>
-                    <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter">Target Placement</h2>
-                    <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Where should we deliver the excellence?</p>
+                    <h2 className="text-2xl sm:text-4xl font-outfit font-black uppercase tracking-tighter">Target Placement</h2>
+                    <p className="text-[9px] sm:text-[10px] text-[#c9a962] font-black tracking-[0.3em] sm:tracking-[0.4em] uppercase mt-1 sm:mt-2">Where should we deliver the excellence?</p>
                   </div>
                   <button 
                     onClick={() => setShowAddForm(true)}
-                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all"
+                    className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all sm:py-3"
                   >
                     <Plus className="w-4 h-4" /> Add Destination
                   </button>
@@ -246,8 +246,8 @@ export default function Checkout() {
                 className="space-y-8"
               >
                 <div>
-                  <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter">Settlement Portal</h2>
-                  <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Select your preferred transaction protocol</p>
+                   <h2 className="text-2xl sm:text-4xl font-outfit font-black uppercase tracking-tighter">Settlement Portal</h2>
+                   <p className="text-[9px] sm:text-[10px] text-[#c9a962] font-black tracking-[0.3em] sm:tracking-[0.4em] uppercase mt-1 sm:mt-2">Select your preferred transaction protocol</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
@@ -332,8 +332,8 @@ export default function Checkout() {
                 className="space-y-8"
               >
                 <div>
-                  <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter">Elite Manifest</h2>
-                  <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Final verification of your premium request</p>
+                   <h2 className="text-2xl sm:text-4xl font-outfit font-black uppercase tracking-tighter">Elite Manifest</h2>
+                   <p className="text-[9px] sm:text-[10px] text-[#c9a962] font-black tracking-[0.3em] sm:tracking-[0.4em] uppercase mt-1 sm:mt-2">Final verification of your premium request</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -377,8 +377,8 @@ export default function Checkout() {
         </div>
 
         {/* Right Summary */}
-        <div className="lg:col-span-4 lg:sticky lg:top-32 self-start">
-           <div className="bg-[#111113] p-10 rounded-[3.5rem] border border-white/5 shadow-3xl">
+        <div className="lg:col-span-4 lg:sticky lg:top-40 self-start">
+           <div className="bg-[#111113] p-6 sm:p-10 rounded-[2rem] sm:rounded-[3.5rem] border border-white/5 shadow-3xl">
               <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
                  <h3 className="font-outfit font-black text-2xl uppercase tracking-tighter">Shopping Bag</h3>
                  <span className="bg-[#c9a962]/10 text-[#c9a962] text-[10px] font-black px-3 py-1 rounded-lg">{items.length} Items</span>
