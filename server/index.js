@@ -19,6 +19,20 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
+app.get('/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
+
+// Middleware to handle both /api/path and /path for Vercel/Local consistency
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    next()
+  } else {
+    // If it's a serverless call without /api prefix, we can still match
+    // but the following app.use calls already have /api prefix.
+    // So we'll rewrite req.url to include /api just for Express matching if missing.
+    req.url = '/api' + req.url
+    next()
+  }
+})
 
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
