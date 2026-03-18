@@ -255,11 +255,10 @@ export default function OrderManager() {
                            <div>
                               <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Est. Delivery Time</p>
                               <input 
-                                 type="text"
-                                 placeholder="e.g. Tomorrow, 4 PM"
+                                 type="datetime-local"
                                  value={updateData.deliveryTime}
                                  onChange={e => setUpdateData({...updateData, deliveryTime: e.target.value})}
-                                 className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-[#c9a962]"
+                                 className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-[#c9a962] style-color-scheme-dark"
                               />
                            </div>
 

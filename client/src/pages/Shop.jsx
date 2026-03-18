@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Filter, ChevronDown, Star, Heart, ShoppingBag, X, Search, SlidersHorizontal, Check } from 'lucide-react'
+import { Filter, ChevronDown, Star, Heart, ShoppingBag, X, Search, SlidersHorizontal, Check, Plus } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import { ELITE_DROPS } from '../data/mockProducts'
@@ -331,6 +331,31 @@ export default function Shop() {
 
           {/* ── Product Grid ── */}
           <main className="flex-1 min-w-0">
+            {/* Quick Horizontal Filters (Amazon mobile style) */}
+            <div className="flex lg:hidden items-center gap-2 overflow-x-auto no-scrollbar pb-4 mb-4 border-b border-white/5 whitespace-nowrap">
+              <button 
+                onClick={() => setFreeDelivery(!freeDelivery)}
+                className={`flex-shrink-0 px-4 py-2 border rounded-full text-xs font-bold transition-all ${freeDelivery ? 'bg-white/10 text-white border-white/40' : 'bg-transparent text-white/50 border-white/10'}`}
+              >
+                ✓ Prime
+              </button>
+              {ALL_CATEGORIES.map(cat => (
+                <button 
+                  key={cat}
+                  onClick={() => setSelectedCategory(selectedCategory === cat ? 'All' : cat)}
+                  className={`flex-shrink-0 px-4 py-2 border rounded-full text-xs font-bold transition-all ${selectedCategory === cat ? 'bg-white/10 text-[#c9a962] border-[#c9a962]/40' : 'bg-transparent text-white/60 border-white/10'}`}
+                >
+                  {cat}
+                </button>
+              ))}
+              <div className="w-px h-6 bg-white/10 mx-2 flex-shrink-0" />
+              <button onClick={() => setPriceMax(15000)} className="flex-shrink-0 px-4 py-2 border rounded-full bg-transparent border-white/10 text-xs font-bold text-white/60">
+                 Under ₹15k
+              </button>
+              <button onClick={() => setMinRating(4)} className="flex-shrink-0 px-4 py-2 border rounded-full bg-transparent border-white/10 text-xs font-bold text-white/60">
+                 4★ & Up
+              </button>
+            </div>
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
@@ -376,8 +401,9 @@ export default function Shop() {
                           onClick={() => setQuickViewProduct(product)}
                         >
                           <img
-                            src={product.images?.[0] || 'https://via.placeholder.com/400x500?text=No+Image'}
+                            src={product.images?.[0] || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400'}
                             alt={product.retailHeading}
+                            loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
 
@@ -396,8 +422,32 @@ export default function Shop() {
                           {/* Hover Overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
+                          {/* Quick Add Button (Amazon style) */}
+                          <div className="absolute bottom-2 right-2 flex items-center justify-center z-10 hidden sm:flex">
+                             {/* Keep hidden on desktop to not clash with Size Quick Select, but reveal on mobile! Wait! We actually just render it everywhere for the Amazon vibe. */}
+                          </div>
+                          
+                          <button
+                             onClick={e => { 
+                               e.stopPropagation(); 
+                               addToCart({
+                                 ...product, 
+                                 id: product._id||product.id, 
+                                 title: product.retailHeading, 
+                                 price: product.discountPrice??product.regularPrice, 
+                                 size: product.sizes?.[0]||'One Size', 
+                                 color: product.colors?.[0]?.name||'Default', 
+                                 qty: 1, 
+                                 image: product.images?.[0]||product.image
+                               }); 
+                             }}
+                             className="absolute bottom-2 right-2 w-8 h-8 sm:w-10 sm:h-10 bg-[#c9a962] hover:bg-[#b09452] text-black rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 shadow-black/50 z-20"
+                          >
+                             <Plus className="w-5 h-5 font-black" />
+                          </button>
+
                           {/* Action Buttons */}
-                          <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                          <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                             <button
                               onClick={e => { e.stopPropagation(); toggleWishlist(product._id || product.id) }}
                               className="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-[#c9a962] hover:text-black transition-all"
@@ -420,52 +470,40 @@ export default function Shop() {
                         </div>
 
                         {/* Info */}
-                        <div className="p-5 flex-1 flex flex-col">
-                          <div className="flex items-start justify-between gap-2 mb-1">
+                        <div className="p-3 sm:p-4 flex-1 flex flex-col bg-white/[0.02]">
+                          <div className="flex flex-col gap-1 mb-1">
                             <h3
-                              className="font-outfit font-bold text-white text-base leading-snug group-hover:text-[#c9a962] transition-colors cursor-pointer line-clamp-2"
+                              className="font-outfit font-bold text-white text-sm sm:text-base leading-snug group-hover:text-[#c9a962] transition-colors cursor-pointer line-clamp-2"
                               onClick={() => setQuickViewProduct(product)}
                             >
                               {product.retailHeading}
                             </h3>
-                            <div className="flex items-center gap-1 shrink-0 glass px-2 py-0.5 rounded-full border-white/5">
-                              <span className="text-[9px] font-black text-white">{product.rating}</span>
-                              <Star className="w-2.5 h-2.5 fill-[#c9a962] text-[#c9a962]" />
+                            <div className="flex items-center gap-1 my-1">
+                               <div className="flex text-[#c9a962]">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 4) ? 'fill-current' : 'text-white/20'}`} />
+                                  ))}
+                               </div>
+                               <span className="text-white/40 text-[9px] font-bold ml-1">{Math.floor(Math.random()*1000)}k+ bought in past month</span>
                             </div>
                           </div>
 
-                          <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">{product.category || product.department}</p>
-
-                          {/* Colors preview */}
-                          <div className="flex gap-1.5 mb-4">
-                            {product.colors?.slice(0, 5).map(c => (
-                              <div key={c.hex ?? c.name} title={c.name} className="w-3.5 h-3.5 rounded-full border border-white/20" style={{ backgroundColor: c.hex ?? '#888' }} />
-                            ))}
-                            {(product.colors?.length ?? 0) > 5 && (
-                              <span className="text-[9px] text-white/30 font-bold self-center">+{product.colors.length - 5}</span>
+                          <div className="mt-auto pt-2 flex items-baseline gap-2">
+                             {discount > 0 && (
+                                <span className="bg-[#cc0c39] text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow-sm">
+                                   -{discount}%
+                                </span>
+                             )}
+                            <span className="text-xl sm:text-2xl font-outfit font-black text-white tracking-tighter shadow-sm flex items-baseline">
+                               <span className="text-xs mr-0.5 leading-none">₹</span>{price.toLocaleString()}
+                            </span>
+                            {product.regularPrice > product.discountPrice && (
+                              <span className="text-[10px] sm:text-xs text-white/40 font-bold line-through ml-1 leading-none">₹{product.regularPrice.toLocaleString()}</span>
                             )}
                           </div>
-
-                          <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-base sm:text-xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
-                                {product.regularPrice > product.discountPrice && (
-                                  <span className="text-[10px] text-white/25 line-through">₹{product.regularPrice.toLocaleString()}</span>
-                                )}
-                              </div>
-                              <p className="text-[8px] font-black text-[#c9a962] uppercase tracking-tighter mt-0.5">
-                                {product.deliveryCharge === 0 ? '🚀 Free Delivery' : `+₹${product.deliveryCharge} ship`}
-                              </p>
-                            </div>
-
-                            <button
-                              onClick={() => addToCart({ id: product._id || product.id, title: product.retailHeading, price, image: product.images?.[0], size: product.sizes?.[0], color: product.colors?.[0]?.name })}
-                              className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#c9a962] hover:text-black hover:border-[#c9a962] transition-all"
-                            >
-                              <ShoppingBag className="w-5 h-5" />
-                            </button>
-                          </div>
+                          {product.deliveryCharge === 0 && (
+                             <p className="text-[#00a8e1] text-[9px] font-bold flex items-center mt-1">✓ <span className="text-white font-black italic tracking-tight mx-1">prime</span> FREE Delivery by Tomorrow</p>
+                          )}
                         </div>
                       </motion.article>
                     )

@@ -41,7 +41,7 @@ export default function Navbar() {
       }`}
     >
       {/* Top Main Nav */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-4 sm:gap-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-8">
         {/* Logo */}
         <Link to="/" className="font-outfit font-bold text-2xl tracking-tighter text-white shrink-0 flex items-center gap-1 group">
           <div className="w-8 h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
@@ -60,7 +60,7 @@ export default function Navbar() {
         </div>
 
         {/* Search Bar - Amazon style */}
-        <div className="flex-1 max-w-2xl relative hidden sm:flex">
+        <div className="flex-1 w-full max-w-2xl relative order-3 sm:order-none mt-2 sm:mt-0 col-span-full sm:col-span-1">
           <form 
             onSubmit={(e) => {
               e.preventDefault()
@@ -85,7 +85,7 @@ export default function Navbar() {
         </div>
 
         {/* Actions Icons */}
-        <div className="flex items-center gap-1 sm:gap-3 ml-auto text-white/80">
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto text-white/80 order-2 sm:order-none">
           {user ? (
             <div className="flex items-center gap-4">
               <Link to="/profile" className="flex items-center gap-2 group p-2 rounded-xl hover:bg-white/5 transition-all">
@@ -133,12 +133,14 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Navigation Sub-Bar (Mobile Search goes here) */}
+
       {/* Bottom Sub Nav - Flipkart/Amazon style */}
-      <div className="hidden md:block bg-black/40 border-t border-white/5 py-2 backdrop-blur-xl">
-         <div className="max-w-[1440px] mx-auto px-6 flex items-center gap-8 overflow-x-auto no-scrollbar">
+      <div className="block bg-black/40 border-t border-white/5 py-2 backdrop-blur-xl w-full text-left overflow-x-auto no-scrollbar">
+         <div className="max-w-[1440px] w-max mx-auto px-4 sm:px-6 flex items-center gap-4 sm:gap-8 min-w-max">
             <button 
               onClick={() => setMobileOpen(true)}
-              className="flex items-center gap-2 text-[11px] font-black text-white hover:text-[#c9a962] uppercase tracking-[0.15em] transition-all shrink-0 group"
+              className="flex items-center gap-2 text-[11px] font-black text-white hover:text-[#c9a962] uppercase tracking-[0.15em] transition-all shrink-0 group px-2"
             >
                <Menu className="w-4 h-4 group-hover:rotate-90 transition-transform" /> All Categories
             </button>
@@ -147,7 +149,7 @@ export default function Navbar() {
                  ? <Link 
                      key={link.label} 
                      to={link.href} 
-                     className="text-[11px] font-black text-white/70 hover:text-[#c9a962] uppercase tracking-[0.1em] transition-all shrink-0 px-2 py-1"
+                     className={`text-[11px] font-black uppercase tracking-[0.1em] transition-all shrink-0 px-3 py-1.5 rounded-full ${link.label === 'Shop All' ? 'bg-[#c9a962] text-black shadow-[0_0_15px_rgba(201,169,98,0.4)] hover:scale-105' : 'text-white/70 hover:text-[#c9a962]'}`}
                    >
                      {link.label}
                    </Link>

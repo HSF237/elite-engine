@@ -89,14 +89,7 @@ export default function StaffDashboard() {
          {/* Top Head */}
          <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#111112]/20 backdrop-blur-md shrink-0">
             <div className="flex items-center gap-4 flex-1">
-               <div className="relative max-w-md w-full">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-                  <input 
-                    type="text" 
-                    placeholder="Search logs, orders or users..." 
-                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#c9a962]/50 transition-all"
-                  />
-               </div>
+               {/* Global Search space reserved for future implementation */}
             </div>
 
             <div className="flex items-center gap-6">

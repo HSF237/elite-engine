@@ -2,15 +2,15 @@
 export const HERO_SLIDES = [
   {
     id: 'h1',
-    image: '/hero-science-lab-ai.jpg',
+    image: 'https://images.unsplash.com/photo-1558769132-cb1fac08cbc4?auto=format&fit=crop&q=80&w=1920',
     title: 'SCIENCE IN MOTION',
-    subtitle: 'DISCOVER OUR PREMIUM APPAREL',
+    subtitle: 'DISCOVER OUR PREMIUM COLLECTION',
     cta: 'Explore Collection',
     accent: '#c9a962'
   },
   {
     id: 'h2',
-    image: '/brain/68f1a24e-8bb6-4277-8f1b-ab5682b204a7/elite_category_fashion_avantgarde_1773571232065.png',
+    image: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=1920',
     title: 'AVANT-GARDE STYLE',
     subtitle: 'STREET LUXURY EVOLVED',
     cta: 'Shop Apparel',

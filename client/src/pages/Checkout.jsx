@@ -286,6 +286,30 @@ export default function Checkout() {
                    ))}
                 </div>
 
+                {paymentMethod === 'UPI' && (
+                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 mt-6 flex items-center gap-4">
+                     <span className="font-outfit font-black text-[#c9a962]">TEST UPI ID</span>
+                     <input type="text" readOnly value="demouser@okicici" className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none" />
+                  </motion.div>
+                )}
+
+                {paymentMethod === 'CARD' && (
+                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                     <div className="col-span-2 lg:col-span-4">
+                       <span className="font-outfit font-black text-[#c9a962] text-[10px] block mb-2">DEMO CARD NUMBER</span>
+                       <input type="text" readOnly value="4242 4242 4242 4242" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none tracking-widest" />
+                     </div>
+                     <div className="col-span-1 lg:col-span-2">
+                       <span className="font-outfit font-black text-[#c9a962] text-[10px] block mb-2">EXPIRY</span>
+                       <input type="text" readOnly value="12/25" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none" />
+                     </div>
+                     <div className="col-span-1 lg:col-span-2">
+                       <span className="font-outfit font-black text-[#c9a962] text-[10px] block mb-2">CVV</span>
+                       <input type="text" readOnly value="123" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none" />
+                     </div>
+                  </motion.div>
+                )}
+
                 <div className="flex gap-6 mt-12">
                   <button 
                     onClick={() => setStep(1)}
