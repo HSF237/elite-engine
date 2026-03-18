@@ -374,7 +374,7 @@ export default function Shop() {
             ) : (
               <motion.div
                 layout
-                className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
+                className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4"
               >
                 <AnimatePresence mode="popLayout">
                   {filtered.map(product => {
@@ -393,11 +393,11 @@ export default function Shop() {
                         exit={{ opacity: 0, scale: 0.9 }}
                         whileHover={{ y: -6 }}
                         transition={{ duration: 0.3 }}
-                        className="group bg-[#111113] rounded-3xl overflow-hidden border border-white/5 hover:border-[#c9a962]/20 transition-all flex flex-col shadow-xl shadow-black/30"
+                        className="group bg-[#111113] rounded-2xl overflow-hidden border border-white/5 hover:border-[#c9a962]/20 transition-all flex flex-col shadow-xl shadow-black/30"
                       >
                         {/* Image */}
                         <div
-                          className="relative aspect-[4/5] overflow-hidden cursor-pointer"
+                          className="relative aspect-square overflow-hidden cursor-pointer"
                           onClick={() => setQuickViewProduct(product)}
                         >
                           <img
@@ -470,10 +470,10 @@ export default function Shop() {
                         </div>
 
                         {/* Info */}
-                        <div className="p-3 sm:p-4 flex-1 flex flex-col bg-white/[0.02]">
-                          <div className="flex flex-col gap-1 mb-1">
+                        <div className="p-2.5 sm:p-4 flex-1 flex flex-col bg-white/[0.02]">
+                          <div className="flex flex-col gap-0.5 mb-1">
                             <h3
-                              className="font-outfit font-bold text-white text-sm sm:text-base leading-snug group-hover:text-[#c9a962] transition-colors cursor-pointer line-clamp-2"
+                              className="font-outfit font-bold text-white text-xs sm:text-sm leading-snug group-hover:text-[#c9a962] transition-colors cursor-pointer line-clamp-2"
                               onClick={() => setQuickViewProduct(product)}
                             >
                               {product.retailHeading}
@@ -488,14 +488,14 @@ export default function Shop() {
                             </div>
                           </div>
 
-                          <div className="mt-auto pt-2 flex items-baseline gap-2">
+                          <div className="mt-auto pt-1.5 flex items-baseline gap-1.5 flex-wrap">
                              {discount > 0 && (
-                                <span className="bg-[#cc0c39] text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow-sm">
+                                <span className="bg-[#cc0c39] text-white font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded shadow-sm">
                                    -{discount}%
                                 </span>
                              )}
-                            <span className="text-xl sm:text-2xl font-outfit font-black text-white tracking-tighter shadow-sm flex items-baseline">
-                               <span className="text-xs mr-0.5 leading-none">₹</span>{price.toLocaleString()}
+                            <span className="text-lg sm:text-xl font-outfit font-black text-white tracking-tighter shadow-sm flex items-baseline">
+                               <span className="text-[10px] sm:text-xs mr-0.5 leading-none">₹</span>{price.toLocaleString()}
                             </span>
                             {product.regularPrice > product.discountPrice && (
                               <span className="text-[10px] sm:text-xs text-white/40 font-bold line-through ml-1 leading-none">₹{product.regularPrice.toLocaleString()}</span>

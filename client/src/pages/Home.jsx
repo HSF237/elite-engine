@@ -189,10 +189,10 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
               {[
-                'https://images.unsplash.com/photo-1523275335684-37898b6baf30',
-                'https://images.unsplash.com/photo-1542291026-7eec264c27ff',
-                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e',
-                'https://images.unsplash.com/photo-1572635196237-14b3f281503f'
+                'https://images.unsplash.com/photo-1546868871-7041f2a55e12',
+                'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
+                'https://images.unsplash.com/photo-1583394838336-acd977736f90',
+                'https://images.unsplash.com/photo-1511499767150-a48a237f0083'
               ].map((img, i) => (
                 <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                   <img
@@ -226,9 +226,9 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
               {[
                 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7',
-                'https://images.unsplash.com/photo-1513694203232-719a280e022f',
-                'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6',
-                'https://images.unsplash.com/photo-1558882224-cca162730a91'
+                'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e',
+                'https://images.unsplash.com/photo-1505691938895-1758d7feb511',
+                'https://images.unsplash.com/photo-1507089947368-19c1da9775ae'
               ].map((img, i) => (
                 <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
                   <img
@@ -332,7 +332,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
             {loading ? (
               [...Array(5)].map((_, i) => (
                 <div key={i} className="aspect-[4/5] rounded-[2.5rem] bg-white/5 animate-pulse" />
@@ -371,18 +371,18 @@ export default function Home() {
                       </button>
                     </div>
 
-                    <div className="p-3 sm:p-4 flex flex-col flex-1">
-                      <h4 className="text-white font-bold text-sm leading-tight line-clamp-2 mb-1 group-hover:text-[#c9a962] transition-colors">{product.retailHeading}</h4>
+                    <div className="p-2.5 sm:p-4 flex flex-col flex-1">
+                      <h4 className="text-white font-bold text-xs sm:text-sm leading-tight line-clamp-2 mb-1 group-hover:text-[#c9a962] transition-colors">{product.retailHeading}</h4>
                       <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">{product.category}</p>
                       
                       <div className="mt-auto flex items-baseline gap-2">
                         {product.regularPrice > product.discountPrice && (
-                          <span className="bg-[#cc0c39] text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow-sm">
+                          <span className="bg-[#cc0c39] text-white font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded shadow-sm">
                              -{Math.round(((product.regularPrice - product.discountPrice)/product.regularPrice)*100)}%
                           </span>
                         )}
-                        <span className="text-lg sm:text-xl font-outfit font-black text-white tracking-tighter">
-                           <span className="text-xs mr-0.5">₹</span>{product.discountPrice?.toLocaleString()}
+                        <span className="text-sm sm:text-xl font-outfit font-black text-white tracking-tighter">
+                           <span className="text-[10px] sm:text-xs mr-0.5">₹</span>{product.discountPrice?.toLocaleString()}
                         </span>
                       </div>
                       <p className="text-white/40 text-[9px] font-bold mt-1">{Math.floor(Math.random()*200)+50}+ bought in past month</p>
@@ -424,7 +424,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6">
               {getRecentlyViewed().map((product, i) => (
                 <motion.div
                   key={i}
@@ -444,8 +444,8 @@ export default function Home() {
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                       </button>
                     </div>
-                    <div className="p-3 sm:p-4 flex-1 flex flex-col">
-                      <h4 className="text-white font-bold leading-tight line-clamp-2 text-xs mb-1 group-hover:text-[#c9a962] transition-colors">{product.name || product.title}</h4>
+                    <div className="p-2.5 sm:p-4 flex-1 flex flex-col">
+                      <h4 className="text-white font-bold leading-tight line-clamp-2 text-[11px] sm:text-sm mb-1 group-hover:text-[#c9a962] transition-colors">{product.name || product.title}</h4>
                       <div className="mt-auto">
                         <p className="text-[#c9a962] font-black text-[9px] uppercase tracking-[0.2em] mt-2">Recently Viewed</p>
                       </div>

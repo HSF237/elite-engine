@@ -20,9 +20,9 @@ export const HERO_SLIDES = [
 
 export const CATEGORIES = [
   { id: 'footwear', label: 'Footwear', slug: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800' },
-  { id: 'apparel', label: 'Apparel', slug: 'Apparel', image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80&w=800' },
-  { id: 'electronics', label: 'Electronics', slug: 'Electronics', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=800' },
-  { id: 'beauty', label: 'Beauty', slug: 'Beauty', image: 'https://images.unsplash.com/photo-1522335789183-be0e47b28db1?auto=format&fit=crop&q=80&w=800' },
+  { id: 'apparel', label: 'Apparel', slug: 'Apparel', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800' },
+  { id: 'electronics', label: 'Tech', slug: 'Electronics', image: 'https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&q=80&w=800' },
+  { id: 'beauty', label: 'Beauty', slug: 'Beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&q=80&w=800' },
   { id: 'home', label: 'Home', slug: 'Home', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=800' },
 ]
 
