@@ -172,8 +172,8 @@ export default function Home() {
       </section>
 
       {/* ——— Specialized Grid Cards (Amazon style) ——— */}
-      <section className="py-12 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <section className="py-6 px-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Card 1: Today's Deals / Under 999 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -221,8 +221,8 @@ export default function Home() {
             className="bg-[#1a1a1c] p-6 rounded-[2.5rem] border border-white/5 flex flex-col group cursor-pointer hover:border-[#c9a962]/30 transition-all shadow-2xl"
             onClick={() => navigate('/shop?category=Home')}
           >
-            <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Elite Spaces</h3>
-            <p className="text-[8px] sm:text-[10px] text-[#c9a962] mb-4 font-black uppercase tracking-[0.2em]">Smart Interior</p>
+            <h3 className="font-outfit font-black text-base sm:text-lg mb-0.5 text-white uppercase tracking-tighter">Elite Spaces</h3>
+            <p className="text-[7px] sm:text-[9px] text-[#c9a962] mb-3 font-black uppercase tracking-[0.2em]">Smart Interior</p>
             <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1">
               {[
                 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7',
@@ -259,8 +259,8 @@ export default function Home() {
             <div className="absolute top-0 right-0 p-4">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </div>
-            <h3 className="font-outfit font-black text-lg sm:text-2xl mb-1 text-white uppercase tracking-tighter">Flash Deal</h3>
-            <p className="text-[8px] sm:text-red-500 mb-6 font-black uppercase tracking-[0.2em] text-red-500">Ends In:</p>
+            <h3 className="font-outfit font-black text-base sm:text-lg mb-0.5 text-white uppercase tracking-tighter">Flash Deal</h3>
+            <p className="text-[7px] sm:text-red-500 mb-4 font-black uppercase tracking-[0.2em] text-red-500">Ends In:</p>
             <div className="flex-1 flex flex-col justify-center gap-6">
               <FlashDealCountdown />
               <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10">
@@ -284,8 +284,8 @@ export default function Home() {
             className="bg-gradient-to-br from-[#c9a962] to-[#b09452] p-8 rounded-[2.5rem] flex flex-col justify-between"
           >
             <div>
-              <h3 className="font-outfit font-black text-xl sm:text-3xl text-black leading-none mb-3 uppercase tracking-tighter">Your Elite Profile</h3>
-              <p className="text-[10px] sm:text-xs text-black/70 font-bold uppercase tracking-wide">Sign in for exclusive drops and faster checkout.</p>
+              <h3 className="font-outfit font-black text-lg sm:text-xl text-black leading-none mb-2 uppercase tracking-tighter">Your Elite Profile</h3>
+              <p className="text-[8px] sm:text-[10px] text-black/70 font-bold uppercase tracking-wide">Sign in for exclusive drops and faster checkout.</p>
             </div>
             <div className="space-y-3">
               <button
@@ -323,12 +323,12 @@ export default function Home() {
       </section>
 
       {/* ——— Elite Drops Product Grid ——— */}
-      <section className="py-20 px-4 sm:px-6">
+      <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8 sm:mb-12">
+          <div className="flex items-center justify-between mb-6 sm:mb-8">
             <div>
-              <h2 className="font-outfit font-black text-2xl sm:text-4xl text-white uppercase tracking-tighter">Elite Drops</h2>
-              <p className="text-[9px] sm:text-[10px] text-[#c9a962] font-black tracking-[0.2em] sm:tracking-[0.4em] uppercase mt-2">Newest arrivals</p>
+              <h2 className="font-outfit font-black text-xl sm:text-2xl text-white uppercase tracking-tighter">Elite Drops</h2>
+              <p className="text-[8px] sm:text-[9px] text-[#c9a962] font-black tracking-[0.2em] sm:tracking-[0.4em] uppercase mt-1">Newest arrivals</p>
             </div>
           </div>
 
@@ -356,18 +356,14 @@ export default function Home() {
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                       />
-                      {/* Quick Add Button */}
                       <button
                          onClick={e => { 
                            e.stopPropagation(); 
-                           // Safe quick add without importing context straight here; rely on context if needed or just let it navigate to product.
-                           // Actually we can't do addToCart because we didn't import useCart in Home.jsx natively for this loop! 
-                           // Wait, let's just make it a visual button that triggers quick-view which handles cart.
-                           setQuickViewProduct(product)
+                           setQuickViewProduct(product);
                          }}
-                         className="absolute bottom-2 right-2 w-8 h-8 sm:w-10 sm:h-10 bg-[#c9a962] hover:bg-[#b09452] text-black rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 shadow-black/50 z-20"
+                         className="absolute bottom-1 right-1 w-7 h-7 bg-[#c9a962] hover:bg-[#b09452] text-black rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 shadow-black/50 z-20"
                       >
-                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                       </button>
                     </div>
 
@@ -393,14 +389,14 @@ export default function Home() {
             )}
           </div>
 
-          <div className="mt-16 flex justify-center">
+          <div className="mt-8 flex justify-center">
              <button 
                 onClick={() => navigate('/shop')}
-                className="group relative px-12 py-5 bg-[#c9a962] rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-[#c9a962]/20"
+                className="group relative px-8 py-3 bg-[#c9a962] rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-[#c9a962]/20"
              >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                <span className="relative font-outfit font-black text-black text-sm uppercase tracking-[0.2em] flex items-center gap-2">
-                   Explore Full Marketplace <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span className="relative font-outfit font-black text-black text-[10px] sm:text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+                   Explore Marketplace <ChevronRight className="w-4 h-4" />
                 </span>
              </button>
           </div>
@@ -409,12 +405,12 @@ export default function Home() {
 
       {/* ——— Recently Viewed Section ——— */}
       {getRecentlyViewed().length > 0 && (
-        <section className="py-20 px-4 sm:px-6">
+        <section className="py-8 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-12">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="font-outfit font-black text-3xl text-white uppercase tracking-tighter">Recently Viewed</h2>
-                <p className="text-[10px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-2">Pick up right where you left off</p>
+                <h2 className="font-outfit font-black text-xl text-white uppercase tracking-tighter">Recently Viewed</h2>
+                <p className="text-[8px] text-[#c9a962] font-black tracking-[0.4em] uppercase mt-1">Pick up right where you left off</p>
               </div>
               <button
                 onClick={() => localStorage.removeItem('elite_recently_viewed')}

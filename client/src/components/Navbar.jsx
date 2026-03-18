@@ -51,13 +51,22 @@ export default function Navbar() {
         </Link>
 
         {/* Deliver to - Amazon style */}
-        <div className="hidden lg:flex items-center gap-1 text-white/70 hover:text-white cursor-pointer transition-colors group">
+        <div className="hidden xl:flex items-center gap-1 text-white/70 hover:text-white cursor-pointer transition-colors group">
            <MapPin className="w-4 h-4 mt-1 group-hover:text-[#c9a962]" />
            <div className="flex flex-col">
               <span className="text-[10px] leading-none uppercase tracking-tighter">Deliver to</span>
               <span className="text-sm font-bold leading-tight">India</span>
            </div>
         </div>
+
+        {/* PROMINENT SHOP ALL BUTTON - Requested "Upside" */}
+        <Link 
+          to="/shop" 
+          className="order-2 sm:order-none px-4 py-2 bg-[#c9a962] text-black font-black text-xs uppercase tracking-[0.2em] rounded-lg shadow-[0_0_20px_rgba(201,169,98,0.3)] hover:scale-105 active:scale-95 transition-all hidden md:flex items-center gap-2 whitespace-nowrap"
+        >
+          <ShoppingBag className="w-4 h-4" />
+          Shop All
+        </Link>
 
         {/* Search Bar - Amazon style */}
         <div className="flex-1 w-full max-w-2xl relative order-3 sm:order-none mt-2 sm:mt-0 col-span-full sm:col-span-1">
