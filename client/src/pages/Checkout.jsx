@@ -135,9 +135,10 @@ export default function Checkout() {
       alert('Destination successfully registered.')
     } catch (err) {
       console.error('Add address failed', err)
+      const status = err.response?.status ? ` [Code: ${err.response.status}]` : ' [Network/No Response]'
       const errorMsg = err.response?.data?.message || 'Failed to register placement.'
       const errorDetails = err.response?.data?.details ? ` Path: ${err.response.data.details.url}` : ''
-      alert(`${errorMsg}${errorDetails} - Please check all fields or try again.`)
+      alert(`${errorMsg}${errorDetails}${status} - Try refreshing or check console for raw log.`)
     }
   }
 
