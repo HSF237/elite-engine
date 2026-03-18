@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import { ELITE_DROPS } from '../data/mockProducts'
 import QuickViewModal from '../components/QuickViewModal'
+import OptimizedImage from '../components/OptimizedImage'
 
 const BRANDS = ['Elite Collection', 'Aura Luxury', 'Phantom Tech', 'Luxe Wear', 'Precision']
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', '8', '9', '10', '11']
@@ -271,7 +272,7 @@ export default function Shop() {
   )
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] pt-28 pb-24">
+    <div className="min-h-screen bg-[#0a0a0b] pb-24">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
 
         {/* Page Header */}
@@ -400,11 +401,13 @@ export default function Shop() {
                           className="relative aspect-square overflow-hidden cursor-pointer"
                           onClick={() => setQuickViewProduct(product)}
                         >
-                          <img
+                          <OptimizedImage
                             src={product.images?.[0] || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400'}
                             alt={product.retailHeading}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            width={400}
+                            quality={70}
+                            wrapperClassName="w-full h-full"
+                            className="group-hover:scale-110 transition-transform duration-700"
                           />
 
                           {/* Badges */}

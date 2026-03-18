@@ -5,6 +5,7 @@ import { Heart, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import QuickViewModal from '../components/QuickViewModal'
+import OptimizedImage from '../components/OptimizedImage'
 import { HERO_SLIDES, CATEGORIES, ELITE_DROPS } from '../data/mockProducts'
 import { getRecentlyViewed } from '../utils/recentViewed'
 
@@ -78,7 +79,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] overflow-x-hidden">
+    <div className="min-h-screen bg-[#0a0a0b] overflow-x-hidden -mt-32 sm:-mt-36">
       {/* Premium Notification Bar */}
       <div className="bg-gradient-to-r from-[#c9a962] to-[#b09452] text-black py-2 px-4 overflow-hidden hidden sm:block">
         <motion.div
@@ -106,10 +107,13 @@ export default function Home() {
                 className="absolute inset-0"
               >
                 <div className="absolute inset-0 bg-black/40 z-10" />
-                <img
+                <OptimizedImage
                   src={slide.image}
-                  alt=""
-                  className="w-full h-full object-cover"
+                  alt={slide.title}
+                  priority={true}
+                  width={1600}
+                  quality={70}
+                  wrapperClassName="w-full h-full"
                 />
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6">
                   <motion.p
@@ -181,7 +185,7 @@ export default function Home() {
               onClick={() => navigate(`/shop?category=${cat.slug}`)}
             >
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-white/10 group-hover:border-[#c9a962]/50 transition-all shadow-lg bg-white/5">
-                 <img src={cat.image} alt={cat.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <OptimizedImage src={cat.image} alt={cat.label} width={120} quality={60} wrapperClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-500" />
               </div>
               <span className="text-[8px] sm:text-[9px] font-black text-white/40 group-hover:text-white uppercase tracking-widest transition-colors">{cat.label}</span>
             </div>
@@ -213,11 +217,12 @@ export default function Home() {
                 'https://images.unsplash.com/photo-1511499767150-a48a237f0083'
               ].map((img, i) => (
                 <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
-                  <img
-                    src={`${img}?auto=format&fit=crop&w=300&q=80`}
-                    alt=""
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  <OptimizedImage
+                    src={img}
+                    width={300}
+                    quality={70}
+                    wrapperClassName="w-full h-full"
+                    className="group-hover:scale-110 transition-transform duration-700"
                   />
                 </div>
               ))}
@@ -249,11 +254,12 @@ export default function Home() {
                 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae'
               ].map((img, i) => (
                 <div key={i} className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-white/5 border border-white/5">
-                  <img
-                    src={`${img}?auto=format&fit=crop&w=300&q=80`}
-                    alt=""
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  <OptimizedImage
+                    src={img}
+                    width={300}
+                    quality={70}
+                    wrapperClassName="w-full h-full"
+                    className="group-hover:scale-110 transition-transform duration-700"
                     onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1513584684374-8bdb74838a0f?w=300' }}
                   />
                 </div>
@@ -282,7 +288,7 @@ export default function Home() {
             <div className="flex-1 flex flex-col justify-center gap-6">
               <FlashDealCountdown />
               <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10">
-                <img src="https://images.unsplash.com/photo-1549439602-43ebca2327af?auto=format&fit=crop&q=80&w=600" loading="lazy" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <OptimizedImage src="https://images.unsplash.com/photo-1549439602-43ebca2327af" width={600} quality={70} wrapperClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                   <span className="text-white font-black text-[10px] uppercase tracking-widest bg-[#c9a962]/40 backdrop-blur-md px-4 py-2 rounded-full">Save 70%</span>
                 </div>
@@ -326,7 +332,7 @@ export default function Home() {
       {/* ——— Big Value Banner ——— */}
       <section className="py-6 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden relative group">
-          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1600" loading="lazy" alt="" className="w-full h-[250px] sm:h-[300px] object-cover group-hover:scale-105 transition-transform duration-1000" />
+          <OptimizedImage src="https://images.unsplash.com/photo-1441986300917-64674bd600d8" width={1600} quality={75} wrapperClassName="w-full h-[250px] sm:h-[300px]" className="group-hover:scale-105 transition-transform duration-1000" />
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 sm:via-black/50 to-transparent flex flex-col justify-center px-6 sm:px-16">
             <span className="text-[#c9a962] font-black tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-sm uppercase mb-3 sm:mb-4">Midnight Sale</span>
             <h2 className="text-3xl sm:text-6xl font-outfit font-black text-white max-w-lg leading-tight sm:leading-none mb-6">UNSTOPPABLE DEALS STARTING NOW</h2>
@@ -368,11 +374,13 @@ export default function Home() {
                 >
                   <div className="bg-white/[0.02] rounded-2xl overflow-hidden border border-white/5 group-hover:border-[#c9a962]/30 transition-all flex flex-col h-full shadow-lg relative">
                     <div className="aspect-square relative overflow-hidden">
-                      <img 
+                      <OptimizedImage 
                         src={product.images?.[0] || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400'} 
-                        alt={product.retailHeading} 
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                        alt={product.retailHeading}
+                        width={400}
+                        quality={70}
+                        wrapperClassName="w-full h-full"
+                        className="group-hover:scale-110 transition-transform duration-700" 
                       />
                       <button
                          onClick={e => { 
@@ -450,7 +458,7 @@ export default function Home() {
                 >
                   <div className="bg-white/[0.02] rounded-2xl overflow-hidden border border-white/5 group-hover:border-[#c9a962]/30 transition-all shadow-lg flex flex-col h-full">
                     <div className="aspect-square relative overflow-hidden">
-                      <img src={product.images?.[0] || product.image || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400'} loading="lazy" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <OptimizedImage src={product.images?.[0] || product.image || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400'} width={400} quality={70} wrapperClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-700" />
                       <button
                          onClick={e => { e.stopPropagation(); setQuickViewProduct(product); }}
                          className="absolute bottom-2 right-2 w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-[#c9a962] text-white hover:text-black rounded-full flex items-center justify-center shadow-lg transition-all z-20 backdrop-blur-md"

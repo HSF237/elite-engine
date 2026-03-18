@@ -8,6 +8,7 @@ import {
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import api from '../utils/api'
+import OptimizedImage from '../components/OptimizedImage'
 
 export default function Checkout() {
   const navigate = useNavigate()
@@ -139,7 +140,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white pt-28 pb-20">
+    <div className="min-h-screen bg-[#0a0a0b] text-white pb-20">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
         
         {/* Progress Tracker */}
@@ -387,7 +388,13 @@ export default function Checkout() {
                 {items.map(item => (
                   <div key={`${item.id}-${item.size}`} className="flex gap-5 group">
                     <div className="w-20 h-20 rounded-2xl bg-white/5 p-1 shrink-0 overflow-hidden border border-white/5 group-hover:border-[#c9a962]/30 transition-colors">
-                      <img src={item.image} alt="" className="w-full h-full object-cover rounded-xl" />
+                      <OptimizedImage
+                        src={item.image}
+                        alt={item.title}
+                        width={100}
+                        quality={60}
+                        wrapperClassName="w-full h-full"
+                      />
                     </div>
                     <div className="min-w-0 flex flex-col justify-center">
                       <h5 className="text-sm font-bold text-white/90 truncate pr-2 group-hover:text-white transition-colors">{item.title}</h5>

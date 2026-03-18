@@ -43,8 +43,8 @@ export default function Navbar() {
         {/* Row 1: Logo & Top Actions */}
         <div className="flex items-center justify-between gap-4 h-11">
           <Link to="/" className="font-outfit font-black text-lg sm:text-2xl tracking-tighter text-white flex items-center gap-1 group">
-            <div className="w-6 h-6 sm:w-8 h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
-               <ShoppingBag className="w-4 h-4 sm:w-5 h-5 text-black" />
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
+               <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
             </div>
             <span>ELITE<span className="text-[#c9a962]">STORE</span></span>
           </Link>

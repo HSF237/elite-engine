@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import OptimizedImage from './OptimizedImage'
 
 export default function CartSidebar() {
   const navigate = useNavigate()
@@ -52,7 +53,13 @@ export default function CartSidebar() {
                     >
                       <div className="w-20 h-24 rounded-lg bg-white/5 flex-shrink-0 overflow-hidden">
                         {item.image ? (
-                          <img src={item.image} alt="" className="w-full h-full object-cover" />
+                          <OptimizedImage
+                            src={item.image}
+                            alt={item.title ?? item.retailHeading}
+                            width={100}
+                            quality={60}
+                            wrapperClassName="w-full h-full"
+                          />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">No img</div>
                         )}

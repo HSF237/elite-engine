@@ -4,6 +4,7 @@ import { User, MapPin, Package, Settings, LogOut, ChevronRight, Plus, Loader2, C
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import api from '../utils/api'
+import OptimizedImage from '../components/OptimizedImage'
 
 export default function Profile() {
   const { user, logout } = useAuth()
@@ -68,7 +69,7 @@ export default function Profile() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white pt-28 pb-20">
+    <div className="min-h-screen bg-[#0a0a0b] text-white pb-20">
       <div className="max-w-6xl mx-auto px-6">
         
         {/* Header Section */}
@@ -77,7 +78,7 @@ export default function Profile() {
             <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-[#c9a962] to-[#b09452] p-1 shadow-2xl shadow-[#c9a962]/20">
               <div className="w-full h-full rounded-[1.8rem] bg-[#1a1a1c] flex items-center justify-center overflow-hidden">
                 {profileData?.avatar ? (
-                  <img src={profileData.avatar} alt="" className="w-full h-full object-cover" />
+                  <OptimizedImage src={profileData.avatar} alt={profileData?.name} width={100} quality={70} wrapperClassName="w-full h-full" />
                 ) : (
                   <span className="text-3xl font-black text-[#c9a962]">{profileData?.name?.[0]}</span>
                 )}
@@ -261,7 +262,7 @@ const OrderCard = ({ order }) => {
       >
         <div className="flex items-center gap-6 w-full md:w-auto">
           <div className="w-20 h-20 rounded-2xl bg-white/5 p-1 relative overflow-hidden shrink-0">
-             <img src={order.items[0]?.image} alt="" className="w-full h-full object-cover rounded-xl" />
+             <OptimizedImage src={order.items[0]?.image} alt={order.items[0]?.name} width={100} quality={50} wrapperClassName="w-full h-full" />
              {order.items.length > 1 && (
                <div className="absolute inset-x-0 bottom-0 bg-black/80 py-1 text-center">
                   <span className="text-[8px] font-black text-[#c9a962]">+{order.items.length - 1} MORE</span>
@@ -346,7 +347,7 @@ const OrderCard = ({ order }) => {
                     <div className="space-y-3">
                        {order.items.map((item, i) => (
                          <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-white/5">
-                            <img src={item.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                            <OptimizedImage src={item.image} alt={item.name} width={40} quality={40} wrapperClassName="w-10 h-10 rounded-lg overflow-hidden shrink-0" />
                             <div className="flex-1">
                                <p className="text-xs font-bold text-white/80">{item.name}</p>
                                <p className="text-[9px] font-black text-white/20 uppercase">Qty: {item.qty} | Size: {item.size}</p>

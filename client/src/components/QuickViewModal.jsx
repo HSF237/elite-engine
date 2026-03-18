@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import api from '../utils/api'
 import { addToRecentlyViewed } from '../utils/recentViewed'
+import OptimizedImage from './OptimizedImage'
 
 export default function QuickViewModal({ product, onClose }) {
   const { addToCart } = useCart()
@@ -62,7 +63,13 @@ export default function QuickViewModal({ product, onClose }) {
           {/* Mobile Top Header (Image + Name + Price) */}
           <div className="flex shrink-0 p-4 sm:p-8 gap-4 border-b border-white/5 md:hidden">
              <div className="w-1/3 aspect-[4/5] rounded-2xl overflow-hidden bg-black/40 border border-white/5 relative">
-               <img src={images[imgIndex]} alt="" className="w-full h-full object-cover" />
+               <OptimizedImage
+                 src={images[imgIndex]}
+                 alt={product.retailHeading ?? product.name}
+                 width={300}
+                 quality={70}
+                 wrapperClassName="w-full h-full"
+               />
                {discount > 0 && (
                  <div className="absolute top-2 left-0 bg-[#c9a962] text-black text-[7px] font-black px-1.5 py-0.5 uppercase tracking-tight rounded-r-lg">
                    -{discount}%
@@ -99,15 +106,14 @@ export default function QuickViewModal({ product, onClose }) {
             {/* Main Image */}
             <div className="relative aspect-[4/5] md:flex-1 overflow-hidden">
               <AnimatePresence mode="wait">
-                <motion.img
+                 <OptimizedImage
                   key={imgIndex}
                   src={images[imgIndex]}
-                  alt={product.retailHeading}
-                  className="w-full h-full object-cover"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.25 }}
+                  alt={product.retailHeading ?? product.name}
+                  width={800}
+                  quality={80}
+                  wrapperClassName="w-full h-full"
+                  className="object-cover"
                 />
               </AnimatePresence>
 
@@ -141,7 +147,7 @@ export default function QuickViewModal({ product, onClose }) {
               <div className="flex gap-1.5 p-2 bg-black/20 overflow-x-auto no-scrollbar">
                 {images.map((img, i) => (
                   <button key={i} onClick={() => setImgIndex(i)} className={`w-12 h-12 rounded-lg overflow-hidden border-2 shrink-0 transition-all ${i === imgIndex ? 'border-[#c9a962]' : 'border-white/10 hover:border-white/30'}`}>
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <OptimizedImage src={img} width={60} quality={50} wrapperClassName="w-full h-full" />
                   </button>
                 ))}
               </div>
