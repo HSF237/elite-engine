@@ -455,38 +455,38 @@ export default function Checkout() {
       {/* Add Placement Modal */}
       <AnimatePresence>
         {showAddForm && (
-          <>
-            <motion.div 
-               initial={{ opacity: 0 }} 
-               animate={{ opacity: 1 }} 
-               exit={{ opacity: 0 }}
-               className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[150]"
-               onClick={() => setShowAddForm(false)}
-            />
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[150] flex items-center justify-center p-4 sm:p-6 overflow-y-auto no-scrollbar"
+            onClick={() => setShowAddForm(false)}
+          >
             <motion.div 
                initial={{ opacity: 0, scale: 0.95, y: 30 }} 
                animate={{ opacity: 1, scale: 1, y: 0 }} 
                exit={{ opacity: 0, scale: 0.95, y: 30 }}
-               className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl bg-[#0a0a0b] p-10 md:p-14 rounded-[4rem] border border-white/10 z-[160] shadow-3xl overflow-y-auto max-h-[90vh] no-scrollbar"
+               className="relative w-full max-w-xl bg-[#0d0d0e] p-8 md:p-12 rounded-[2.5rem] border border-white/10 shadow-3xl overflow-hidden"
+               onClick={e => e.stopPropagation()}
             >
-               <div className="flex items-center justify-between mb-10">
+               <div className="flex items-center justify-between mb-8">
                  <div>
-                    <h3 className="text-3xl font-outfit font-black uppercase tracking-tighter">Define Placement</h3>
+                    <h3 className="text-2xl font-outfit font-black uppercase tracking-tighter">Define Placement</h3>
                     <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.3em] mt-2 italic">Register a new target destination</p>
                  </div>
-                 <button onClick={() => setShowAddForm(false)} className="p-4 glass rounded-full hover:bg-red-500/10 hover:text-red-500 transition-all">
-                   <X className="w-6 h-6" />
+                 <button onClick={() => setShowAddForm(false)} className="p-3 glass rounded-full hover:bg-red-500/10 hover:text-red-500 transition-all">
+                   <X className="w-5 h-5" />
                  </button>
                </div>
 
-               <form onSubmit={handleAddAddress} className="space-y-6">
-                 <div className="grid grid-cols-3 gap-3">
+               <form onSubmit={handleAddAddress} className="space-y-4">
+                 <div className="grid grid-cols-3 gap-2">
                    {['Home', 'Office', 'Other'].map(l => (
                      <button 
                         key={l}
                         type="button"
                         onClick={() => setNewAddress({...newAddress, label: l})}
-                        className={`py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border transition-all ${
+                        className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] border transition-all ${
                           newAddress.label === l ? 'bg-[#c9a962] border-[#c9a962] text-black shadow-lg shadow-[#c9a962]/20' : 'border-white/10 text-white/20 hover:border-white/40'
                         }`}
                      >
@@ -495,45 +495,43 @@ export default function Checkout() {
                    ))}
                   </div>
 
-                 <div className="space-y-4">
-                    <div className="relative group">
-                      <input 
-                        required placeholder="Street Address / Building" 
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
-                        value={newAddress.street}
-                        onChange={e => setNewAddress({...newAddress, street: e.target.value})}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-3">
+                    <input 
+                      required placeholder="Street Address / Building" 
+                      className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
+                      value={newAddress.street}
+                      onChange={e => setNewAddress({...newAddress, street: e.target.value})}
+                    />
+                    <div className="grid grid-cols-2 gap-3">
                         <input 
                           required placeholder="City Domain" 
-                          className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                          className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
                           value={newAddress.city}
                           onChange={e => setNewAddress({...newAddress, city: e.target.value})}
                         />
                         <input 
                           required placeholder="State Territory" 
-                          className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                          className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
                           value={newAddress.state}
                           onChange={e => setNewAddress({...newAddress, state: e.target.value})}
                         />
                     </div>
                     <input 
                         required placeholder="Postal / ZIP Code" 
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
                         value={newAddress.zip}
                         onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
                     />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <input 
                            required placeholder="Mandator Age" type="number"
-                           className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                           className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
                            value={newAddress.age}
                            onChange={e => setNewAddress({...newAddress, age: e.target.value})}
                         />
                         <input 
                            required placeholder="Date of Birth" 
-                           className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 text-sm outline-none focus:border-[#c9a962] transition-all"
+                           className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
                            value={newAddress.dob}
                            onChange={e => setNewAddress({...newAddress, dob: e.target.value})}
                         />
@@ -543,23 +541,23 @@ export default function Checkout() {
                  {/* Set as Primary Toggle */}
                  <div 
                    onClick={() => setIsSettingPrimary(!isSettingPrimary)}
-                   className="flex items-center justify-between p-6 rounded-3xl bg-white/[0.03] border border-white/10 cursor-pointer group hover:border-[#c9a962]/30 transition-all"
+                   className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/10 cursor-pointer group hover:border-[#c9a962]/30 transition-all"
                  >
                     <div>
-                       <p className="text-xs font-black uppercase text-white tracking-widest">Mark as Primary Placement</p>
-                       <p className="text-[9px] text-white/30 font-bold uppercase mt-1">Automatically selected for future dispatch</p>
+                       <p className="text-[10px] font-black uppercase text-white tracking-widest">Mark as Primary Placement</p>
+                       <p className="text-[8px] text-white/30 font-bold uppercase mt-1">Automatically selected for future dispatch</p>
                     </div>
-                    <div className={`w-12 h-6 rounded-full relative transition-all ${isSettingPrimary ? 'bg-[#c9a962]' : 'bg-white/10'}`}>
-                       <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all shadow-lg ${isSettingPrimary ? 'right-1' : 'left-1'}`} />
+                    <div className={`w-10 h-5 rounded-full relative transition-all ${isSettingPrimary ? 'bg-[#c9a962]' : 'bg-white/10'}`}>
+                       <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all shadow-lg ${isSettingPrimary ? 'right-0.5' : 'left-0.5'}`} />
                     </div>
                  </div>
 
-                 <button className="w-full h-20 bg-white text-black rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs mt-6 hover:bg-[#c9a962] transition-all shadow-2xl">
+                 <button className="w-full h-16 bg-white text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] mt-4 hover:bg-[#c9a962] transition-all shadow-2xl">
                    Secure Placement
                  </button>
                </form>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
