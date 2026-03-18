@@ -41,104 +41,109 @@ export default function Navbar() {
       }`}
     >
       {/* Top Main Nav */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-8">
-        {/* Logo */}
-        <Link to="/" className="font-outfit font-bold text-2xl tracking-tighter text-white shrink-0 flex items-center gap-1 group">
-          <div className="w-8 h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
-             <ShoppingBag className="w-5 h-5 text-black" />
-          </div>
-          <span>ELITE<span className="text-[#c9a962]">STORE</span></span>
-        </Link>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-2 sm:py-3 border-b border-white/5 sm:border-none">
+        <div className="flex items-center justify-between w-full h-12 sm:h-auto gap-4">
+          {/* Logo */}
+          <Link to="/" className="font-outfit font-bold text-lg sm:text-2xl tracking-tighter text-white shrink-0 flex items-center gap-1 group">
+            <div className="w-6 h-6 sm:w-8 h-8 bg-[#c9a962] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
+               <ShoppingBag className="w-4 h-4 sm:w-5 h-5 text-black" />
+            </div>
+            <span>ELITE<span className="text-[#c9a962]">STORE</span></span>
+          </Link>
 
-        {/* Deliver to - Amazon style */}
-        <div className="hidden xl:flex items-center gap-1 text-white/70 hover:text-white cursor-pointer transition-colors group">
-           <MapPin className="w-4 h-4 mt-1 group-hover:text-[#c9a962]" />
-           <div className="flex flex-col">
-              <span className="text-[10px] leading-none uppercase tracking-tighter">Deliver to</span>
-              <span className="text-sm font-bold leading-tight">India</span>
+          {/* SHOP ALL - Right on Mobile */}
+          <Link 
+            to="/shop" 
+            className="px-3 py-1 bg-[#c9a962] text-black font-black text-[9px] uppercase tracking-[15%] rounded-lg shadow-lg hover:scale-105 transition-all flex items-center gap-1.5"
+          >
+            <ShoppingBag className="w-3.5 h-3.5" />
+            Shop All
+          </Link>
+        </div>
+
+        {/* Mobile Icons Row (Search Left, Others Right) */}
+        <div className="flex sm:hidden items-center justify-between mt-2 py-1">
+           <Link to="/shop" className="p-2 text-white/60 hover:text-[#c9a962] transition-colors">
+              <Search className="w-5 h-5" />
+           </Link>
+           
+           <div className="flex items-center gap-1">
+              <Link to="/shop" className="p-2 relative text-white/80 group">
+                <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''}`} />
+                {wishlistCount > 0 && <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-red-500 text-[8px] font-black flex items-center justify-center">{wishlistCount}</span>}
+              </Link>
+              <button onClick={openCart} className="p-2 relative text-white/80">
+                <ShoppingBag className="w-5 h-5" />
+                {count > 0 && <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#c9a962] text-[8px] font-black text-black flex items-center justify-center">{count}</span>}
+              </button>
+              {user && (
+                <Link to="/profile" className="p-2">
+                   <div className="w-6 h-6 rounded-lg bg-[#c9a962] flex items-center justify-center font-black text-[10px] text-black">{user.name?.[0]}</div>
+                </Link>
+              )}
+              <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+                <Menu className="w-6 h-6" />
+              </button>
            </div>
         </div>
 
-        {/* PROMINENT SHOP ALL BUTTON - Requested "Upside" */}
-        <Link 
-          to="/shop" 
-          className="order-2 sm:order-none px-3 py-1.5 bg-[#c9a962] text-black font-black text-[9px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] rounded-lg shadow-[0_0_15px_rgba(201,169,98,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 whitespace-nowrap"
-        >
-          <ShoppingBag className="w-3.5 h-3.5" />
-          Shop All
-        </Link>
-
-        {/* Search Bar - Amazon style */}
-        <div className="flex-1 w-full max-w-xl relative order-3 sm:order-none mt-1 sm:mt-0 col-span-full sm:col-span-1">
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault()
-              if (searchQuery.trim()) navigate(`/shop?q=${encodeURIComponent(searchQuery)}`)
-            }}
-            className="flex w-full rounded-lg overflow-hidden glass border border-white/10 group focus-within:ring-2 focus-within:ring-[#c9a962]/30 transition-all"
-          >
-            <div className="bg-white/5 border-r border-white/10 px-2 flex items-center gap-1 text-[10px] text-white/60 hover:bg-white/10 cursor-pointer transition-colors">
-               All <ChevronDown className="w-2.5 h-2.5" />
+        {/* DESKTOP CONTENT (Hidden on Mobile) */}
+        <div className="hidden sm:flex items-center gap-8 w-full mt-2 sm:mt-0">
+           {/* Deliver to */}
+            <div className="hidden xl:flex items-center gap-1 text-white/70 hover:text-white cursor-pointer transition-colors group">
+               <MapPin className="w-4 h-4 mt-1 group-hover:text-[#c9a962]" />
+               <div className="flex flex-col">
+                  <span className="text-[10px] leading-none uppercase tracking-tighter">Deliver to</span>
+                  <span className="text-sm font-bold leading-tight">India</span>
+               </div>
             </div>
-            <input 
-              type="text" 
-              placeholder="Search Elite Collection..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-3 py-1.5 text-xs text-white focus:outline-none placeholder:text-white/20"
-            />
-            <button type="submit" className="bg-[#c9a962] hover:bg-[#b09452] px-4 flex items-center justify-center transition-colors">
-               <Search className="w-4 h-4 text-black" />
-            </button>
-          </form>
-        </div>
 
-        {/* Actions Icons */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto text-white/80 order-2 sm:order-none">
-          {user ? (
-            <div className="flex items-center gap-4">
-              <Link to="/profile" className="flex items-center gap-2 group p-2 rounded-xl hover:bg-white/5 transition-all">
-                 <div className="w-8 h-8 rounded-lg bg-[#c9a962] flex items-center justify-center font-black text-xs text-black uppercase">
-                    {user.name?.[0] || 'U'}
-                 </div>
-                 <span className="hidden md:block text-[10px] uppercase font-black tracking-widest text-white/40 group-hover:text-white transition-colors">Profile</span>
-              </Link>
-              <button 
-                onClick={logout}
-                className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-red-500/10 hover:text-red-500 transition-all"
-                title="Logout"
+            {/* Desktop Search */}
+            <div className="flex-1 max-w-xl relative">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (searchQuery.trim()) navigate(`/shop?q=${encodeURIComponent(searchQuery)}`)
+                }}
+                className="flex w-full rounded-lg overflow-hidden glass border border-white/10 group focus-within:ring-2 focus-within:ring-[#c9a962]/30 transition-all"
               >
-                <LogOut className="w-4 h-4" />
-              </button>
+                <div className="bg-white/5 border-r border-white/10 px-2 flex items-center gap-1 text-[10px] text-white/60 hover:bg-white/10 cursor-pointer transition-colors">
+                   All <ChevronDown className="w-2.5 h-2.5" />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Search Elite Collection..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent px-3 py-1.5 text-xs text-white focus:outline-none placeholder:text-white/20"
+                />
+                <button type="submit" className="bg-[#c9a962] hover:bg-[#b09452] px-4 flex items-center justify-center transition-colors">
+                   <Search className="w-4 h-4 text-black" />
+                </button>
+              </form>
             </div>
-          ) : (
-            <Link to="/login" className="hidden sm:flex flex-col items-center hover:text-white transition-colors px-2 group">
-              <User className="w-5 h-5 group-hover:text-[#c9a962]" />
-              <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">Sign In</span>
-            </Link>
-          )}
 
-          <Link to="/shop" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
-            <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'group-hover:text-red-400'}`} />
-            {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">
-                {wishlistCount}
-              </span>
-            )}
-          </Link>
-
-          <button onClick={openCart} className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
-            <ShoppingBag className="w-5 h-5 group-hover:text-[#c9a962]" />
-            {count > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-[#c9a962] text-[9px] font-bold text-black flex items-center justify-center">
-                {count}
-              </span>
-            )}
-          </button>
-
-          <button className="sm:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
-            <Menu className="w-6 h-6" />
-          </button>
+            {/* Desktop Actions */}
+            <div className="flex items-center gap-3 text-white/80">
+              <Link to="/shop" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
+                <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'group-hover:text-red-400'}`} />
+                {wishlistCount > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">{wishlistCount}</span>}
+              </Link>
+              <button onClick={openCart} className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
+                <ShoppingBag className="w-5 h-5 group-hover:text-[#c9a962]" />
+                {count > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-[#c9a962] text-[9px] font-bold text-black flex items-center justify-center">{count}</span>}
+              </button>
+              {user ? (
+                <Link to="/profile" className="flex items-center gap-2 group p-2 rounded-xl hover:bg-white/5 transition-all">
+                   <div className="w-8 h-8 rounded-lg bg-[#c9a962] flex items-center justify-center font-black text-xs text-black uppercase">{user.name?.[0]}</div>
+                </Link>
+              ) : (
+                <Link to="/login" className="flex flex-col items-center hover:text-white transition-colors px-2 group">
+                  <User className="w-5 h-5 group-hover:text-[#c9a962]" />
+                  <span className="text-[10px] font-bold mt-0.5 uppercase tracking-tighter">Sign In</span>
+                </Link>
+              )}
+            </div>
         </div>
       </div>
 
