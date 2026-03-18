@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, MapPin, Package, Settings, LogOut, ChevronRight, Plus, MapPinLine, Loader2, CheckCircle2 } from 'lucide-react'
+import { User, MapPin, Package, Settings, LogOut, ChevronRight, Plus, Loader2, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import api from '../utils/api'
@@ -251,7 +251,7 @@ export default function Profile() {
 
                   {addresses.length === 0 && (
                     <div className="bg-[#111113] py-24 rounded-[3rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center opacity-50">
-                      <MapPinLine className="w-16 h-16 mb-4" />
+                      <MapPin className="w-16 h-16 mb-4" />
                       <p className="font-black text-xs uppercase tracking-widest">Your placement list is empty</p>
                     </div>
                   )}
@@ -329,7 +329,7 @@ const OrderCard = ({ order }) => {
                        }`}>
                           {i === 0 && <Package className="w-5 h-5" />}
                           {i === 1 && <Loader2 className={`w-5 h-5 ${i === currentStep ? 'animate-spin' : ''}`} />}
-                          {i === 2 && <MapPinLine className="w-5 h-5" />}
+                          {i === 2 && <MapPin className="w-5 h-5" />}
                           {i === 3 && <CheckCircle2 className="w-5 h-5" />}
                        </div>
                        <span className={`text-[9px] font-black uppercase tracking-tighter ${i <= currentStep ? 'text-white' : 'text-white/20'}`}>
