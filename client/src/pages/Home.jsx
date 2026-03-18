@@ -170,6 +170,24 @@ export default function Home() {
           ))}
         </div>
       </section>
+      
+      {/* ——— Shop by Category ——— */}
+      <section className="py-6 px-4 bg-white/[0.01]">
+        <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-4 sm:gap-8">
+          {CATEGORIES.map((cat) => (
+            <div 
+              key={cat.id} 
+              className="flex flex-col items-center gap-1.5 group cursor-pointer"
+              onClick={() => navigate(`/shop?category=${cat.slug}`)}
+            >
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-white/10 group-hover:border-[#c9a962]/50 transition-all shadow-lg bg-white/5">
+                 <img src={cat.image} alt={cat.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              </div>
+              <span className="text-[8px] sm:text-[9px] font-black text-white/40 group-hover:text-white uppercase tracking-widest transition-colors">{cat.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ——— Specialized Grid Cards (Amazon style) ——— */}
       <section className="py-6 px-4">
@@ -455,43 +473,43 @@ export default function Home() {
       )}
 
       {/* ——— Promotional Shop All Call-to-Action ——— */}
-      <section className="py-20 px-4 sm:px-6 text-center border-t border-white/5 relative overflow-hidden">
+      <section className="py-12 px-4 text-center border-t border-white/5 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-[#c9a962]/50 to-transparent" />
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
         >
-          <h2 className="font-outfit font-black text-3xl sm:text-5xl text-white mb-4 sm:mb-6 uppercase tracking-tighter">Ready to Upgrade?</h2>
-          <p className="text-white/40 mb-8 sm:mb-10 text-sm sm:text-base max-w-lg mx-auto font-medium">Browse our full collection of premium tech, fashion, and lifestyle essentials.</p>
+          <h2 className="font-outfit font-black text-2xl sm:text-3xl text-white mb-3 uppercase tracking-tighter">Ready to Upgrade?</h2>
+          <p className="text-white/40 mb-6 text-[10px] sm:text-xs max-w-sm mx-auto font-medium">Browse our full collection of premium lifestyle essentials.</p>
           <button
             onClick={() => navigate('/shop')}
-            className="group px-12 py-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white font-black uppercase tracking-[0.2em] hover:bg-[#c9a962] hover:text-black hover:border-[#c9a962] transition-all shadow-2xl"
+            className="group px-8 py-3 bg-[#c9a962] rounded-xl text-black font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-xl"
           >
-            Explore Marketplace
+            Explore Now
           </button>
         </motion.div>
       </section>
 
       {/* ——— Elite Trust Section ——— */}
-      <section className="py-20 px-4 sm:px-6 bg-white/[0.02] border-y border-white/5">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+      <section className="py-12 px-4 bg-white/[0.01]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { title: 'Elite Quality', desc: 'Hand-picked luxury items vetted by global experts.', icon: '💎' },
-            { title: 'Secure Vault', desc: 'Encrypted end-to-end payments with 24/7 fraud protection.', icon: '🛡️' },
+            { title: 'Secure Vault', desc: 'Encrypted end-to-end payments with 24/7 protection.', icon: '🛡️' },
             { title: 'Priority Drop', desc: 'Fastest delivery engine in the luxury segment.', icon: '🚀' },
           ].map((trust, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className="flex flex-col items-center text-center"
             >
-              <div className="text-4xl mb-4">{trust.icon}</div>
-              <h4 className="font-outfit font-bold text-lg text-white mb-2">{trust.title}</h4>
-              <p className="text-sm text-white/50 leading-relaxed font-medium">{trust.desc}</p>
+              <div className="text-2xl mb-2">{trust.icon}</div>
+              <h4 className="font-outfit font-bold text-sm text-white mb-1">{trust.title}</h4>
+              <p className="text-[10px] text-white/40 leading-relaxed font-medium">{trust.desc}</p>
             </motion.div>
           ))}
         </div>

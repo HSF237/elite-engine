@@ -62,33 +62,33 @@ export default function Navbar() {
         {/* PROMINENT SHOP ALL BUTTON - Requested "Upside" */}
         <Link 
           to="/shop" 
-          className="order-2 sm:order-none px-4 py-2 bg-[#c9a962] text-black font-black text-xs uppercase tracking-[0.2em] rounded-lg shadow-[0_0_20px_rgba(201,169,98,0.3)] hover:scale-105 active:scale-95 transition-all hidden md:flex items-center gap-2 whitespace-nowrap"
+          className="order-2 sm:order-none px-3 py-1.5 bg-[#c9a962] text-black font-black text-[9px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] rounded-lg shadow-[0_0_15px_rgba(201,169,98,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 whitespace-nowrap"
         >
-          <ShoppingBag className="w-4 h-4" />
+          <ShoppingBag className="w-3.5 h-3.5" />
           Shop All
         </Link>
 
         {/* Search Bar - Amazon style */}
-        <div className="flex-1 w-full max-w-2xl relative order-3 sm:order-none mt-2 sm:mt-0 col-span-full sm:col-span-1">
+        <div className="flex-1 w-full max-w-xl relative order-3 sm:order-none mt-1 sm:mt-0 col-span-full sm:col-span-1">
           <form 
             onSubmit={(e) => {
               e.preventDefault()
               if (searchQuery.trim()) navigate(`/shop?q=${encodeURIComponent(searchQuery)}`)
             }}
-            className="flex w-full rounded-xl overflow-hidden glass border border-white/10 group focus-within:ring-2 focus-within:ring-[#c9a962]/50 transition-all"
+            className="flex w-full rounded-lg overflow-hidden glass border border-white/10 group focus-within:ring-2 focus-within:ring-[#c9a962]/30 transition-all"
           >
-            <div className="bg-white/5 border-r border-white/10 px-3 flex items-center gap-1 text-xs text-white/60 hover:bg-white/10 cursor-pointer transition-colors">
-               All <ChevronDown className="w-3 h-3" />
+            <div className="bg-white/5 border-r border-white/10 px-2 flex items-center gap-1 text-[10px] text-white/60 hover:bg-white/10 cursor-pointer transition-colors">
+               All <ChevronDown className="w-2.5 h-2.5" />
             </div>
             <input 
               type="text" 
-              placeholder="Search Elite Products, Brands and Categories"
+              placeholder="Search Elite Collection..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent px-4 py-2 text-sm text-white focus:outline-none placeholder:text-white/30"
+              className="flex-1 bg-transparent px-3 py-1.5 text-xs text-white focus:outline-none placeholder:text-white/20"
             />
-            <button type="submit" className="bg-[#c9a962] hover:bg-[#b09452] px-5 flex items-center justify-center transition-colors">
-               <Search className="w-5 h-5 text-black" />
+            <button type="submit" className="bg-[#c9a962] hover:bg-[#b09452] px-4 flex items-center justify-center transition-colors">
+               <Search className="w-4 h-4 text-black" />
             </button>
           </form>
         </div>

@@ -48,7 +48,7 @@ export default function QuickViewModal({ product, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/85 backdrop-blur-xl z-[200] flex items-center justify-center p-4 sm:p-6"
+        className="fixed inset-0 bg-black/85 backdrop-blur-xl z-[200] flex items-center justify-center p-2 sm:p-4"
         onClick={onClose}
       >
         <motion.div
@@ -56,7 +56,7 @@ export default function QuickViewModal({ product, onClose }) {
            animate={{ scale: 1, opacity: 1, y: 0 }}
            exit={{ scale: 0.9, opacity: 0, y: 30 }}
            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-           className="bg-[#111112] border border-white/10 rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl shadow-black/50 overflow-hidden"
+           className="bg-[#111112] border border-white/10 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row shadow-2xl shadow-black/50 overflow-hidden"
            onClick={e => e.stopPropagation()}
         >
           {/* Mobile Top Header (Image + Name + Price) */}
@@ -82,8 +82,8 @@ export default function QuickViewModal({ product, onClose }) {
                   </div>
                   <span className="text-[10px] font-bold text-white">{product.rating ?? '4.6'}</span>
                </div>
-               <div className="mt-2 flex items-baseline gap-2">
-                  <span className="text-lg font-outfit font-black text-white">₹{price.toLocaleString()}</span>
+               <div className="mt-1 flex items-baseline gap-1.5">
+                  <span className="text-base font-outfit font-black text-white">₹{price.toLocaleString()}</span>
                   {product.regularPrice && product.discountPrice && (
                     <span className="text-[10px] text-white/30 line-through">₹{product.regularPrice.toLocaleString()}</span>
                   )}
@@ -138,9 +138,9 @@ export default function QuickViewModal({ product, onClose }) {
 
             {/* Thumbnail Strip */}
             {images.length > 1 && (
-              <div className="flex gap-2 p-3 bg-black/20 overflow-x-auto no-scrollbar">
+              <div className="flex gap-1.5 p-2 bg-black/20 overflow-x-auto no-scrollbar">
                 {images.map((img, i) => (
-                  <button key={i} onClick={() => setImgIndex(i)} className={`w-14 h-14 rounded-lg overflow-hidden border-2 shrink-0 transition-all ${i === imgIndex ? 'border-[#c9a962]' : 'border-white/10 hover:border-white/30'}`}>
+                  <button key={i} onClick={() => setImgIndex(i)} className={`w-12 h-12 rounded-lg overflow-hidden border-2 shrink-0 transition-all ${i === imgIndex ? 'border-[#c9a962]' : 'border-white/10 hover:border-white/30'}`}>
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
@@ -154,7 +154,7 @@ export default function QuickViewModal({ product, onClose }) {
             {/* Desktop Only Header Details */}
             <div className="hidden md:block">
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#c9a962]">{product.department}</span>
-              <h2 className="font-outfit font-black text-3xl text-white mt-1 leading-tight">
+              <h2 className="font-outfit font-black text-2xl text-white mt-1 leading-tight">
                 {product.retailHeading ?? product.name}
               </h2>
               <div className="flex items-center gap-3 mt-4">
@@ -168,7 +168,7 @@ export default function QuickViewModal({ product, onClose }) {
               </div>
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mt-6">
                 <div className="flex items-end gap-3">
-                  <span className="text-3xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
+                  <span className="text-2xl font-outfit font-black text-white">₹{price.toLocaleString()}</span>
                   {product.regularPrice && product.discountPrice && (
                     <span className="text-base text-white/30 line-through font-medium">₹{product.regularPrice.toLocaleString()}</span>
                   )}

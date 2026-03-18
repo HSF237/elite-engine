@@ -21,7 +21,7 @@ const SORT_OPTIONS = [
 function FilterSection({ title, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="border-b border-white/5 pb-6">
+    <div className="border-b border-white/5 pb-4">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full mb-4 group"
@@ -335,7 +335,7 @@ export default function Shop() {
             <div className="flex lg:hidden items-center gap-2 overflow-x-auto no-scrollbar pb-4 mb-4 border-b border-white/5 whitespace-nowrap">
               <button 
                 onClick={() => setFreeDelivery(!freeDelivery)}
-                className={`flex-shrink-0 px-4 py-2 border rounded-full text-xs font-bold transition-all ${freeDelivery ? 'bg-white/10 text-white border-white/40' : 'bg-transparent text-white/50 border-white/10'}`}
+                className={`flex-shrink-0 px-3 py-1.5 border rounded-full text-[10px] font-bold transition-all ${freeDelivery ? 'bg-white/10 text-white border-white/40' : 'bg-transparent text-white/50 border-white/10'}`}
               >
                 ✓ Prime
               </button>
@@ -343,7 +343,7 @@ export default function Shop() {
                 <button 
                   key={cat}
                   onClick={() => setSelectedCategory(selectedCategory === cat ? 'All' : cat)}
-                  className={`flex-shrink-0 px-4 py-2 border rounded-full text-xs font-bold transition-all ${selectedCategory === cat ? 'bg-white/10 text-[#c9a962] border-[#c9a962]/40' : 'bg-transparent text-white/60 border-white/10'}`}
+                  className={`flex-shrink-0 px-3 py-1.5 border rounded-full text-[10px] font-bold transition-all ${selectedCategory === cat ? 'bg-white/10 text-[#c9a962] border-[#c9a962]/40' : 'bg-transparent text-white/60 border-white/10'}`}
                 >
                   {cat}
                 </button>
@@ -374,7 +374,7 @@ export default function Shop() {
             ) : (
               <motion.div
                 layout
-                className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4"
+                className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 sm:gap-4"
               >
                 <AnimatePresence mode="popLayout">
                   {filtered.map(product => {
@@ -425,9 +425,7 @@ export default function Shop() {
                           {/* Quick Add Button (Amazon style) */}
                           <div className="absolute bottom-2 right-2 flex items-center justify-center z-10 hidden sm:flex">
                              {/* Keep hidden on desktop to not clash with Size Quick Select, but reveal on mobile! Wait! We actually just render it everywhere for the Amazon vibe. */}
-                          </div>
-                          
-                          <button
+                           <button
                              onClick={e => { 
                                e.stopPropagation(); 
                                addToCart({
@@ -441,10 +439,11 @@ export default function Shop() {
                                  image: product.images?.[0]||product.image
                                }); 
                              }}
-                             className="absolute bottom-2 right-2 w-8 h-8 sm:w-10 sm:h-10 bg-[#c9a962] hover:bg-[#b09452] text-black rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 shadow-black/50 z-20"
+                             className="absolute bottom-1.5 right-1.5 w-7 h-7 sm:w-8 sm:h-8 bg-[#c9a962] hover:bg-[#b09452] text-black rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 shadow-black/50 z-20"
                           >
-                             <Plus className="w-5 h-5 font-black" />
+                             <Plus className="w-4 h-4 font-black" />
                           </button>
+                          </div>
 
                           {/* Action Buttons */}
                           <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -470,10 +469,10 @@ export default function Shop() {
                         </div>
 
                         {/* Info */}
-                        <div className="p-2.5 sm:p-4 flex-1 flex flex-col bg-white/[0.02]">
+                        <div className="p-2 sm:p-3 flex-1 flex flex-col bg-white/[0.02]">
                           <div className="flex flex-col gap-0.5 mb-1">
                             <h3
-                              className="font-outfit font-bold text-white text-xs sm:text-sm leading-snug group-hover:text-[#c9a962] transition-colors cursor-pointer line-clamp-2"
+                              className="font-outfit font-bold text-white text-[10px] sm:text-xs leading-snug group-hover:text-[#c9a962] transition-colors cursor-pointer line-clamp-2"
                               onClick={() => setQuickViewProduct(product)}
                             >
                               {product.retailHeading}
@@ -488,17 +487,17 @@ export default function Shop() {
                             </div>
                           </div>
 
-                          <div className="mt-auto pt-1.5 flex items-baseline gap-1.5 flex-wrap">
+                          <div className="mt-auto pt-1 flex items-baseline gap-1 flex-wrap">
                              {discount > 0 && (
-                                <span className="bg-[#cc0c39] text-white font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded shadow-sm">
+                                <span className="bg-[#cc0c39] text-white font-bold text-[8px] sm:text-[9px] px-1 py-0.5 rounded shadow-sm">
                                    -{discount}%
                                 </span>
                              )}
-                            <span className="text-lg sm:text-xl font-outfit font-black text-white tracking-tighter shadow-sm flex items-baseline">
-                               <span className="text-[10px] sm:text-xs mr-0.5 leading-none">₹</span>{price.toLocaleString()}
+                            <span className="text-base sm:text-lg font-outfit font-black text-white tracking-tighter shadow-sm flex items-baseline">
+                               <span className="text-[9px] sm:text-xs mr-0.5 leading-none">₹</span>{price.toLocaleString()}
                             </span>
                             {product.regularPrice > product.discountPrice && (
-                              <span className="text-[10px] sm:text-xs text-white/40 font-bold line-through ml-1 leading-none">₹{product.regularPrice.toLocaleString()}</span>
+                              <span className="text-[9px] sm:text-[10px] text-white/40 font-bold line-through ml-1 leading-none">₹{product.regularPrice.toLocaleString()}</span>
                             )}
                           </div>
                           {product.deliveryCharge === 0 && (

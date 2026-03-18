@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { 
   MapPin, CreditCard, ChevronRight, CheckCircle2, 
-  MapPinLine, Home, Briefcase, Plus, X, Loader2 
+  Home, Briefcase, Plus, X, Loader2 
 } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -226,7 +226,7 @@ export default function Checkout() {
 
                 {addresses.length === 0 && !showAddForm && (
                   <div className="py-24 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
-                    <MapPinLine className="w-16 h-16 text-white/10 mb-6" />
+                    <MapPin className="w-16 h-16 text-white/10 mb-6" />
                     <p className="text-sm font-black uppercase tracking-widest text-white/20">Your placement list is currently empty.</p>
                   </div>
                 )}
