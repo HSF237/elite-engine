@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { 
   MapPin, CreditCard, ChevronRight, CheckCircle2, 
-  Home, Briefcase, Plus, X, Loader2 
+  Home, Briefcase, Plus, X, Loader2, ExternalLink 
 } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -67,13 +67,10 @@ export default function Checkout() {
         const def = res.data.find(a => a.isDefault) || res.data[0]
         if (def) setSelectedAddress(def)
         
-        // If user already has profile details (age/dob), pre-fill newAddress state
         api.get('/api/user/profile').then(profileRes => {
            setNewAddress(prev => ({
              ...prev,
              phone: profileRes.data.phone || '',
-             age: profileRes.data.age || '',
-             dob: profileRes.data.dob || ''
            }))
         })
       })
@@ -131,7 +128,6 @@ export default function Checkout() {
         isDefault: isSettingPrimary 
       })
       setAddresses(data)
-      // Find the newly added address in the list
       const added = data.find(a => a.street === newAddress.street) || data[data.length - 1]
       setSelectedAddress(added)
       setShowAddForm(false)
@@ -495,6 +491,17 @@ export default function Checkout() {
                   </div>
 
                  <div className="space-y-3">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a962]">Target Placement</span>
+                      <a 
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${newAddress.street} ${newAddress.city} ${newAddress.state} ${newAddress.zip}`)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1.5 text-[9px] font-black uppercase text-white/40 hover:text-[#c9a962] transition-colors"
+                      >
+                        Locate <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
                     <input 
                       required placeholder="Street Address / Building" 
                       className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
@@ -522,17 +529,21 @@ export default function Checkout() {
                         onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
                     />
                     <div className="grid grid-cols-2 gap-3">
-                        <select 
-                           required 
-                           className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs font-bold text-white outline-none focus:border-[#c9a962] transition-all"
-                           value={newAddress.deliveryTime}
-                           onChange={e => setNewAddress({...newAddress, deliveryTime: e.target.value})}
-                        >
-                           <option value="" disabled className="bg-[#0a0a0b]">Arrival Window</option>
-                           <option value="08:00 - 12:00" className="bg-[#0a0a0b]">Morning (08:00 - 12:00)</option>
-                           <option value="12:00 - 16:00" className="bg-[#0a0a0b]">Afternoon (12:00 - 16:00)</option>
-                           <option value="16:00 - 20:00" className="bg-[#0a0a0b]">Evening (16:00 - 20:00)</option>
-                        </select>
+                        <div className="relative">
+                           <input 
+                              required 
+                              list="time-suggestions"
+                              placeholder="Preferred Time (e.g. 10 AM)" 
+                              className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
+                              value={newAddress.deliveryTime}
+                              onChange={e => setNewAddress({...newAddress, deliveryTime: e.target.value})}
+                           />
+                           <datalist id="time-suggestions">
+                              <option value="08:00 - 12:00 (Morning)" />
+                              <option value="12:00 - 16:00 (Afternoon)" />
+                              <option value="16:00 - 20:00 (Evening)" />
+                           </datalist>
+                        </div>
                         <input 
                            required placeholder="Handling Notes" 
                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
