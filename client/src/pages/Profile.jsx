@@ -155,25 +155,7 @@ export default function Profile() {
                         onChange={e => setProfileData({...profileData, phone: e.target.value})}
                        />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2">Age</label>
-                        <input 
-                          type="number"
-                          className="w-full bg-white/2 border border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-[#c9a962]/50 outline-none transition-all"
-                          value={profileData?.age || ''}
-                          onChange={e => setProfileData({...profileData, age: e.target.value})}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2">DOB</label>
-                        <input 
-                          className="w-full bg-white/2 border border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-[#c9a962]/50 outline-none transition-all"
-                          value={profileData?.dob || ''}
-                          onChange={e => setProfileData({...profileData, dob: e.target.value})}
-                        />
-                      </div>
-                    </div>
+
                     <div className="sm:col-span-2 pt-6">
                       <button 
                         type="submit"

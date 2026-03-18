@@ -36,10 +36,12 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message || 'Server Error' })
 })
 
-// ── Start ──────────────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 5000
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🔥 Elite Server running on http://localhost:${PORT}`)
+module.exports = app
+if (process.env.NODE_ENV !== 'production' || require.main === module) {
+  const PORT = process.env.PORT || 5000
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🔥 Elite Server running on http://localhost:${PORT}`)
+    })
   })
-})
+}

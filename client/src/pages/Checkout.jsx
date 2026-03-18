@@ -33,8 +33,8 @@ export default function Checkout() {
     state: '',
     zip: '',
     phone: '',
-    age: '',
-    dob: ''
+    deliveryTime: '',
+    instructions: ''
   })
 
   const applyPromo = () => {
@@ -104,8 +104,8 @@ export default function Checkout() {
           zip: selectedAddress.zip,
           country: selectedAddress.country || 'India',
           phone: selectedAddress.phone || user?.phone || '',
-          age: Number(selectedAddress.age || user?.age || 0),
-          dob: selectedAddress.dob || user?.dob || ''
+          deliveryTime: selectedAddress.deliveryTime || '',
+          instructions: selectedAddress.instructions || ''
         },
         paymentMethod,
         totalAmount: finalTotal,
@@ -128,7 +128,6 @@ export default function Checkout() {
     try {
       const { data } = await api.post('/api/user/address', { 
         ...newAddress, 
-        age: Number(newAddress.age),
         isDefault: isSettingPrimary 
       })
       setAddresses(data)
@@ -523,17 +522,22 @@ export default function Checkout() {
                         onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
                     />
                     <div className="grid grid-cols-2 gap-3">
+                        <select 
+                           required 
+                           className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs font-bold text-white outline-none focus:border-[#c9a962] transition-all"
+                           value={newAddress.deliveryTime}
+                           onChange={e => setNewAddress({...newAddress, deliveryTime: e.target.value})}
+                        >
+                           <option value="" disabled className="bg-[#0a0a0b]">Arrival Window</option>
+                           <option value="08:00 - 12:00" className="bg-[#0a0a0b]">Morning (08:00 - 12:00)</option>
+                           <option value="12:00 - 16:00" className="bg-[#0a0a0b]">Afternoon (12:00 - 16:00)</option>
+                           <option value="16:00 - 20:00" className="bg-[#0a0a0b]">Evening (16:00 - 20:00)</option>
+                        </select>
                         <input 
-                           required placeholder="Mandator Age" type="number"
+                           required placeholder="Handling Notes" 
                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
-                           value={newAddress.age}
-                           onChange={e => setNewAddress({...newAddress, age: e.target.value})}
-                        />
-                        <input 
-                           required placeholder="Date of Birth" 
-                           className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
-                           value={newAddress.dob}
-                           onChange={e => setNewAddress({...newAddress, dob: e.target.value})}
+                           value={newAddress.instructions}
+                           onChange={e => setNewAddress({...newAddress, instructions: e.target.value})}
                         />
                     </div>
                  </div>
