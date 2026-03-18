@@ -17,32 +17,33 @@ app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// ── Health Check ──────────────────────────────────────────────────────────────
-app.get('/api/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
-app.get('/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
+// ── Unified API Router ────────────────────────────────────────────────────────
+const apiRouter = express.Router()
 
-// Middleware to handle both /api/path and /path for Vercel/Local consistency
-app.use((req, res, next) => {
-  if (req.url.startsWith('/api')) {
-    next()
-  } else {
-    // If it's a serverless call without /api prefix, we can still match
-    // but the following app.use calls already have /api prefix.
-    // So we'll rewrite req.url to include /api just for Express matching if missing.
-    req.url = '/api' + req.url
-    next()
-  }
-})
+// Health Check
+apiRouter.get('/health', (req, res) => res.json({ status: 'Elite Server is running 🚀' }))
 
-app.use('/api/auth', authRoutes)
-app.use('/api/products', productRoutes)
-app.use('/api/user', userRoutes)
-app.use('/api/orders', orderRoutes)
-app.use('/api/reviews', reviewRoutes)
-app.use('/api/analytics', analyticsRoutes)
+// Attach specific routes (all without /api prefix internally)
+apiRouter.use('/auth', authRoutes)
+apiRouter.use('/products', productRoutes)
+apiRouter.use('/user', userRoutes)
+apiRouter.use('/orders', orderRoutes)
+apiRouter.use('/reviews', reviewRoutes)
+apiRouter.use('/analytics', analyticsRoutes)
+
+// Mount the router on both /api (standard) and / (Vercel re-based cases)
+app.use('/api', apiRouter)
+app.use('/', apiRouter)
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
-app.use((req, res) => res.status(404).json({ message: 'Route not found.' }))
+app.use((req, res) => {
+  // Only respond with JSON if it's an API attempt or explicitly for routes we know
+  res.status(404).json({ 
+    message: 'Route not found.', 
+    path: req.originalUrl,
+    method: req.method
+  })
+})
 
 // ── Global Error Handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
