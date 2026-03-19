@@ -106,7 +106,13 @@ export default function Shop() {
     let result = [...products]
     const price = (p) => p.discountPrice ?? p.regularPrice ?? 0
 
-    if (searchQuery) result = result.filter(p => p.retailHeading?.toLowerCase().includes(searchQuery.toLowerCase()))
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase()
+      result = result.filter(p => 
+        p.retailHeading?.toLowerCase().includes(q) || 
+        p.searchKeywords?.some(k => k.toLowerCase().includes(q))
+      )
+    }
     if (selectedCategory !== 'All') {
       result = result.filter(p => 
         p.category?.toLowerCase() === selectedCategory.toLowerCase() || 

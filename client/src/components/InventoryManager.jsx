@@ -26,6 +26,7 @@ export default function InventoryManager() {
     taxRate: '12',
     productVoucher: '',
     productVoucherDiscount: '0',
+    searchKeywords: '',
   })
 
   useEffect(() => {
@@ -66,6 +67,7 @@ export default function InventoryManager() {
       data.append('productVoucher', formData.productVoucher)
       data.append('productVoucherDiscount', formData.productVoucherDiscount)
       data.append('taxRate', formData.taxRate)
+      data.append('searchKeywords', formData.searchKeywords)
 
       // Also append URLs
       const urls = [formData.imageUrl1, formData.imageUrl2, formData.imageUrl3, formData.imageUrl4].filter(Boolean)
@@ -422,6 +424,21 @@ export default function InventoryManager() {
                            value={formData.description}
                            onChange={e => setFormData({...formData, description: e.target.value})}
                         />
+                     </div>
+
+                     {/* Section 6: Smart Search */}
+                     <div className="space-y-4 pb-4">
+                        <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
+                           <Search className="w-3 h-3" /> Smart Search Keywords (Comma separated)
+                        </label>
+                        <input 
+                           type="text" 
+                           placeholder="e.g. shoe, snekers, running, leather"
+                           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#c9a962]/50 outline-none transition-all"
+                           value={formData.searchKeywords}
+                           onChange={e => setFormData({...formData, searchKeywords: e.target.value})}
+                        />
+                        <p className="text-[9px] text-white/20 font-bold uppercase italic text-center">Add misspellings or related terms to help customers find this product.</p>
                      </div>
                   </div>
 

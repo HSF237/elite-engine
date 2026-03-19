@@ -77,6 +77,7 @@ const createProduct = async (req, res) => {
       taxRate: Number(taxRate) || 12,
       productVoucher,
       productVoucherDiscount: Number(productVoucherDiscount) || 0,
+      searchKeywords: typeof req.body.searchKeywords === 'string' ? req.body.searchKeywords.split(',').map(s => s.trim()).filter(Boolean) : req.body.searchKeywords || [],
       createdBy: req.user._id,
     })
 
@@ -85,11 +86,12 @@ const createProduct = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
+
 // PUT /api/products/:id — staff only
 const updateProduct = async (req, res) => {
   try {
     const { 
-      taxRate, productVoucher, productVoucherDiscount, 
+      taxRate, productVoucher, productVoucherDiscount, searchKeywords,
       regularPrice, discountPrice, deliveryCharge 
     } = req.body
 
@@ -99,6 +101,11 @@ const updateProduct = async (req, res) => {
     if (deliveryCharge) updates.deliveryCharge = Number(deliveryCharge)
     if (taxRate) updates.taxRate = Number(taxRate)
     if (productVoucherDiscount) updates.productVoucherDiscount = Number(productVoucherDiscount)
+    if (searchKeywords) {
+      updates.searchKeywords = typeof searchKeywords === 'string' 
+        ? searchKeywords.split(',').map(s => s.trim()).filter(Boolean) 
+        : searchKeywords
+    }
 
     const product = await Product.findByIdAndUpdate(req.params.id, updates, {
       new: true,
