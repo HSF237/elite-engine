@@ -35,8 +35,8 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-[#0a0a0b]/98 backdrop-blur-2xl border-b border-white/10' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#0a0a0b]/95 backdrop-blur-2xl ${
+        scrolled ? 'border-b border-white/10' : 'border-transparent'
       }`}
     >
       <div className="max-w-[1440px] mx-auto px-4 py-1.5 sm:py-2">
@@ -136,7 +136,7 @@ export default function Navbar() {
       </div>
 
       {/* Bottom Sub Nav categories bar */}
-      <div className="block bg-black/40 border-t border-white/5 py-1 backdrop-blur-xl w-full text-left overflow-x-auto no-scrollbar">
+      <div className="block bg-transparent border-t border-white/5 py-1 w-full text-left overflow-x-auto no-scrollbar">
          <div className="max-w-[1440px] w-max mx-auto px-4 flex items-center gap-3">
             <button 
               onClick={() => setMobileOpen(true)}
