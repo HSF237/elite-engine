@@ -34,6 +34,14 @@ const ensureDB = async (req, res, next) => {
 
 // Routes
 const router = express.Router()
+
+// Direct ping handler (Bypass SPA fallback)
+router.get('/ping', (req, res) => res.json({ 
+  status: 'Elite Systems Operable 🟢', 
+  timestamp: new Date().toISOString(),
+  platform: 'Vercel Serverless'
+}))
+
 router.get('/health', (req, res) => res.json({ status: 'Elite Cloud Active 💎', timestamp: new Date() }))
 router.use('/auth', ensureDB, authRoutes)
 router.use('/products', ensureDB, productRoutes)
@@ -46,11 +54,16 @@ router.use('/analytics', ensureDB, analyticsRoutes)
 app.use('/api', router)
 app.use('/', router)
 
-// 404
+// 404 High-Visibility Handler
 app.use((req, res) => {
   res.status(404).json({ 
-    message: 'Route not found.', 
-    details: { url: req.url, path: req.path, method: req.method } 
+    message: 'Route not found on Elite Gateway.', 
+    details: { 
+      url: req.url, 
+      path: req.path, 
+      method: req.method,
+      resolved: 'api/index.js'
+    } 
   })
 })
 
