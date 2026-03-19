@@ -29,6 +29,7 @@ export default function OrderManager() {
   const fetchOrders = async () => {
     try {
       const { data } = await api.get('/api/orders/all')
+      console.log('ELITE ORDER SYNC:', data) // Diagnostic Log
       setOrders(data)
     } catch (err) {
       console.error('Failed to fetch orders', err)
@@ -92,7 +93,11 @@ export default function OrderManager() {
         <div>
           <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter mb-2">Order Vault</h2>
           <div className="flex items-center gap-4">
-             <p className="text-white/40 text-sm font-medium">Control and fulfill elite customer mandates.</p>
+             <div className="flex items-center gap-2 px-2 py-0.5 rounded-md bg-green-500/10 border border-green-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[9px] font-black text-green-500 uppercase tracking-widest">DB SYNC ACTIVE</span>
+             </div>
+             <p className="text-white/40 text-xs font-medium">Control and fulfill elite customer mandates.</p>
              <span className="bg-[#c9a962]/10 text-[#c9a962] text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest">{orders.length} TOTAL</span>
           </div>
         </div>
