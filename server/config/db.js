@@ -5,12 +5,15 @@ const dns = require('dns')
 dns.setServers(['8.8.8.8', '8.8.4.4'])
 
 const connectDB = async () => {
+  const uri = process.env.MONGODB_URI || process.env.MONGO_URI
+  if (!uri) throw new Error('Database connection string (MONGODB_URI) is missing.')
+  
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI)
+    const conn = await mongoose.connect(uri)
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`)
   } catch (err) {
     console.error(`❌ MongoDB Error: ${err.message}`)
-    process.exit(1)
+    throw err // Throw to be caught by the middleware
   }
 }
 
