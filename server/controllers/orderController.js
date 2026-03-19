@@ -3,29 +3,35 @@ const User = require('../models/User')
 
 const createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, paymentMethod, totalAmount } = req.body
+    const { items, shippingAddress, paymentMethod, totalAmount, promoCode, discountAmount } = req.body
     
     if (!items || items.length === 0) {
-      return res.status(400).json({ message: 'No items in order' })
+      return res.status(400).json({ message: 'No items in manifest' })
     }
 
     const order = new Order({
-      customer: req.user.id,
+      customer: req.user._id,
       items,
       shippingAddress,
       paymentMethod,
       totalAmount,
-      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Completed' // Mocking online payment as completed
+      promoCode,
+      discountAmount,
+      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Completed'
     })
 
     const savedOrder = await order.save()
     
     // Clear user's cart after successful order
-    await User.findByIdAndUpdate(req.user.id, { cart: [] })
+    await User.findByIdAndUpdate(req.user._id, { cart: [] })
     
     res.status(201).json(savedOrder)
   } catch (error) {
-    res.status(500).json({ message: 'Error creating order', error: error.message })
+    console.error('Order Sync Error:', error.message)
+    res.status(500).json({ 
+      message: 'Order settlement failed.', 
+      error: error.message 
+    })
   }
 }
 
