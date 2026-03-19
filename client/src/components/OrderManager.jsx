@@ -4,7 +4,7 @@ import {
   ShoppingBag, User, MapPin, CreditCard, 
   Calendar, Clock, CheckCircle, Package, 
   Truck, Search, Filter, X, ChevronRight,
-  MoreVertical, ExternalLink
+  MoreVertical, ExternalLink, RotateCcw
 } from 'lucide-react'
 import api from '../utils/api'
 
@@ -58,10 +58,17 @@ export default function OrderManager() {
     }
   }
 
-  const filteredOrders = orders.filter(o => 
-    o.orderCode.toLowerCase().includes(search.toLowerCase()) || 
-    o.customer?.name.toLowerCase().includes(search.toLowerCase())
-  )
+  const handleRefresh = () => {
+    setLoading(true)
+    fetchOrders()
+  }
+
+  const filteredOrders = orders.filter(o => {
+    const code = o.orderCode || ''
+    const name = o.customer?.name || 'Elite Customer'
+    const q = search.toLowerCase()
+    return code.toLowerCase().includes(q) || name.toLowerCase().includes(q)
+  })
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -81,21 +88,33 @@ export default function OrderManager() {
 
   return (
     <div className="space-y-8 pb-20">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h2 className="text-4xl font-outfit font-black uppercase tracking-tighter mb-2">Order Vault</h2>
-          <p className="text-white/40 text-sm font-medium">Control and fulfill elite customer mandates.</p>
+          <div className="flex items-center gap-4">
+             <p className="text-white/40 text-sm font-medium">Control and fulfill elite customer mandates.</p>
+             <span className="bg-[#c9a962]/10 text-[#c9a962] text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest">{orders.length} TOTAL</span>
+          </div>
         </div>
         
-        <div className="relative max-w-sm w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-          <input 
-            type="text" 
-            placeholder="Search Order ID or Customer..." 
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm outline-none focus:border-[#c9a962]/50 transition-all font-medium"
-          />
+        <div className="flex items-center gap-4 w-full md:w-auto">
+           <div className="relative flex-1 md:w-80">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+              <input 
+                type="text" 
+                placeholder="Search Order ID or Customer..." 
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm outline-none focus:border-[#c9a962]/50 transition-all font-medium"
+              />
+           </div>
+           <button 
+              onClick={handleRefresh}
+              className="p-3 bg-white/5 border border-white/10 rounded-2xl text-white/40 hover:text-[#c9a962] hover:bg-[#c9a962]/10 transition-all group"
+              title="Sync Vault"
+           >
+              <RotateCcw className={`w-5 h-5 ${loading ? 'animate-spin text-[#c9a962]' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+           </button>
         </div>
       </div>
 
