@@ -1,7 +1,7 @@
 const User = require('../models/User')
 
 // GET /api/user/sync
-exports.getSyncData = async (req, res) => {
+const getSyncData = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
       .populate('cart.product')
@@ -17,7 +17,7 @@ exports.getSyncData = async (req, res) => {
 }
 
 // POST /api/user/cart
-exports.updateCart = async (req, res) => {
+const updateCart = async (req, res) => {
   try {
     const { cart } = req.body
     const user = await User.findByIdAndUpdate(
@@ -33,7 +33,7 @@ exports.updateCart = async (req, res) => {
 }
 
 // POST /api/user/wishlist
-exports.updateWishlist = async (req, res) => {
+const updateWishlist = async (req, res) => {
   try {
     const { wishlist } = req.body
     const user = await User.findByIdAndUpdate(
