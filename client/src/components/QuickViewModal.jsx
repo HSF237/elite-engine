@@ -24,7 +24,7 @@ export default function QuickViewModal({ product, onClose }) {
   if (!product) return null
 
   const price = product.discountPrice ?? product.regularPrice ?? product.price ?? 0
-  const liked = isLiked(product.id)
+  const liked = isLiked(product._id || product.id)
   const images = product.images?.length ? product.images : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800']
   const discount = product.regularPrice && product.discountPrice
     ? Math.round(((product.regularPrice - product.discountPrice) / product.regularPrice) * 100)
@@ -32,7 +32,8 @@ export default function QuickViewModal({ product, onClose }) {
 
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
+      ...product,
+      id: product._id || product.id,
       title: product.retailHeading ?? product.name,
       price,
       image: images[0],
