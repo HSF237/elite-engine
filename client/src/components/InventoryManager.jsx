@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2, Percent, Ticket } from 'lucide-react'
+import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2, Percent, Ticket, Search } from 'lucide-react'
 import api from '../utils/api'
 
 export default function InventoryManager() {
