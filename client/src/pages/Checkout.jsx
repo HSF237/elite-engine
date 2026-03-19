@@ -115,7 +115,9 @@ export default function Checkout() {
       navigate('/order-success', { state: { order: data } })
     } catch (err) {
       console.error('Order creation failed', err)
-      alert(err.response?.data?.message || 'Order settlement failed. Please try again.')
+      const errorMsg = err.response?.data?.message || 'Order settlement failed.'
+      const errorDetails = err.response?.data?.error ? `\nReason: ${err.response.data.error}` : ''
+      alert(`${errorMsg}${errorDetails}`)
     } finally {
       setLoading(false)
     }

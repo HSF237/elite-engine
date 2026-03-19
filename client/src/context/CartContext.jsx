@@ -128,8 +128,12 @@ export function CartProvider({ children }) {
   const closeCart = useCallback(() => dispatch({ type: 'CLOSE_CART' }), [])
   const toggleCart = useCallback(() => dispatch({ type: 'TOGGLE_CART' }), [])
 
-  const subtotal = state.items.reduce((sum, i) => sum + (i.price ?? i.discountPrice ?? 0) * i.qty, 0)
-  const tax = subtotal * TAX_RATE
+  const subtotal = state.items.reduce((sum, i) => sum + (Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0) * i.qty, 0)
+  const tax = state.items.reduce((sum, i) => {
+    const price = (Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0)
+    const rate = (i.taxRate || 12) / 100
+    return sum + (price * i.qty * rate)
+  }, 0)
   const delivery = state.items.length > 0 ? DELIVERY_BASE : 0
   const total = subtotal + tax + delivery
 

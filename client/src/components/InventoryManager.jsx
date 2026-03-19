@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2 } from 'lucide-react'
+import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2, Percent, Ticket } from 'lucide-react'
 import api from '../utils/api'
 
 export default function InventoryManager() {
@@ -23,6 +23,9 @@ export default function InventoryManager() {
     imageUrl2: '',
     imageUrl3: '',
     imageUrl4: '',
+    taxRate: '12',
+    productVoucher: '',
+    productVoucherDiscount: '0',
   })
 
   useEffect(() => {
@@ -59,6 +62,10 @@ export default function InventoryManager() {
       imageFiles.forEach(file => {
         if (file) data.append('images', file)
       })
+
+      data.append('productVoucher', formData.productVoucher)
+      data.append('productVoucherDiscount', formData.productVoucherDiscount)
+      data.append('taxRate', formData.taxRate)
 
       // Also append URLs
       const urls = [formData.imageUrl1, formData.imageUrl2, formData.imageUrl3, formData.imageUrl4].filter(Boolean)
@@ -232,7 +239,7 @@ export default function InventoryManager() {
                         </div>
                      </div>
 
-                     {/* Section 2: Pricing */}
+                     {/* Section 2: Pricing & Fiscal */}
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-4">
                            <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
@@ -261,6 +268,21 @@ export default function InventoryManager() {
                         </div>
                         <div className="space-y-4">
                            <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
+                              <Percent className="w-3 h-3" /> Taxation %
+                           </label>
+                           <input 
+                              type="number" 
+                              placeholder="e.g. 12"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#c9a962]/50 outline-none transition-all"
+                              value={formData.taxRate}
+                              onChange={e => setFormData({...formData, taxRate: e.target.value})}
+                           />
+                        </div>
+                     </div>
+
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-4">
+                           <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
                               <Truck className="w-3 h-3" /> Delivery Fee
                            </label>
                            <input 
@@ -269,6 +291,30 @@ export default function InventoryManager() {
                               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#c9a962]/50 outline-none transition-all"
                               value={formData.deliveryCharge}
                               onChange={e => setFormData({...formData, deliveryCharge: e.target.value})}
+                           />
+                        </div>
+                        <div className="space-y-4">
+                           <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
+                              <Ticket className="w-3 h-3" /> Product Voucher Code
+                           </label>
+                           <input 
+                              type="text" 
+                              placeholder="e.g. NIKE10"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#c9a962]/50 outline-none transition-all uppercase"
+                              value={formData.productVoucher}
+                              onChange={e => setFormData({...formData, productVoucher: e.target.value})}
+                           />
+                        </div>
+                        <div className="space-y-4">
+                           <label className="flex items-center gap-2 text-xs font-black text-[#c9a962] uppercase tracking-widest">
+                              <Percent className="w-3 h-3" /> Voucher Value (₹)
+                           </label>
+                           <input 
+                              type="number" 
+                              placeholder="₹ 500"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#c9a962]/50 outline-none transition-all"
+                              value={formData.productVoucherDiscount}
+                              onChange={e => setFormData({...formData, productVoucherDiscount: e.target.value})}
                            />
                         </div>
                      </div>

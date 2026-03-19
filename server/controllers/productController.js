@@ -43,6 +43,7 @@ const createProduct = async (req, res) => {
     const {
       retailHeading, longDescription, category, regularPrice,
       discountPrice, deliveryCharge, sizes, colors, department,
+      taxRate, productVoucher, productVoucherDiscount
     } = req.body
 
     // Upload images to Cloudinary if files were sent
@@ -73,6 +74,9 @@ const createProduct = async (req, res) => {
       colors: typeof colors === 'string' ? JSON.parse(colors) : colors || [],
       images,
       department: department || category,
+      taxRate: Number(taxRate) || 12,
+      productVoucher,
+      productVoucherDiscount: Number(productVoucherDiscount) || 0,
       createdBy: req.user._id,
     })
 
@@ -81,11 +85,22 @@ const createProduct = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
-
 // PUT /api/products/:id — staff only
 const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    const { 
+      taxRate, productVoucher, productVoucherDiscount, 
+      regularPrice, discountPrice, deliveryCharge 
+    } = req.body
+
+    const updates = { ...req.body }
+    if (regularPrice) updates.regularPrice = Number(regularPrice)
+    if (discountPrice) updates.discountPrice = Number(discountPrice)
+    if (deliveryCharge) updates.deliveryCharge = Number(deliveryCharge)
+    if (taxRate) updates.taxRate = Number(taxRate)
+    if (productVoucherDiscount) updates.productVoucherDiscount = Number(productVoucherDiscount)
+
+    const product = await Product.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
     })
