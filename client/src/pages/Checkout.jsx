@@ -87,9 +87,9 @@ export default function Checkout() {
     try {
       const orderData = {
         items: items.map(i => ({
-          product: i.id,
-          name: i.title,
-          price: i.price,
+          product: i._id || i.id,
+          name: i.retailHeading || i.title || 'Elite Product',
+          price: i.discountPrice || i.regularPrice || i.price || 0,
           qty: i.qty,
           size: i.size,
           color: i.color,
