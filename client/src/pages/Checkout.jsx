@@ -242,7 +242,8 @@ export default function Checkout() {
                         )}
                       </div>
                       <p className="text-base font-bold text-white mb-2 leading-tight">{addr.street}</p>
-                      <p className="text-xs text-white/40 font-medium leading-relaxed">{addr.city}, {addr.state} - {addr.zip}</p>
+                      <p className="text-xs text-white/40 font-medium leading-relaxed mb-1">{addr.city}, {addr.state} - {addr.zip}</p>
+                      <p className="text-[10px] font-black uppercase text-[#c9a962] tracking-widest">{addr.phone || 'No Mobile'}</p>
                       <div className="mt-6 pt-6 border-t border-white/5 flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                          <span className="text-[8px] font-black uppercase tracking-widest text-[#c9a962]">Select for Dispatch</span>
                       </div>
@@ -374,7 +375,10 @@ export default function Checkout() {
                     </div>
                     <p className="text-lg font-bold mb-2 group-hover:text-white transition-colors">{selectedAddress?.street}</p>
                     <p className="text-sm text-white/40 font-medium italic">{selectedAddress?.city}, {selectedAddress?.state} - {selectedAddress?.zip}</p>
-                    <p className="text-[8px] font-black uppercase text-white/20 mt-6 tracking-widest">Phone: {selectedAddress?.phone || user.phone}</p>
+                    <div className="mt-6 flex flex-col gap-1">
+                       <span className="text-[8px] font-black uppercase text-white/20 tracking-widest">Verified Contact</span>
+                       <p className="text-xs font-black text-[#c9a962] tracking-widest">{selectedAddress?.phone || user.phone}</p>
+                    </div>
                   </motion.div>
 
                   <motion.div whileHover={{ y: -5 }} className="p-8 rounded-[2.5rem] bg-white/[0.02] border border-white/5 group">
@@ -559,12 +563,20 @@ export default function Checkout() {
                           onChange={e => setNewAddress({...newAddress, state: e.target.value})}
                         />
                     </div>
-                    <input 
-                        required placeholder="Postal / ZIP Code" 
-                        className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
-                        value={newAddress.zip}
-                        onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
-                    />
+                    <div className="grid grid-cols-2 gap-3">
+                        <input 
+                            required placeholder="Postal / ZIP Code" 
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
+                            value={newAddress.zip}
+                            onChange={e => setNewAddress({...newAddress, zip: e.target.value})}
+                        />
+                        <input 
+                            required type="tel" placeholder="Mobile Number" 
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-6 py-4 text-xs outline-none focus:border-[#c9a962] transition-all"
+                            value={newAddress.phone}
+                            onChange={e => setNewAddress({...newAddress, phone: e.target.value})}
+                        />
+                    </div>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="relative">
                            <input 
