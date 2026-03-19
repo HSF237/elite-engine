@@ -40,11 +40,28 @@ export default function Checkout() {
 
   const applyPromo = () => {
     setPromoError('')
-    if (promoCode.toUpperCase() === 'ELITE10') {
+    const code = promoCode.trim().toUpperCase()
+    
+    // 1. Check Global Legacy Code
+    if (code === 'ELITE10') {
       const amt = subtotal * 0.1
       setDiscount(amt)
+      return
+    }
+
+    // 2. Check Per-Product Smart Vouchers
+    let foundDiscount = 0
+    items.forEach(item => {
+      if (item.productVoucher?.trim().toUpperCase() === code) {
+        const itemPrice = (item.discountPrice || item.regularPrice || item.price || 0) * item.qty
+        foundDiscount += (itemPrice * (item.productVoucherDiscount / 100))
+      }
+    })
+
+    if (foundDiscount > 0) {
+      setDiscount(foundDiscount)
     } else {
-      setPromoError('Invalid Voucher Code')
+      setPromoError('INVALID VOUCHER CODE')
       setDiscount(0)
     }
   }
@@ -69,10 +86,10 @@ export default function Checkout() {
         if (def) setSelectedAddress(def)
         
         api.get('/api/user/profile').then(profileRes => {
-           setNewAddress(prev => ({
-             ...prev,
-             phone: profileRes.data.phone || '',
-           }))
+          setNewAddress(prev => ({
+            ...prev,
+            phone: profileRes.data.phone || '',
+          }))
         })
       })
   }, [user, items, navigate])
@@ -83,6 +100,14 @@ export default function Checkout() {
       setStep(1)
       return
     }
+
+    // Pre-Flight Identity Check (Safeguard against stale localStorage)
+    const corruptItems = items.filter(i => !i._id && !i.id)
+    if (corruptItems.length > 0) {
+      alert(`ELITE DATA MISMATCH: ${corruptItems.length} items in your bag have outdated protocols. \n\nPlease CLEAR YOUR BAG and add them again to sync with the new database.`)
+      return
+    }
+
     setLoading(true)
     try {
       const orderData = {
