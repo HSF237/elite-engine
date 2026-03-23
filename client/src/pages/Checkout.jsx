@@ -82,7 +82,74 @@ export default function Checkout() {
     fetchCheckoutData()
   }, [user, items, navigate])
 
-  const applyPromo = () => { ... } // Logic stays same, I'll clean up if needed
+  const applyPromo = () => {
+    setPromoError('')
+    const code = promoCode.trim().toUpperCase()
+    if (code === 'ELITE10') {
+      setDiscount(subtotal * 0.1)
+      return
+    }
+    let foundDiscount = 0
+    items.forEach(item => {
+      if (item.productVoucher?.trim().toUpperCase() === code) {
+        const itemPrice = (item.discountPrice || item.regularPrice || item.price || 0) * item.qty
+        foundDiscount += (itemPrice * (item.productVoucherDiscount / 100))
+      }
+    })
+    if (foundDiscount > 0) setDiscount(foundDiscount)
+    else { setPromoError('INVALID VOUCHER CODE'); setDiscount(0); }
+  }
+
+  const handleCreateOrder = async () => {
+    if (!selectedAddress) { alert('Please select a target placement first.'); setStep(1); return; }
+    const corruptItems = items.filter(i => !i._id && !i.id)
+    if (corruptItems.length > 0) {
+      alert(`ELITE DATA MISMATCH: Please CLEAR YOUR BAG and re-add items.`);
+      return
+    }
+    setLoading(true)
+    try {
+      const orderData = {
+        items: items.map(i => ({
+          product: i._id || i.id,
+          name: i.retailHeading || i.title || 'Elite Product',
+          price: i.discountPrice || i.regularPrice || i.price || 0,
+          qty: i.qty, size: i.size, color: i.color, image: i.image
+        })),
+        shippingAddress: {
+          street: selectedAddress.street, city: selectedAddress.city,
+          state: selectedAddress.state, zip: selectedAddress.zip,
+          country: selectedAddress.country || 'India',
+          phone: selectedAddress.phone || user?.phone || '',
+          deliveryTime: selectedAddress.deliveryTime || '',
+          instructions: selectedAddress.instructions || ''
+        },
+        paymentMethod, totalAmount: (total - discount),
+        promoCode: discount > 0 ? promoCode : null,
+        discountAmount: discount
+      }
+      const { data } = await api.post('/api/orders', orderData)
+      navigate('/order-success', { state: { order: data } })
+    } catch (err) {
+      alert(err.response?.data?.message || 'Order settlement failed.')
+    } finally { setLoading(false) }
+  }
+
+  const handleAddAddress = async (e) => {
+    e.preventDefault()
+    try {
+      const { data } = await api.post('/api/user/address', { ...newAddress, isDefault: isSettingPrimary })
+      setAddresses(data)
+      const added = data.find(a => a.street === newAddress.street) || data[data.length - 1]
+      setSelectedAddress(added)
+      setShowAddForm(false)
+      alert('Destination successfully registered.')
+    } catch (err) {
+      alert('Failed to register placement.')
+    }
+  }
+
+  const finalTotal = total - discount
 
   // Sentinel Guard (Unified)
   if (!user || !items || (items && items.length === 0)) {
