@@ -16,7 +16,7 @@ router.get('/:id', getProductById)
 
 // Staff only
 router.post('/', verifyToken, requireStaff, upload.array('images', 4), createProduct)
-router.put('/:id', verifyToken, requireStaff, updateProduct)
+router.put('/:id', verifyToken, requireStaff, upload.array('images', 4), updateProduct)
 router.delete('/:id', verifyToken, requireStaff, deleteProduct)
 
 module.exports = router

@@ -6,13 +6,15 @@ import api from '../utils/api'
 export default function InventoryManager() {
   const [products, setProducts] = useState([])
   const [isAdding, setIsAdding] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   
   const [imageFiles, setImageFiles] = useState([null, null, null, null])
   const [formData, setFormData] = useState({
     smallHeading: '',
-    description: '',
+    longDescription: '',
     category: 'Footwear',
     price: '',
     discountPrice: '',
@@ -44,65 +46,81 @@ export default function InventoryManager() {
     }
   }
 
-  const handleAddProduct = async (e) => {
+  const handleEditClick = (product) => {
+    setEditingId(product._id)
+    setIsEditing(true)
+    setIsAdding(true)
+    setFormData({
+      smallHeading: product.retailHeading || '',
+      longDescription: product.longDescription || product.description || '',
+      category: product.category || 'Footwear',
+      price: product.regularPrice || '',
+      discountPrice: product.discountPrice || '',
+      deliveryCharge: product.deliveryCharge || '0',
+      sizes: product.sizes || [],
+      colors: product.colors || [],
+      imageUrl1: product.images?.[0] || '',
+      imageUrl2: product.images?.[1] || '',
+      imageUrl3: product.images?.[2] || '',
+      imageUrl4: product.images?.[3] || '',
+      taxRate: product.taxRate || '12',
+      productVoucher: product.productVoucher || '',
+      productVoucherDiscount: product.productVoucherDiscount || '0',
+      searchKeywords: (product.searchKeywords || []).join(', '),
+    })
+  }
+
+  const handleSaveProduct = async (e) => {
     e.preventDefault()
     setSubmitting(true)
     
     try {
       const data = new FormData()
       data.append('retailHeading', formData.smallHeading)
-      data.append('description', formData.description)
+      data.append('longDescription', formData.longDescription)
       data.append('category', formData.category)
       data.append('regularPrice', formData.price)
       data.append('discountPrice', formData.discountPrice)
       data.append('deliveryCharge', formData.deliveryCharge)
       
       formData.sizes.forEach(s => data.append('sizes', s))
-      // Handle colors if implemented
       
-      imageFiles.forEach(file => {
-        if (file) data.append('images', file)
-      })
+      imageFiles.forEach(file => { if (file) data.append('images', file) })
 
       data.append('productVoucher', formData.productVoucher)
       data.append('productVoucherDiscount', formData.productVoucherDiscount)
       data.append('taxRate', formData.taxRate)
       data.append('searchKeywords', formData.searchKeywords)
 
-      // Also append URLs
-      const urls = [formData.imageUrl1, formData.imageUrl2, formData.imageUrl3, formData.imageUrl4].filter(Boolean)
+      const urls = [formData.imageUrl1, formData.imageUrl2, formData.imageUrl3, formData.imageUrl4].filter(u => u && u.startsWith('http'))
       urls.forEach(url => data.append('images', url))
 
-      await api.post('/api/products', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      if (isEditing) {
+        await api.put(`/api/products/${editingId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      } else {
+        await api.post('/api/products', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      }
 
       setIsAdding(false)
+      setIsEditing(false)
+      setEditingId(null)
       setFormData({
-        smallHeading: '',
-        description: '',
-        category: 'Footwear',
-        price: '',
-        discountPrice: '',
-        deliveryCharge: '0',
-        sizes: [],
-        colors: [],
-        imageUrl1: '',
-        imageUrl2: '',
-        imageUrl3: '',
-        imageUrl4: '',
+        smallHeading: '', longDescription: '', category: 'Footwear', price: '',
+        discountPrice: '', deliveryCharge: '0', sizes: [], colors: [],
+        imageUrl1: '', imageUrl2: '', imageUrl3: '', imageUrl4: '',
+        taxRate: '12', productVoucher: '', productVoucherDiscount: '0', searchKeywords: ''
       })
       setImageFiles([null, null, null, null])
       fetchProducts()
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to list product')
+      alert(err.response?.data?.message || 'Transaction failed')
     } finally {
       setSubmitting(false)
     }
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure?')) return
+    if (!window.confirm('Erase this item from existence?')) return
     try {
       await api.delete(`/api/products/${id}`)
       fetchProducts()
@@ -134,7 +152,7 @@ export default function InventoryManager() {
            <p className="text-white/50 text-sm">Manage your store products like an Amazon Pro.</p>
         </div>
         <button 
-           onClick={() => setIsAdding(true)}
+           onClick={() => { setIsAdding(true); setIsEditing(false); setEditingId(null); setFormData({ smallHeading: '', longDescription: '', category: 'Footwear', price: '', discountPrice: '', deliveryCharge: '0', sizes: [], colors: [], imageUrl1: '', imageUrl2: '', imageUrl3: '', imageUrl4: '', taxRate: '12', productVoucher: '', productVoucherDiscount: '0', searchKeywords: '' }); }}
            className="bg-[#c9a962] text-black font-black px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-[#b09452] transition-colors shadow-lg shadow-[#c9a962]/20"
         >
            <Plus className="w-5 h-5" /> Add New Product
@@ -161,12 +179,20 @@ export default function InventoryManager() {
                      <p className="text-[10px] text-[#c9a962] font-black uppercase tracking-wider">{p.category}</p>
                      <p className="text-xs font-bold text-white/50 mt-1">₹{(p.discountPrice || p.regularPrice)?.toLocaleString()}</p>
                   </div>
-                  <button 
-                     onClick={() => handleDelete(p._id)}
-                     className="absolute top-2 right-2 p-1 text-white/20 hover:text-red-400 transition-colors"
-                  >
-                     <X className="w-4 h-4" />
-                  </button>
+                  <div className="flex flex-col gap-2 absolute top-2 right-2">
+                    <button 
+                       onClick={() => handleEditClick(p)}
+                       className="p-1.5 glass rounded-lg text-white/40 hover:text-[#c9a962] hover:bg-white/5 transition-all"
+                    >
+                       <Type className="w-4 h-4" />
+                    </button>
+                    <button 
+                       onClick={() => handleDelete(p._id)}
+                       className="p-1.5 glass rounded-lg text-white/40 hover:text-red-400 hover:bg-white/5 transition-all"
+                    >
+                       <X className="w-4 h-4" />
+                    </button>
+                  </div>
                </div>
             ))
          )}
@@ -187,7 +213,7 @@ export default function InventoryManager() {
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  onSubmit={handleAddProduct}
+                  onSubmit={handleSaveProduct}
                   className="relative w-full max-w-4xl bg-[#111112] border border-white/10 rounded-3xl shadow-3xl overflow-hidden flex flex-col max-h-[90vh]"
                >
                   {/* Header */}
@@ -197,8 +223,12 @@ export default function InventoryManager() {
                            <Layout className="w-5 h-5 text-black" />
                         </div>
                         <div>
-                           <h3 className="text-xl font-outfit font-black text-white uppercase tracking-tight">Elite Seller Central</h3>
-                           <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Inventory Management Tool v2.4</p>
+                           <h3 className="text-xl font-outfit font-black text-white uppercase tracking-tight">
+                             {isEditing ? 'Edit Master Protocol' : 'Elite Seller Central'}
+                           </h3>
+                           <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">
+                             {isEditing ? `Vetting Object: ${editingId}` : 'Inventory Management Tool v2.4'}
+                           </p>
                         </div>
                      </div>
                      <button type="button" onClick={() => setIsAdding(false)} className="p-2 glass rounded-full hover:bg-white/10 transition-colors">
@@ -421,8 +451,8 @@ export default function InventoryManager() {
                            rows={4}
                            placeholder="Describe the product in detail for Elite customers..."
                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-[#c9a962]/50 outline-none transition-all resize-none"
-                           value={formData.description}
-                           onChange={e => setFormData({...formData, description: e.target.value})}
+                           value={formData.longDescription}
+                           onChange={e => setFormData({...formData, longDescription: e.target.value})}
                         />
                      </div>
 
@@ -459,10 +489,10 @@ export default function InventoryManager() {
                         {submitting ? (
                            <>
                               <Loader2 className="w-4 h-4 animate-spin" />
-                              Listing...
+                              {isEditing ? 'Updating Vault...' : 'Listing...'}
                            </>
                         ) : (
-                           'List Product'
+                           isEditing ? 'Secure Update' : 'List Product'
                         )}
                      </button>
                   </div>

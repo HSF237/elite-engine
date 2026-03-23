@@ -92,15 +92,35 @@ const updateProduct = async (req, res) => {
   try {
     const { 
       taxRate, productVoucher, productVoucherDiscount, searchKeywords,
-      regularPrice, discountPrice, deliveryCharge 
+      regularPrice, discountPrice, deliveryCharge, sizes, colors
     } = req.body
 
     const updates = { ...req.body }
+    
+    // Handle Images (Multer + Cloudinary)
+    if (req.files && req.files.length > 0) {
+      const uploads = await Promise.all(
+        req.files.map(file =>
+          cloudinary.uploader.upload(`data:${file.mimetype};base64,${file.buffer.toString('base64')}`, {
+            folder: 'elite-store/products',
+          })
+        )
+      )
+      updates.images = uploads.map(u => u.secure_url)
+    } else if (req.body.images) {
+      updates.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images]
+      updates.images = updates.images.filter(Boolean)
+    }
+
     if (regularPrice) updates.regularPrice = Number(regularPrice)
     if (discountPrice) updates.discountPrice = Number(discountPrice)
     if (deliveryCharge) updates.deliveryCharge = Number(deliveryCharge)
     if (taxRate) updates.taxRate = Number(taxRate)
     if (productVoucherDiscount) updates.productVoucherDiscount = Number(productVoucherDiscount)
+    
+    if (sizes) updates.sizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes
+    if (colors) updates.colors = typeof colors === 'string' ? JSON.parse(colors) : colors
+    
     if (searchKeywords) {
       updates.searchKeywords = typeof searchKeywords === 'string' 
         ? searchKeywords.split(',').map(s => s.trim()).filter(Boolean) 
