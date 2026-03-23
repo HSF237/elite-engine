@@ -169,6 +169,15 @@ export default function Checkout() {
     }
   }
 
+  if (!user || !items) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 text-[#c9a962] animate-spin mb-4" />
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Synchronizing Elite Data...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0b] text-white pb-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
@@ -377,7 +386,7 @@ export default function Checkout() {
                     <p className="text-sm text-white/40 font-medium italic">{selectedAddress?.city}, {selectedAddress?.state} - {selectedAddress?.zip}</p>
                     <div className="mt-6 flex flex-col gap-1">
                        <span className="text-[8px] font-black uppercase text-white/20 tracking-widest">Verified Contact</span>
-                       <p className="text-xs font-black text-[#c9a962] tracking-widest">{selectedAddress?.phone || user.phone}</p>
+                       <p className="text-xs font-black text-[#c9a962] tracking-widest">{selectedAddress?.phone || user?.phone}</p>
                     </div>
                   </motion.div>
 
