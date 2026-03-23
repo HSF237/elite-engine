@@ -55,7 +55,7 @@ export default function Navbar() {
             </Link>
             
             <div className="flex sm:hidden items-center gap-0.5 ml-1">
-               <Link to="/shop" className="p-1.5 relative text-white/80">
+               <Link to="/wishlist" className="p-1.5 relative text-white/80">
                   <Heart className={`w-4 h-4 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''}`} />
                </Link>
                <button onClick={openCart} className="p-1.5 relative text-white/80">
@@ -113,7 +113,7 @@ export default function Navbar() {
             <div className="flex-1" />
 
             <div className="flex items-center gap-4 text-white/80">
-              <Link to="/shop" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
+              <Link to="/wishlist" className="relative p-2 hover:bg-white/10 rounded-full transition-colors group">
                 <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'group-hover:text-red-400'}`} />
                 {wishlistCount > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-red-500 text-[9px] font-bold flex items-center justify-center">{wishlistCount}</span>}
               </Link>

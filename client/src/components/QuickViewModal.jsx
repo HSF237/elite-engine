@@ -242,7 +242,7 @@ export default function QuickViewModal({ product, onClose }) {
               </motion.button>
 
               <motion.button
-                onClick={() => toggleWishlist(product.id)}
+                onClick={() => toggleWishlist(product)}
                 className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border flex items-center justify-center transition-all ${liked ? 'border-red-500 bg-red-500/10' : 'border-white/10 hover:border-red-400 hover:bg-red-400/10'}`}
                 whileTap={{ scale: 0.88 }}
               >

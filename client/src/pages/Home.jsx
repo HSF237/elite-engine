@@ -382,6 +382,13 @@ export default function Home() {
                         wrapperClassName="w-full h-full"
                         className="group-hover:scale-110 transition-transform duration-700" 
                       />
+                      {/* Wishlist Heart */}
+                      <button
+                        onClick={e => { e.stopPropagation(); toggleWishlist(product) }}
+                        className="absolute top-2 right-2 w-8 h-8 rounded-lg glass flex items-center justify-center hover:bg-[#c9a962] hover:text-black transition-all z-20"
+                      >
+                        <Heart className={`w-4 h-4 ${isLiked(product._id || product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                      </button>
                       <button
                          onClick={e => { 
                            e.stopPropagation(); 

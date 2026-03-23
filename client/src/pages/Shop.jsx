@@ -457,7 +457,7 @@ export default function Shop() {
                           {/* Action Buttons */}
                           <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                             <button
-                              onClick={e => { e.stopPropagation(); toggleWishlist(product._id || product.id) }}
+                              onClick={e => { e.stopPropagation(); toggleWishlist(product) }}
                               className="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-[#c9a962] hover:text-black transition-all"
                             >
                               <Heart className={`w-5 h-5 ${liked ? 'fill-red-500 text-red-500' : ''}`} />

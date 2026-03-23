@@ -10,6 +10,7 @@ import Signup from './pages/Signup'
 import Checkout from './pages/Checkout'
 import OrderSuccess from './pages/OrderSuccess'
 import Profile from './pages/Profile'
+import Wishlist from './pages/Wishlist'
 import StaffGateway from './pages/StaffGateway'
 import StaffDashboard from './pages/StaffDashboard'
 
@@ -24,6 +25,7 @@ export default function App() {
               <Route index element={<Home />} />
               <Route path="shop" element={<Shop />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="wishlist" element={<Wishlist />} />
               <Route path="checkout" element={<Checkout />} />
               <Route path="order-success" element={<OrderSuccess />} />
             </Route>
