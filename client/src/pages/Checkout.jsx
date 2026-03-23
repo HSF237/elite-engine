@@ -12,8 +12,8 @@ import OptimizedImage from '../components/OptimizedImage'
 
 export default function Checkout() {
   const navigate = useNavigate()
-  const { items, total, subtotal, tax, delivery } = useCart()
-  const { user } = useAuth()
+  const { items = [], total = 0, subtotal = 0, tax = 0, delivery = 0 } = useCart() || {}
+  const { user = null } = useAuth() || {}
   const [step, setStep] = useState(1) // 1: Address, 2: Payment, 3: Confirm
   const [loading, setLoading] = useState(false)
   
@@ -38,6 +38,7 @@ export default function Checkout() {
     instructions: ''
   })
 
+  // ... rest of applyPromo logic ...
   const applyPromo = () => {
     setPromoError('')
     const code = promoCode.trim().toUpperCase()
@@ -73,26 +74,50 @@ export default function Checkout() {
       navigate('/login')
       return
     }
-    if (items.length === 0) {
+    
+    // items is usually an array, but we check for it safely
+    if (!items || items.length === 0) {
       navigate('/shop')
       return
     }
     
-    // Fetch addresses and auto-select default or first
-    api.get('/api/user/address')
-      .then(res => {
-        setAddresses(res.data)
-        const def = res.data.find(a => a.isDefault) || res.data[0]
+    const fetchCheckoutData = async () => {
+      try {
+        const res = await api.get('/api/user/address')
+        const data = Array.isArray(res.data) ? res.data : []
+        setAddresses(data)
+        
+        const def = data.find(a => a.isDefault) || data[0] || null
         if (def) setSelectedAddress(def)
         
-        api.get('/api/user/profile').then(profileRes => {
-          setNewAddress(prev => ({
-            ...prev,
-            phone: profileRes.data.phone || '',
-          }))
-        })
-      })
+        try {
+          const profileRes = await api.get('/api/user/profile')
+          if (profileRes.data) {
+            setNewAddress(prev => ({
+              ...prev,
+              phone: profileRes.data.phone || '',
+            }))
+          }
+        } catch (profileErr) {
+          console.error("Profile fetch failed, but continuing checkout", profileErr)
+        }
+      } catch (err) {
+        console.error('Address fetching failed', err)
+        setAddresses([])
+      }
+    }
+
+    fetchCheckoutData()
   }, [user, items, navigate])
+
+  if (!user || !items) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center">
+        <Loader2 className="w-12 h-12 text-[#c9a962] animate-spin mb-4" />
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Synchronizing Elite Data...</p>
+      </div>
+    )
+  }
 
   const handleCreateOrder = async () => {
     if (!selectedAddress) {
