@@ -69,32 +69,37 @@ export default function Profile() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white pb-20">
-      <div className="max-w-6xl mx-auto px-6">
+    <div className="min-h-screen bg-[#0a0a0b] text-white pb-20 pt-28 sm:pt-36">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-          <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-[#c9a962] to-[#b09452] p-1 shadow-2xl shadow-[#c9a962]/20">
-              <div className="w-full h-full rounded-[1.8rem] bg-[#1a1a1c] flex items-center justify-center overflow-hidden">
+        {/* Identity & Protocol Controls */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 glass p-8 rounded-[3rem] border-white/5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a962]/5 blur-3xl rounded-full" />
+          
+          <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10 w-full md:w-auto">
+            <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-[#c9a962] to-[#b09452] p-0.5 shadow-2xl shadow-[#c9a962]/20 group-hover:rotate-6 transition-transform">
+              <div className="w-full h-full rounded-[2.4rem] bg-[#1a1a1c] flex items-center justify-center overflow-hidden">
                 {profileData?.avatar ? (
                   <OptimizedImage src={profileData.avatar} alt={profileData?.name} width={100} quality={70} wrapperClassName="w-full h-full" />
                 ) : (
-                  <span className="text-3xl font-black text-[#c9a962]">{profileData?.name?.[0]}</span>
+                  <span className="text-4xl font-black text-[#c9a962]">{profileData?.name?.[0]}</span>
                 )}
               </div>
             </div>
-            <div>
-              <h1 className="text-4xl font-outfit font-black uppercase tracking-tighter">{profileData?.name}</h1>
-              <p className="text-white/40 font-bold tracking-[0.2em] uppercase text-xs mt-1">{profileData?.role} / Elite Member</p>
+            <div className="text-center sm:text-left">
+              <h1 className="text-3xl sm:text-4xl font-outfit font-black uppercase tracking-tighter leading-none">{profileData?.name}</h1>
+              <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
+                 <span className="px-2 py-0.5 rounded-lg bg-[#c9a962]/10 text-[#c9a962] font-black text-[9px] uppercase tracking-widest border border-[#c9a962]/20">{profileData?.role || 'CUSTOMER'}</span>
+                 <span className="text-white/20 font-bold uppercase text-[9px] tracking-widest">• ELITE MEMBER</span>
+              </div>
             </div>
           </div>
           
           <button 
             onClick={logout}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all font-black text-[10px] uppercase tracking-widest"
+            className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/20 transition-all font-black text-[10px] uppercase tracking-widest w-full md:w-auto justify-center"
           >
-            <LogOut className="w-4 h-4" /> Sign Out
+            <LogOut className="w-4 h-4" /> End Session
           </button>
         </div>
 
