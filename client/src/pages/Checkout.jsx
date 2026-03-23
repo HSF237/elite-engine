@@ -457,8 +457,8 @@ export default function Checkout() {
                   <div key={`${item.id}-${item.size}`} className="flex gap-5 group">
                     <div className="w-20 h-20 rounded-2xl bg-white/5 p-1 shrink-0 overflow-hidden border border-white/5 group-hover:border-[#c9a962]/30 transition-colors">
                       <OptimizedImage
-                        src={item.image}
-                        alt={item.title}
+                        src={item.image || item.images?.[0] || item.productImage || item.imageUrl || item.product?.image}
+                        alt={item.title || item.retailHeading}
                         width={100}
                         quality={60}
                         wrapperClassName="w-full h-full"

@@ -51,17 +51,20 @@ export default function CartSidebar() {
                       layout
                       className="flex gap-4 pb-4 border-b border-white/10 last:border-0"
                     >
-                      <div className="w-20 h-24 rounded-lg bg-white/5 flex-shrink-0 overflow-hidden">
-                        {item.image ? (
+                      <div className="w-20 h-24 rounded-lg bg-white/5 flex-shrink-0 overflow-hidden group">
+                        {(item.image || item.images?.[0] || item.productImage || item.imageUrl || item.product?.image) ? (
                           <OptimizedImage
-                            src={item.image}
+                            src={item.image || item.images?.[0] || item.productImage || item.imageUrl || item.product?.image}
                             alt={item.title ?? item.retailHeading}
                             width={100}
                             quality={60}
-                            wrapperClassName="w-full h-full"
+                            wrapperClassName="w-full h-full group-hover:scale-110 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">No img</div>
+                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-white/5 to-transparent text-white/20 text-[8px] font-black uppercase tracking-tighter">
+                            <ShoppingBag className="w-4 h-4 mb-1 opacity-20" />
+                            No Vision
+                          </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
