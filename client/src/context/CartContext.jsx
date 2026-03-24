@@ -128,17 +128,28 @@ export function CartProvider({ children }) {
   const closeCart = useCallback(() => dispatch({ type: 'CLOSE_CART' }), [])
   const toggleCart = useCallback(() => dispatch({ type: 'TOGGLE_CART' }), [])
 
-  const subtotal = state.items.reduce((sum, i) => sum + (Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0) * i.qty, 0)
-  const tax = state.items.reduce((sum, i) => {
-    const price = (Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0)
-    const rate = (i.taxRate || 12) / 100
-    return sum + (price * i.qty * rate)
+  const itemsArray = Array.isArray(state.items) ? state.items : []
+
+  const subtotal = itemsArray.reduce((sum, i) => {
+    if (!i) return sum
+    const price = Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0
+    const qty = Number(i.qty) || 0
+    return sum + (price * qty)
   }, 0)
-  const delivery = state.items.length > 0 ? DELIVERY_BASE : 0
+
+  const tax = itemsArray.reduce((sum, i) => {
+    if (!i) return sum
+    const price = Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0
+    const qty = Number(i.qty) || 0
+    const rate = Number(i.taxRate || 12) / 100
+    return sum + (price * qty * rate)
+  }, 0)
+
+  const delivery = itemsArray.length > 0 ? DELIVERY_BASE : 0
   const total = subtotal + tax + delivery
 
   const value = {
-    items: state.items,
+    items: itemsArray,
     isOpen: state.isOpen,
     addToCart,
     removeFromCart,
@@ -150,7 +161,7 @@ export function CartProvider({ children }) {
     tax,
     delivery,
     total,
-    count: state.items.reduce((c, i) => c + i.qty, 0),
+    count: itemsArray.reduce((c, i) => c + (Number(i?.qty) || 0), 0),
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

@@ -38,6 +38,8 @@ export default function Checkout() {
     deliveryTime: '',
     instructions: ''
   })
+  const [showSelfHeal, setShowSelfHeal] = useState(false)
+  const [forceRender, setForceRender] = useState(false)
 
   // Diagnostic Logs
   useEffect(() => {
@@ -50,13 +52,16 @@ export default function Checkout() {
   }, [user, items, cartContext, authContext])
 
   useEffect(() => {
+    // Sync Lag Protection: Show override after 4 seconds
+    const lagTimer = setTimeout(() => { if (!forceRender) setShowSelfHeal(true) }, 4000)
+
     if (!user) {
       console.warn("No user found, redirecting to login...")
       navigate('/login')
       return
     }
     
-    if (items && items.length === 0) {
+    if (items && items.length === 0 && !loading) {
       console.warn("No items in bag, redirecting to shop...")
       navigate('/shop')
       return
@@ -80,7 +85,8 @@ export default function Checkout() {
     }
 
     fetchCheckoutData()
-  }, [user, items, navigate])
+    return () => clearTimeout(lagTimer)
+  }, [user, items, navigate, forceRender])
 
   const applyPromo = () => {
     setPromoError('')
@@ -151,12 +157,35 @@ export default function Checkout() {
 
   const finalTotal = total - discount
 
-  // Sentinel Guard (Unified)
-  if (!user || !items || (items && items.length === 0)) {
+  // Sentinel Guard (Unified with Self-Heal)
+  if ((!user || !items || (items && items.length === 0)) && !forceRender) {
     return (
-      <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center">
-        <Loader2 className="w-12 h-12 text-[#c9a962] animate-spin mb-4" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Synchronizing Elite Data...</p>
+      <div className="flex flex-col items-center justify-center py-20 text-center px-6">
+        <div className="w-16 h-16 border-4 border-[#c9a962]/20 border-t-[#c9a962] rounded-full animate-spin mb-8" />
+        <h2 className="text-xl font-outfit font-black text-white uppercase tracking-widest">Elite Sync Protocol...</h2>
+        <p className="text-white/30 text-[10px] mt-2 uppercase font-black tracking-[0.4em]">Authorizing Data Handshake</p>
+        
+        <AnimatePresence>
+          {showSelfHeal && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-12 bg-white/5 p-8 rounded-[2.5rem] border border-white/10 max-w-sm backdrop-blur-xl">
+               <p className="text-[10px] text-[#c9a962] font-black uppercase mb-4 tracking-widest">Protocol Timeout Detected</p>
+               <div className="space-y-3">
+                  <button 
+                    onClick={() => setForceRender(true)}
+                    className="w-full py-4 bg-[#c9a962] text-black font-black uppercase tracking-widest text-[10px] rounded-2xl hover:scale-[1.02] transition-transform shadow-xl shadow-[#c9a962]/20"
+                  >
+                    Manual Security Override
+                  </button>
+                  <button 
+                    onClick={() => { localStorage.clear(); window.location.href='/'; }}
+                    className="w-full py-4 border border-red-500/20 text-red-500 font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-red-500/10 transition-all"
+                  >
+                    Emergency Cache Purge
+                  </button>
+               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     )
   }
