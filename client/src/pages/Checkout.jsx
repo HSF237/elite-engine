@@ -459,7 +459,7 @@ export default function Checkout() {
                         <span className="w-1 h-1 rounded-full bg-white/20" />
                         <span>Qty: {item.qty}</span>
                       </p>
-                      <p className="text-sm font-black text-white mt-2">₹{item.price.toLocaleString()}</p>
+                      <p className="text-sm font-black text-white mt-2">₹{(item.discountPrice || item.regularPrice || item.price || 0).toLocaleString()}</p>
                     </div>
                   </div>
                 ))}
