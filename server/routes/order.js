@@ -8,7 +8,7 @@ router.post('/', verifyToken, createOrder)
 router.get('/me', verifyToken, getMyOrders)
 
 // Staff routes
-router.get('/all', requireStaff, getAllOrders)
-router.put('/:id', requireStaff, updateOrder)
+router.get('/all', verifyToken, requireStaff, getAllOrders)
+router.put('/:id', verifyToken, requireStaff, updateOrder)
 
 module.exports = router
