@@ -61,6 +61,10 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    ordersCount: {
+      type: Number,
+      default: 0,
+    },
     taxRate: {
       type: Number,
       default: 12, // Default 12% tax

@@ -488,11 +488,14 @@ export default function Shop() {
                             </h3>
                             <div className="flex items-center gap-1 my-1">
                                <div className="flex text-[#c9a962]">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 4) ? 'fill-current' : 'text-white/20'}`} />
-                                  ))}
+                                  {[...Array(5)].map((_, i) => {
+                                    const r = product.rating || 0
+                                    return <Star key={i} className={`w-3 h-3 ${i < Math.floor(r) ? 'fill-current' : i < r ? 'fill-current opacity-50' : 'text-white/20'}`} />
+                                  })}
                                </div>
-                               <span className="text-white/40 text-[9px] font-bold ml-1">{Math.floor(Math.random()*1000)}k+ bought in past month</span>
+                               <span className="text-white/60 text-[9px] font-bold">{product.rating ? Number(product.rating).toFixed(1) : '—'}</span>
+                               {product.reviews > 0 && <span className="text-white/30 text-[9px] font-bold">({product.reviews})</span>}
+                               {product.ordersCount > 0 && <span className="text-white/30 text-[9px] font-bold ml-1">· {product.ordersCount.toLocaleString()} bought</span>}
                             </div>
                           </div>
 

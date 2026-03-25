@@ -1,5 +1,6 @@
 const Order = require('../models/Order')
 const User = require('../models/User')
+const Product = require('../models/Product')
 
 const createOrder = async (req, res) => {
   try {
@@ -29,6 +30,15 @@ const createOrder = async (req, res) => {
     
     // Clear user's cart after successful order
     await User.findByIdAndUpdate(req.user._id, { cart: [] })
+
+    // Increment ordersCount for each unique product purchased
+    const productIds = [...new Set(items.map(i => i.product).filter(Boolean))]
+    if (productIds.length > 0) {
+      await Product.updateMany(
+        { _id: { $in: productIds } },
+        { $inc: { ordersCount: 1 } }
+      )
+    }
     
     res.status(201).json(savedOrder)
   } catch (error) {

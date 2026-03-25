@@ -166,12 +166,16 @@ export default function QuickViewModal({ product, onClose }) {
               </h2>
               <div className="flex items-center gap-3 mt-4">
                 <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`w-4 h-4 ${i < Math.round(product.rating ?? 4) ? 'fill-[#c9a962] text-[#c9a962]' : 'text-white/10'}`} />
-                  ))}
+                  {[...Array(5)].map((_, i) => {
+                    const r = product.rating || 0
+                    return <Star key={i} className={`w-4 h-4 ${i < Math.floor(r) ? 'fill-[#c9a962] text-[#c9a962]' : i < r ? 'fill-[#c9a962] text-[#c9a962] opacity-50' : 'text-white/10'}`} />
+                  })}
                 </div>
-                <span className="text-sm font-bold text-white">{product.rating ?? '4.6'}</span>
-                <span className="text-xs text-white/30 font-medium">({product.reviews ?? 248} reviews)</span>
+                <span className="text-sm font-bold text-white">{product.rating ? Number(product.rating).toFixed(1) : '—'}</span>
+                <span className="text-xs text-white/30 font-medium">({product.reviews ?? 0} reviews)</span>
+                {product.ordersCount > 0 && (
+                  <span className="text-xs text-[#c9a962] font-black ml-auto">{product.ordersCount.toLocaleString()} bought</span>
+                )}
               </div>
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mt-6">
                 <div className="flex items-end gap-3">
