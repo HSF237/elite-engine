@@ -113,8 +113,8 @@ export default function CartSidebar() {
                   <span>₹{subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm text-white/70">
-                  <span>Tax (12%)</span>
-                  <span>₹{tax.toFixed(0)}</span>
+                  <span>Tax (Included)</span>
+                  <span>₹{tax.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm text-white/70">
                   <span>Delivery</span>

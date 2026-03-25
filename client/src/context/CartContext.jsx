@@ -141,12 +141,15 @@ export function CartProvider({ children }) {
     if (!i) return sum
     const price = Number(i.discountPrice) || Number(i.regularPrice) || Number(i.price) || 0
     const qty = Number(i.qty) || 0
-    const rate = Number(i.taxRate || 12) / 100
-    return sum + (price * qty * rate)
+    const taxRate = i.taxRate !== undefined && i.taxRate !== null ? Number(i.taxRate) : 12
+    const rate = taxRate / 100
+    // Calculate inclusive tax amount
+    const itemTax = Math.round((price * qty) - ((price * qty) / (1 + rate)))
+    return sum + itemTax
   }, 0)
 
   const delivery = itemsArray.length > 0 ? DELIVERY_BASE : 0
-  const total = subtotal + tax + delivery
+  const total = subtotal + delivery
 
   const value = {
     items: itemsArray,
