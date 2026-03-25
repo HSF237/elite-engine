@@ -21,6 +21,13 @@ export default function OrderManager() {
     deliveryTime: '',
     paymentStatus: ''
   })
+  
+  // Tracking update data
+  const [trackingData, setTrackingData] = useState({
+    status: '',
+    location: '',
+    description: ''
+  })
 
   useEffect(() => {
     fetchOrders()
@@ -45,12 +52,18 @@ export default function OrderManager() {
       deliveryTime: order.deliveryTime,
       paymentStatus: order.paymentStatus
     })
+    setTrackingData({ status: '', location: '', description: '' })
     setIsModalOpen(true)
   }
 
   const handleUpdate = async () => {
     try {
-      await api.put(`/api/orders/${selectedOrder._id}`, updateData)
+      const payload = { ...updateData }
+      if (trackingData.status && trackingData.location) {
+        payload.trackingUpdate = trackingData
+      }
+      
+      await api.put(`/api/orders/${selectedOrder._id}`, payload)
       setIsModalOpen(false)
       fetchOrders()
     } catch (err) {
@@ -306,6 +319,35 @@ export default function OrderManager() {
                               Apply Updates
                            </button>
                         </div>
+                     </div>
+
+                     {/* Add Logistics Node */}
+                     <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5">
+                         <h4 className="text-sm font-outfit font-black uppercase tracking-tighter mb-4">Add Logistics Node</h4>
+                         <div className="space-y-4">
+                            <input 
+                              type="text" placeholder="Status (e.g. Out for Delivery)" 
+                              value={trackingData.status} onChange={e => setTrackingData({...trackingData, status: e.target.value})}
+                              className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-xs outline-none focus:border-[#c9a962]"
+                            />
+                            <input 
+                              type="text" placeholder="Location Hub" 
+                              value={trackingData.location} onChange={e => setTrackingData({...trackingData, location: e.target.value})}
+                              className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-xs outline-none focus:border-[#c9a962]"
+                            />
+                            <input 
+                              type="text" placeholder="Optional Note" 
+                              value={trackingData.description} onChange={e => setTrackingData({...trackingData, description: e.target.value})}
+                              className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-xs outline-none focus:border-[#c9a962]"
+                            />
+                            <button 
+                               onClick={handleUpdate}
+                               disabled={!trackingData.status || !trackingData.location}
+                               className="w-full py-3 border border-[#c9a962]/50 text-[#c9a962] rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#c9a962]/10 transition-all disabled:opacity-50"
+                            >
+                               Push Location Sync
+                            </button>
+                         </div>
                      </div>
 
                      <button 

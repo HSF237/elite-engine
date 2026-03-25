@@ -17,7 +17,12 @@ const createOrder = async (req, res) => {
       totalAmount,
       promoCode,
       discountAmount,
-      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Completed'
+      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Completed',
+      trackingHistory: [{
+        status: 'Order Placed',
+        location: 'Elite Engine System',
+        description: 'Your mandate has been successfully logged.'
+      }]
     })
 
     const savedOrder = await order.save()
@@ -57,13 +62,25 @@ const getAllOrders = async (req, res) => {
 
 const updateOrder = async (req, res) => {
   try {
-    const { orderStatus, deliveryTime, paymentStatus } = req.body
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { orderStatus, deliveryTime, paymentStatus },
-      { new: true }
-    )
-    res.json(order)
+    const { orderStatus, deliveryTime, paymentStatus, trackingUpdate } = req.body
+    
+    const order = await Order.findById(req.params.id)
+    if (!order) return res.status(404).json({ message: 'Order not found' })
+
+    if (orderStatus) order.orderStatus = orderStatus
+    if (deliveryTime) order.deliveryTime = deliveryTime
+    if (paymentStatus) order.paymentStatus = paymentStatus
+
+    if (trackingUpdate && trackingUpdate.status && trackingUpdate.location) {
+      order.trackingHistory.push({
+        status: trackingUpdate.status,
+        location: trackingUpdate.location,
+        description: trackingUpdate.description || ''
+      })
+    }
+
+    const updatedOrder = await order.save()
+    res.json(updatedOrder)
   } catch (error) {
     res.status(500).json({ message: 'Error updating order' })
   }

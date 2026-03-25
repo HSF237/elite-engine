@@ -53,9 +53,17 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     deliveryTime: {
-      type: String, // e.g., "2-3 Business Days" or specific date
+      type: String,
       default: 'Assigning soon',
     },
+    trackingHistory: [
+      {
+        status: { type: String, required: true },
+        location: { type: String, required: true },
+        date: { type: Date, default: Date.now },
+        description: { type: String }
+      }
+    ],
     orderCode: {
       type: String,
       unique: true,

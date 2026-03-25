@@ -328,6 +328,38 @@ const OrderCard = ({ order }) => {
                 </div>
               </div>
 
+               {/* GPS Tracking Nodes */}
+               {order.trackingHistory && order.trackingHistory.length > 0 && (
+                 <div className="mt-12 pt-8 border-t border-white/5">
+                    <div className="flex items-center justify-between mb-8">
+                       <h5 className="text-[10px] font-black uppercase tracking-widest text-[#c9a962] flex items-center gap-2"><MapPin className="w-4 h-4"/> Live Logistics Feed</h5>
+                       <div className="flex items-center gap-2">
+                          <span className="text-[8px] font-black text-green-500 uppercase tracking-widest">GPS Sync</span>
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                          </span>
+                       </div>
+                    </div>
+                    <div className="ml-4 space-y-6 border-l-2 border-[#c9a962]/20 relative">
+                      {[...order.trackingHistory].reverse().map((node, idx) => (
+                         <div key={idx} className="relative pl-8">
+                            {/* Glowing GPS Dot */}
+                            <div className={`absolute -left-[9px] top-1 w-4 h-4 rounded-full border-4 border-[#0a0a0b] shadow-[0_0_10px_rgba(201,169,98,0.5)] ${idx === 0 ? 'bg-[#c9a962]' : 'bg-white/20'}`} />
+                            <div className="bg-gradient-to-r from-white/5 to-transparent p-5 rounded-2xl border border-white/5 hover:border-[#c9a962]/30 transition-all font-outfit">
+                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                  <h6 className={`text-sm sm:text-base font-black uppercase tracking-tight ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{node.status}</h6>
+                                  <span className="text-[9px] font-black text-[#c9a962] uppercase tracking-widest">{new Date(node.date).toLocaleString()}</span>
+                               </div>
+                               <p className="text-xs text-white/40 font-bold flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-[#c9a962]"/> {node.location}</p>
+                               {node.description && <p className="text-xs text-white/50 mt-3 py-2 px-3 bg-black/40 rounded-xl border border-white/5 font-medium">{node.description}</p>}
+                            </div>
+                         </div>
+                      ))}
+                    </div>
+                 </div>
+               )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 pt-8 border-t border-white/5">
                  <div>
                     <h5 className="text-[10px] font-black uppercase tracking-widest text-[#c9a962] mb-4">Elite Logistics</h5>
