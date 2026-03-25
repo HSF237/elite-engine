@@ -101,7 +101,7 @@ export default function Navbar() {
              <div className="h-6 w-px bg-white/5 mx-1 hidden sm:block" />
 
              {user && (
-                <Link to="/profile#orders" className="hidden md:flex flex-col items-start px-3 py-1 hover:bg-white/5 rounded-xl transition-all group border border-transparent hover:border-white/10">
+                <Link to="/orders" className="hidden md:flex flex-col items-start px-3 py-1 hover:bg-white/5 rounded-xl transition-all group border border-transparent hover:border-white/10">
                    <span className="text-[9px] font-black text-white/40 uppercase leading-none">Returns</span>
                    <span className="text-xs font-bold text-white group-hover:text-[#c9a962] transition-colors leading-none mt-1">& Orders</span>
                 </Link>
