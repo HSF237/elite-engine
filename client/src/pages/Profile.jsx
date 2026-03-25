@@ -2,14 +2,20 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { User, MapPin, Package, Settings, LogOut, ChevronRight, Plus, Loader2, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../utils/api'
 import OptimizedImage from '../components/OptimizedImage'
 
 export default function Profile() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('profile')
+  const location = useLocation()
+  
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.replace('#', '')
+    return ['profile', 'orders', 'addresses'].includes(hash) ? hash : 'profile'
+  })
+  
   const [profileData, setProfileData] = useState(null)
   const [orders, setOrders] = useState([])
   const [addresses, setAddresses] = useState([])
@@ -41,6 +47,13 @@ export default function Profile() {
 
     fetchData()
   }, [user, navigate])
+
+  useEffect(() => {
+    const hash = location.hash.replace('#', '')
+    if (['profile', 'orders', 'addresses'].includes(hash)) {
+      setActiveTab(hash)
+    }
+  }, [location.hash])
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault()
