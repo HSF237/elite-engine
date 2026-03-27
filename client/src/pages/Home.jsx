@@ -175,21 +175,34 @@ export default function Home() {
         </div>
       </section>
       
-      {/* ——— Shop by Category ——— */}
-      <section className="py-6 px-4 bg-white/[0.01]">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-4 sm:gap-8">
-          {CATEGORIES.map((cat) => (
-            <div 
-              key={cat.id} 
-              className="flex flex-col items-center gap-1.5 group cursor-pointer"
-              onClick={() => navigate(`/shop?category=${cat.slug}`)}
-            >
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-white/10 group-hover:border-[#c9a962]/50 transition-all shadow-lg bg-white/5">
-                 <OptimizedImage src={cat.image} alt={cat.label} width={120} quality={60} wrapperClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-500" />
-              </div>
-              <span className="text-[8px] sm:text-[9px] font-black text-white/40 group-hover:text-white uppercase tracking-widest transition-colors">{cat.label}</span>
-            </div>
-          ))}
+      {/* ——— Amazon-Style Category Navigator ——— */}
+      <section className="py-8 bg-[#0d0d0f] border-b border-white/5 relative z-40">
+        <div className="max-w-7xl mx-auto px-4 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-6 sm:gap-12 min-w-max pb-2">
+            {CATEGORIES.map((cat) => (
+              <motion.div 
+                key={cat.id} 
+                whileHover={{ y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex flex-col items-center gap-3 group cursor-pointer"
+                onClick={() => navigate(`/shop?category=${cat.slug}`)}
+              >
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full p-0.5 bg-gradient-to-tr from-[#c9a962]/50 to-transparent group-hover:from-[#c9a962] transition-all duration-500 shadow-xl">
+                  <div className="w-full h-full rounded-full overflow-hidden border-2 border-[#111113] bg-[#1a1a1c]">
+                    <OptimizedImage 
+                      src={cat.image} 
+                      alt={cat.label} 
+                      width={160} 
+                      quality={70} 
+                      wrapperClassName="w-full h-full" 
+                      className="group-hover:scale-110 transition-transform duration-700 object-cover" 
+                    />
+                  </div>
+                </div>
+                <span className="text-[10px] sm:text-[11px] font-black text-white/40 group-hover:text-[#c9a962] uppercase tracking-[0.2em] transition-colors">{cat.label}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

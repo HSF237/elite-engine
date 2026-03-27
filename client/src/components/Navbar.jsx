@@ -136,21 +136,11 @@ export default function Navbar() {
                </Link>
              )}
 
-             <button onClick={() => setMobileOpen(true)} className="sm:hidden p-2.5 text-white/40 hover:text-white">
-                <Menu className="w-6 h-6" />
-             </button>
           </div>
         </div>
 
         {/* Category Command Bar */}
         <div className="flex items-center gap-4 py-2 border-t border-white/5 overflow-x-auto no-scrollbar">
-           <button 
-             onClick={() => setMobileOpen(true)}
-             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-black text-[#c9a962] hover:bg-[#c9a962]/10 uppercase tracking-widest transition-all shrink-0"
-           >
-              <Menu className="w-3.5 h-3.5" /> ALL
-           </button>
-           
            <div className="flex items-center gap-1 sm:gap-2">
              {NAV_LINKS.map(link => (
                 <Link 
@@ -169,62 +159,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div 
-               initial={{ opacity: 0 }} 
-               animate={{ opacity: 1 }} 
-               exit={{ opacity: 0 }} 
-               className="fixed inset-0 bg-black/80 backdrop-blur-md z-[60]"
-               onClick={() => setMobileOpen(false)}
-            />
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-[#0a0a0b] z-[70] shadow-2xl p-6 flex flex-col gap-6"
-            >
-              <div className="flex items-center justify-between">
-                 <span className="font-outfit font-black text-xl text-white">ELITE <span className="text-[#c9a962]">MENU</span></span>
-                 <button onClick={() => setMobileOpen(false)} className="p-2 glass rounded-full text-white"><X className="w-5 h-5" /></button>
-              </div>
-              
-              <div className="flex flex-col gap-1 mt-4">
-                 {NAV_LINKS.map(link => (
-                   <Link 
-                     key={link.label} 
-                     to={link.href} 
-                     onClick={() => setMobileOpen(false)}
-                     className="text-lg font-black uppercase tracking-tighter text-white/40 hover:text-[#c9a962] hover:pl-2 transition-all py-3 border-b border-white/5"
-                   >
-                     {link.label}
-                   </Link>
-                 ))}
-              </div>
-
-              {user ? (
-                 <button 
-                  onClick={() => { logout(); setMobileOpen(false); }}
-                  className="mt-auto w-full py-4 bg-red-500/10 text-red-500 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
-                >
-                   <LogOut className="w-4 h-4" /> End Session
-                </button>
-              ) : (
-                <Link 
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="mt-auto w-full py-4 bg-[#c9a962] text-black rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
-                >
-                   <User className="w-4 h-4" /> Authorized Entry
-                </Link>
-              )}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </motion.header>
   )
 }
