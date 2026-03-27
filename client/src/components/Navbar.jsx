@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingBag, Menu, Search, Heart, User, ChevronDown, MapPin, LogOut, X } from 'lucide-react'
+import { ShoppingBag, Menu, Search, Heart, User, ChevronLeft, MapPin, LogOut, X, Gem } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import { useAuth } from '../context/AuthContext'
@@ -17,6 +17,8 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const isHome = location.pathname === '/'
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -42,13 +44,25 @@ export default function Navbar() {
       <div className="max-w-[1440px] mx-auto">
         {/* Main Navigation Row */}
         <div className="flex items-center gap-6 h-14 sm:h-16">
+          {/* Back Button Strategy */}
+          {!isHome && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={() => navigate(-1)}
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all group shrink-0"
+            >
+              <ChevronLeft className="w-5 h-5 text-[#c9a962] group-hover:-translate-x-0.5 transition-transform" />
+            </motion.button>
+          )}
+
           {/* Section 1: Brand & Identity */}
           <div className="flex items-center gap-4 shrink-0">
              <Link to="/" className="font-outfit font-black text-xl sm:text-2xl tracking-tighter text-white flex items-center gap-2 group">
                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#c9a962] rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-[#c9a962]/20">
-                  <ShoppingBag className="w-5 h-5 text-black" />
+                  <Gem className="w-5 h-5 text-black" />
                </div>
-               <span className="hidden sm:inline">ELITE<span className="text-[#c9a962]">STORE</span></span>
+               <span className="hidden lg:inline">ELITE<span className="text-[#c9a962]">STORE</span></span>
              </Link>
 
              {/* Location Pulse (Desktop Only) */}
@@ -62,7 +76,7 @@ export default function Navbar() {
           </div>
 
           {/* Section 2: Smart Search Architecture */}
-          <div className="flex-1 flex justify-center max-w-2xl px-2">
+          <div className="hidden sm:flex flex-1 justify-center max-w-2xl px-2">
              <form 
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -87,7 +101,7 @@ export default function Navbar() {
           </div>
 
           {/* Section 3: User Commands & Bag */}
-          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto sm:ml-0">
              <Link to="/wishlist" className="relative p-2.5 hover:bg-white/5 rounded-xl transition-all group">
                <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'text-white/40 group-hover:text-red-400'}`} />
                {wishlistCount > 0 && <span className="absolute top-2 right-2 min-w-[14px] h-[14px] rounded-full bg-red-500 text-[8px] font-black flex items-center justify-center">{wishlistCount}</span>}

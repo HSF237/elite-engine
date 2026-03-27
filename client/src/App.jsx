@@ -3,6 +3,7 @@ import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 import { AuthProvider } from './context/AuthContext'
 import Layout from './components/Layout'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import Login from './pages/Login'
@@ -20,6 +21,7 @@ export default function App() {
     <AuthProvider>
       <WishlistProvider>
         <CartProvider>
+          <ScrollToTop />
           <Routes>
             {/* Store */}
             <Route path="/" element={<Layout />}>
