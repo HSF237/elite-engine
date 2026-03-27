@@ -30,9 +30,12 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['COD', 'UPI', 'GPAY', 'CARD'],
+      enum: ['COD', 'RAZORPAY'],
       default: 'COD',
     },
+    razorpayOrderId: String,
+    razorpayPaymentId: String,
+    razorpaySignature: String,
     promoCode: String,
     discountAmount: {
       type: Number,

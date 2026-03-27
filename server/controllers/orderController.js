@@ -1,13 +1,36 @@
 const Order = require('../models/Order')
 const User = require('../models/User')
 const Product = require('../models/Product')
+const crypto = require('crypto')
 
 const createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, paymentMethod, totalAmount, promoCode, discountAmount } = req.body
+    const { 
+      items, shippingAddress, paymentMethod, totalAmount, 
+      promoCode, discountAmount,
+      razorpayOrderId, razorpayPaymentId, razorpaySignature 
+    } = req.body
     
     if (!items || items.length === 0) {
       return res.status(400).json({ message: 'No items in manifest' })
+    }
+
+    // Server-side Verification for Online Payments
+    if (paymentMethod === 'RAZORPAY') {
+      if (!razorpayPaymentId || !razorpaySignature) {
+        return res.status(400).json({ message: 'Incomplete payment data.' })
+      }
+      
+      const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'rzp_test_elite_2024_secret';
+      const sign = razorpayOrderId + "|" + razorpayPaymentId;
+      const expectedSign = crypto
+        .createHmac("sha256", RAZORPAY_KEY_SECRET)
+        .update(sign.toString())
+        .digest("hex");
+
+      if (razorpaySignature !== expectedSign) {
+        return res.status(400).json({ message: 'Payment verification failed. Invalid mandate.' })
+      }
     }
 
     const order = new Order({
@@ -18,6 +41,9 @@ const createOrder = async (req, res) => {
       totalAmount,
       promoCode,
       discountAmount,
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature,
       paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Completed',
       trackingHistory: [{
         status: 'Order Placed',

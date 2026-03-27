@@ -10,6 +10,7 @@ const userRoutes = require('./routes/user')
 const orderRoutes = require('./routes/order')
 const reviewRoutes = require('./routes/reviews')
 const analyticsRoutes = require('./routes/analytics')
+const paymentRoutes = require('./routes/payment')
 
 const app = express()
 
@@ -44,6 +45,7 @@ apiRouter.use('/user', ensureDB, userRoutes)
 apiRouter.use('/orders', ensureDB, orderRoutes)
 apiRouter.use('/reviews', ensureDB, reviewRoutes)
 apiRouter.use('/analytics', ensureDB, analyticsRoutes)
+apiRouter.use('/payment', ensureDB, paymentRoutes)
 
 // Support both /api/path and /path (for Vercel rewrites)
 app.use('/api', apiRouter)

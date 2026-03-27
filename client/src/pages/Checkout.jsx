@@ -106,7 +106,79 @@ export default function Checkout() {
     else { setPromoError('INVALID VOUCHER CODE'); setDiscount(0); }
   }
 
+  const handleRazorpay = async () => {
+    if (!selectedAddress) { alert('Please select a target placement first.'); setStep(1); return; }
+    setLoading(true)
+
+    try {
+      const amount = (total - discount)
+      const { data: rzpOrder } = await api.post('/api/payment/razorpay-order', { amount })
+
+      const options = {
+        key: 'rzp_test_elite_2024_id', // Should be in env but visible for SDK
+        amount: rzpOrder.amount,
+        currency: rzpOrder.currency,
+        name: 'ELITE STORE',
+        description: 'Elite Asset Procurement',
+        image: '/favicon.svg',
+        order_id: rzpOrder.id,
+        handler: async (response) => {
+          try {
+            const orderData = {
+              items: items.map(i => ({
+                product: i._id || i.id,
+                name: i.retailHeading || i.title || 'Elite Product',
+                price: i.discountPrice || i.regularPrice || i.price || 0,
+                qty: i.qty, size: i.size, color: i.color, image: i.image
+              })),
+              shippingAddress: {
+                street: selectedAddress.street, city: selectedAddress.city,
+                state: selectedAddress.state, zip: selectedAddress.zip,
+                country: selectedAddress.country || 'India',
+                phone: selectedAddress.phone || user?.phone || '',
+                deliveryTime: selectedAddress.deliveryTime || '',
+                instructions: selectedAddress.instructions || ''
+              },
+              paymentMethod: 'RAZORPAY',
+              totalAmount: (total - discount),
+              promoCode: discount > 0 ? promoCode : null,
+              discountAmount: discount,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature
+            }
+            const { data } = await api.post('/api/orders', orderData)
+            navigate('/order-success', { state: { order: data } })
+          } catch (err) {
+            alert(err.response?.data?.message || 'Order sync failed after payment. Please contact support.')
+          }
+        },
+        prefill: {
+          name: user?.name || '',
+          email: user?.email || '',
+          contact: selectedAddress.phone || user?.phone || ''
+        },
+        theme: { color: '#c9a962' }
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      rzp1.on('payment.failed', function (response){
+        alert("Payment Protocol Terminated: " + response.error.description);
+      });
+      rzp1.open();
+    } catch (err) {
+      alert('Payment initialization failed.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleCreateOrder = async () => {
+    if (paymentMethod === 'RAZORPAY') {
+      await handleRazorpay()
+      return
+    }
+
     if (!selectedAddress) { alert('Please select a target placement first.'); setStep(1); return; }
     const corruptItems = items.filter(i => !i._id && !i.id)
     if (corruptItems.length > 0) {
@@ -305,9 +377,8 @@ export default function Checkout() {
 
                 <div className="grid grid-cols-1 gap-4">
                    {[
-                     { id: 'UPI', name: 'Digital UPI / GPay', desc: 'Instant verification for priority processing', icon: '💎', color: 'from-blue-500/20' },
-                     { id: 'COD', name: 'Elite Cash on Delivery', desc: 'Settle upon successful arrival', icon: '📦', color: 'from-[#c9a962]/20' },
-                     { id: 'CARD', name: 'Global Credit Infrastructure', desc: 'Secure encryption for all major networks', icon: '💳', color: 'from-purple-500/20' }
+                     { id: 'RAZORPAY', name: 'Digital UPI / GPay / Cards', desc: 'Secure payment via Razorpay Infrastructure', icon: '💎', color: 'from-blue-500/20' },
+                     { id: 'COD', name: 'Elite Cash on Delivery', desc: 'Settle upon successful arrival', icon: '📦', color: 'from-[#c9a962]/20' }
                    ].map(method => (
                      <div 
                         key={method.id}
@@ -335,29 +406,14 @@ export default function Checkout() {
                    ))}
                 </div>
 
-                {paymentMethod === 'UPI' && (
-                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 mt-6 flex items-center gap-4">
-                     <span className="font-outfit font-black text-[#c9a962]">TEST UPI ID</span>
-                     <input type="text" readOnly value="demouser@okicici" className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none" />
-                  </motion.div>
-                )}
-
-                {paymentMethod === 'CARD' && (
-                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
-                     <div className="col-span-2 lg:col-span-4">
-                       <span className="font-outfit font-black text-[#c9a962] text-[10px] block mb-2">DEMO CARD NUMBER</span>
-                       <input type="text" readOnly value="4242 4242 4242 4242" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none tracking-widest" />
-                     </div>
-                     <div className="col-span-1 lg:col-span-2">
-                       <span className="font-outfit font-black text-[#c9a962] text-[10px] block mb-2">EXPIRY</span>
-                       <input type="text" readOnly value="12/25" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none" />
-                     </div>
-                     <div className="col-span-1 lg:col-span-2">
-                       <span className="font-outfit font-black text-[#c9a962] text-[10px] block mb-2">CVV</span>
-                       <input type="text" readOnly value="123" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white/50 text-sm font-black outline-none" />
-                     </div>
-                  </motion.div>
-                )}
+                {paymentMethod === 'RAZORPAY' && (
+                   <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-6 rounded-[2rem] bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 mt-6 flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                         <div className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+                      </div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Razorpay Infrastructure Active: UPI, GPay, PhonePe & Cards Supported</p>
+                   </motion.div>
+                 )}
 
                 <div className="flex gap-6 mt-12">
                   <button 
