@@ -23,7 +23,11 @@ export default function Signup() {
       await signup(name, email, password)
       navigate('/')
     } catch (err) {
-      setError(err?.response?.data?.message || 'Signup failed. Please try again.')
+      const msg = err?.code === 'auth/email-already-in-use' ? 'This email is already registered.'
+        : err?.code === 'auth/weak-password' ? 'Password is too weak. Use at least 6 characters.'
+        : err?.code === 'auth/invalid-email' ? 'Please enter a valid email address.'
+        : err?.message || 'Signup failed. Please try again.'
+      setError(msg)
     } finally {
       setLoading(false)
     }

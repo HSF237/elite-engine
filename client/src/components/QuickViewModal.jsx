@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Heart, ShoppingBag, Star, Truck, ShieldCheck, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
-import api from '../utils/api'
+import { reviewService } from '../services/firebaseService'
 import { addToRecentlyViewed } from '../utils/recentViewed'
 import OptimizedImage from './OptimizedImage'
 
@@ -295,8 +295,8 @@ function ReviewsSection({ productId }) {
 
   useEffect(() => {
     setLoading(true)
-    api.get(`/api/reviews/product/${productId}`)
-      .then(res => setReviews(res.data))
+    reviewService.getProductReviews(productId)
+      .then(data => setReviews(data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
   }, [productId])
@@ -306,12 +306,12 @@ function ReviewsSection({ productId }) {
     setSubmitting(true)
     setError('')
     try {
-      const res = await api.post('/api/reviews', { productId, ...newReview })
-      setReviews([res.data, ...reviews])
+      const data = await reviewService.createReview({ productId, ...newReview })
+      setReviews([data, ...reviews])
       setShowForm(false)
       setNewReview({ rating: 5, comment: '' })
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit review. Verified purchase required.')
+      setError(err?.message || 'Failed to submit review. Verified purchase required.')
     } finally {
       setSubmitting(false)
     }

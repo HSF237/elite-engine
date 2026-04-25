@@ -22,7 +22,7 @@ const item = {
   show: { opacity: 1, y: 0 },
 }
 
-import api from '../utils/api'
+import { productService } from '../services/firebaseService'
 
 const FlashDealCountdown = () => {
   const [timeLeft, setTimeLeft] = useState({ h: 12, m: 45, s: 0 })
@@ -59,9 +59,9 @@ export default function Home() {
 
   // Fetch live products
   useEffect(() => {
-    api.get('/api/products?limit=5')
+    productService.getProducts({ limit: 5 })
       .then(res => {
-        setProducts(res.data.products?.length > 0 ? res.data.products : ELITE_DROPS.slice(0, 5))
+        setProducts(res.products?.length > 0 ? res.products : ELITE_DROPS.slice(0, 5))
         setLoading(false)
       })
       .catch(err => {

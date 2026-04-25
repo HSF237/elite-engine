@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useCallback, useEffect, useRef, useState } from 'react'
-import api from '../utils/api'
+import { userService } from '../services/firebaseService'
 import { useAuth } from './AuthContext'
 
 const WishlistContext = createContext(null)
@@ -26,14 +26,14 @@ export function WishlistProvider({ children }) {
   const [hasFetched, setHasFetched] = useState(false)
   const isInitialMount = useRef(true)
 
-  // 1. Sync FROM server on Login
+  // 1. Sync FROM Firebase on Login
   useEffect(() => {
     if (user) {
       setHasFetched(false)
-      api.get('/api/user/sync')
-        .then(res => {
-          if (res.data.wishlist) {
-            const mappedItems = res.data.wishlist.map(item => ({
+      userService.getSyncData()
+        .then(data => {
+          if (data.wishlist) {
+            const mappedItems = data.wishlist.map(item => ({
               ...item,
               id: item._id
             }))
@@ -51,12 +51,12 @@ export function WishlistProvider({ children }) {
     }
   }, [user])
 
-  // 2. Sync TO server on Change
+  // 2. Sync TO Firebase on Change
   useEffect(() => {
     if (!user || !hasFetched) return
 
     const wishlistData = state.items.map(i => i._id || i.id)
-    api.post('/api/user/wishlist', { wishlist: wishlistData })
+    userService.updateWishlist(wishlistData)
       .catch(err => console.error('Failed to update remote wishlist', err))
   }, [state.items, user, hasFetched])
 

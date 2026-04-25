@@ -26,7 +26,12 @@ export default function Login() {
         navigate('/')
       }
     } catch (err) {
-      setError(err?.response?.data?.message || 'Login failed. Check your credentials.')
+      const msg = err?.code === 'auth/invalid-credential' ? 'Invalid email or password.'
+        : err?.code === 'auth/user-not-found' ? 'No account found with this email.'
+        : err?.code === 'auth/wrong-password' ? 'Incorrect password.'
+        : err?.code === 'auth/too-many-requests' ? 'Too many attempts. Try again later.'
+        : err?.message || 'Login failed. Check your credentials.'
+      setError(msg)
     } finally {
       setLoading(false)
     }

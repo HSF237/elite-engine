@@ -6,7 +6,7 @@ import {
   Truck, Search, Filter, X, ChevronRight,
   MoreVertical, ExternalLink, RotateCcw
 } from 'lucide-react'
-import api from '../utils/api'
+import { orderService } from '../services/firebaseService'
 
 export default function OrderManager() {
   const [orders, setOrders] = useState([])
@@ -35,7 +35,7 @@ export default function OrderManager() {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await api.get('/api/orders/all')
+      const data = await orderService.getAllOrders()
       console.log('ELITE ORDER SYNC:', data) // Diagnostic Log
       setOrders(data)
     } catch (err) {
@@ -63,7 +63,7 @@ export default function OrderManager() {
         payload.trackingUpdate = trackingData
       }
       
-      await api.put(`/api/orders/${selectedOrder._id}`, payload)
+      await orderService.updateOrder(selectedOrder._id, payload)
       setIsModalOpen(false)
       fetchOrders()
     } catch (err) {

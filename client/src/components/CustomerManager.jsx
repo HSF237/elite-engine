@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Mail, User, Calendar, ShieldCheck, ShieldAlert } from 'lucide-react'
-import api from '../utils/api'
+import { userService } from '../services/firebaseService'
 
 export default function CustomerManager() {
   const [users, setUsers] = useState([])
@@ -12,7 +12,7 @@ export default function CustomerManager() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data } = await api.get('/api/user/all')
+        const data = await userService.getAllUsers()
         setUsers(data)
       } catch (err) {
         setError('Failed to fetch user list. Are you authorized?')

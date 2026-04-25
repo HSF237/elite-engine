@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X, Upload, Package, DollarSign, Layout, Type, Palette, Maximize, Truck, Loader2, Percent, Ticket, Search } from 'lucide-react'
-import api from '../utils/api'
+import { productService } from '../services/firebaseService'
 
 export default function InventoryManager() {
   const [products, setProducts] = useState([])
@@ -37,8 +37,8 @@ export default function InventoryManager() {
 
   const fetchProducts = async () => {
     try {
-      const res = await api.get('/api/products')
-      setProducts(res.data.products)
+      const res = await productService.getProducts()
+      setProducts(res.products)
     } catch (err) {
       console.error('Failed to fetch products', err)
     } finally {
@@ -96,9 +96,9 @@ export default function InventoryManager() {
       urls.forEach(url => data.append('images', url))
 
       if (isEditing) {
-        await api.put(`/api/products/${editingId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+        await productService.updateProduct(editingId, data)
       } else {
-        await api.post('/api/products', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+        await productService.createProduct(data)
       }
 
       setIsAdding(false)
@@ -113,7 +113,7 @@ export default function InventoryManager() {
       setImageFiles([null, null, null, null])
       fetchProducts()
     } catch (err) {
-      alert(err.response?.data?.message || 'Transaction failed')
+      alert(err?.message || 'Transaction failed')
     } finally {
       setSubmitting(false)
     }
@@ -122,7 +122,7 @@ export default function InventoryManager() {
   const handleDelete = async (id) => {
     if (!window.confirm('Erase this item from existence?')) return
     try {
-      await api.delete(`/api/products/${id}`)
+      await productService.deleteProduct(id)
       fetchProducts()
     } catch (err) {
       alert('Failed to delete product')

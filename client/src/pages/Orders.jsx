@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Package, MapPin, Loader2, CheckCircle2, ChevronRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import api from '../utils/api'
+import { orderService } from '../services/firebaseService'
 import OptimizedImage from '../components/OptimizedImage'
 
 export default function Orders() {
@@ -19,7 +19,7 @@ export default function Orders() {
     }
     const fetchOrders = async () => {
       try {
-        const { data } = await api.get('/api/orders/me')
+        const data = await orderService.getMyOrders()
         setOrders(data)
       } catch (err) {
         console.error('Failed to fetch orders', err)

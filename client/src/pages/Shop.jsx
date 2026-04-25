@@ -47,7 +47,7 @@ function FilterSection({ title, children, defaultOpen = true }) {
   )
 }
 
-import api from '../utils/api'
+import { productService } from '../services/firebaseService'
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -84,9 +84,9 @@ export default function Shop() {
 
   // Fetch live products
   useEffect(() => {
-    api.get('/api/products?limit=100')
+    productService.getProducts({ limit: 100 })
       .then(res => {
-        setProducts(res.data.products?.length > 0 ? res.data.products : ELITE_DROPS)
+        setProducts(res.products?.length > 0 ? res.products : ELITE_DROPS)
         setLoading(false)
       })
       .catch(err => {

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
-import api from '../utils/api'
+import { userService, orderService, paymentService } from '../services/firebaseService'
 import OptimizedImage from '../components/OptimizedImage'
 
 export default function Checkout() {
@@ -69,15 +69,14 @@ export default function Checkout() {
     
     const fetchCheckoutData = async () => {
       try {
-        const res = await api.get('/api/user/address')
-        const data = Array.isArray(res.data) ? res.data : []
+        const data = await userService.getAddresses()
         setAddresses(data)
         const def = data.find(a => a.isDefault) || data[0] || null
         if (def) setSelectedAddress(def)
         
-        const profileRes = await api.get('/api/user/profile')
-        if (profileRes.data) {
-          setNewAddress(prev => ({ ...prev, phone: profileRes.data.phone || '' }))
+        const profileData = await userService.getProfile()
+        if (profileData) {
+          setNewAddress(prev => ({ ...prev, phone: profileData.phone || '' }))
         }
       } catch (err) {
         console.error('Data sync failed', err)
@@ -112,7 +111,7 @@ export default function Checkout() {
 
     try {
       const amount = (total - discount)
-      const { data: rzpOrder } = await api.post('/api/payment/razorpay-order', { amount })
+      const rzpOrder = await paymentService.createRazorpayOrder({ amount })
 
       const options = {
         key: 'rzp_test_elite_2024_id', // Should be in env but visible for SDK
@@ -147,10 +146,10 @@ export default function Checkout() {
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature
             }
-            const { data } = await api.post('/api/orders', orderData)
+            const data = await orderService.createOrder(orderData)
             navigate('/order-success', { state: { order: data } })
           } catch (err) {
-            alert(err.response?.data?.message || 'Order sync failed after payment. Please contact support.')
+            alert(err?.message || 'Order sync failed after payment. Please contact support.')
           }
         },
         prefill: {
@@ -206,17 +205,17 @@ export default function Checkout() {
         promoCode: discount > 0 ? promoCode : null,
         discountAmount: discount
       }
-      const { data } = await api.post('/api/orders', orderData)
+      const data = await orderService.createOrder(orderData)
       navigate('/order-success', { state: { order: data } })
     } catch (err) {
-      alert(err.response?.data?.message || 'Order settlement failed.')
+      alert(err?.message || 'Order settlement failed.')
     } finally { setLoading(false) }
   }
 
   const handleAddAddress = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await api.post('/api/user/address', { ...newAddress, isDefault: isSettingPrimary })
+      const data = await userService.addAddress({ ...newAddress, isDefault: isSettingPrimary })
       setAddresses(data)
       const added = data.find(a => a.street === newAddress.street) || data[data.length - 1]
       setSelectedAddress(added)

@@ -28,7 +28,7 @@ export default function StaffGateway() {
         setError('Access denied. This portal is for staff only.')
       }
     } catch (err) {
-      setError(err?.response?.data?.message || 'Invalid credentials.')
+      setError(err?.code === 'auth/invalid-credential' ? 'Invalid credentials.' : err?.message || 'Authentication failed.')
     } finally {
       setLoading(false)
     }

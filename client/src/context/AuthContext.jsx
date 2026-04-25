@@ -1,42 +1,46 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import api from '../utils/api'
+import { authService } from '../services/firebaseService'
 
 const AuthContext = createContext(null)
-const TOKEN_KEY = 'elite_token'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // On mount — try to restore session from localStorage
+  // Listen for Firebase Auth state changes
   useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY)
-    if (token) {
-      api.get('/api/auth/me')
-        .then(res => setUser(res.data.user))
-        .catch(() => { localStorage.removeItem(TOKEN_KEY) })
-        .finally(() => setLoading(false))
-    } else {
+    const unsubscribe = authService.onAuthChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const result = await authService.getMe()
+          setUser(result.user)
+        } catch (err) {
+          console.error('Failed to get user profile:', err)
+          setUser(null)
+        }
+      } else {
+        setUser(null)
+      }
       setLoading(false)
-    }
+    })
+
+    return () => unsubscribe()
   }, [])
 
   const login = useCallback(async (email, password) => {
-    const { data } = await api.post('/api/auth/login', { email, password })
-    localStorage.setItem(TOKEN_KEY, data.token)
-    setUser(data.user)
-    return data.user
+    const result = await authService.login(email, password)
+    setUser(result.user)
+    return result.user
   }, [])
 
   const signup = useCallback(async (name, email, password) => {
-    const { data } = await api.post('/api/auth/signup', { name, email, password })
-    localStorage.setItem(TOKEN_KEY, data.token)
-    setUser(data.user)
-    return data.user
+    const result = await authService.signup(name, email, password)
+    setUser(result.user)
+    return result.user
   }, [])
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY)
+  const logout = useCallback(async () => {
+    await authService.logout()
     setUser(null)
   }, [])
 

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { TrendingUp, Users, ShoppingBag, CreditCard, ArrowUpRight, ArrowDownRight, Package, Clock } from 'lucide-react'
-import api from '../utils/api'
+import { analyticsService } from '../services/firebaseService'
 
 export default function AnalyticsDashboard() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.get('/api/analytics/dashboard')
-      .then(res => setStats(res.data))
+    analyticsService.getDashboardStats()
+      .then(data => setStats(data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
   }, [])

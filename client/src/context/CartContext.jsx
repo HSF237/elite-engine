@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useCallback, useEffect, useRef, useState } from 'react'
-import api from '../utils/api'
+import { userService } from '../services/firebaseService'
 import { useAuth } from './AuthContext'
 
 const CartContext = createContext(null)
@@ -61,14 +61,14 @@ export function CartProvider({ children }) {
   const [hasFetched, setHasFetched] = useState(false)
   const prevUserRef = useRef(null)
 
-  // 1. Sync FROM server on Login
+  // 1. Sync FROM Firebase on Login
   useEffect(() => {
     if (user) {
       setHasFetched(false)
-      api.get('/api/user/sync')
-        .then(res => {
-          if (res.data.cart) {
-            const mappedItems = res.data.cart.map(item => ({
+      userService.getSyncData()
+        .then(data => {
+          if (data.cart) {
+            const mappedItems = data.cart.map(item => ({
               ...item.product,
               id: item.product._id,
               qty: item.qty,
@@ -96,7 +96,7 @@ export function CartProvider({ children }) {
     localStorage.setItem('elite_cart', JSON.stringify(state.items))
   }, [state.items])
 
-  // 3. Sync TO server on Change
+  // 3. Sync TO Firebase on Change
   useEffect(() => {
     if (!user || !hasFetched) return
 
@@ -107,7 +107,7 @@ export function CartProvider({ children }) {
       color: i.color
     }))
     
-    api.post('/api/user/cart', { cart: cartData })
+    userService.updateCart(cartData)
       .catch(err => console.error('Failed to update remote cart', err))
   }, [state.items, user, hasFetched])
 

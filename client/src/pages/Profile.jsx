@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { User, MapPin, Package, Settings, LogOut, ChevronRight, Plus, Loader2, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate, useLocation } from 'react-router-dom'
-import api from '../utils/api'
+import { userService } from '../services/firebaseService'
 import OptimizedImage from '../components/OptimizedImage'
 
 export default function Profile() {
@@ -29,12 +29,12 @@ export default function Profile() {
 
     const fetchData = async () => {
       try {
-        const [profileRes, addressesRes] = await Promise.all([
-          api.get('/api/user/profile'),
-          api.get('/api/user/address')
+        const [profileDataResult, addressesData] = await Promise.all([
+          userService.getProfile(),
+          userService.getAddresses()
         ])
-        setProfileData(profileRes.data)
-        setAddresses(addressesRes.data)
+        setProfileData(profileDataResult)
+        setAddresses(addressesData)
       } catch (err) {
         console.error('Failed to fetch profile data', err)
       } finally {
@@ -56,7 +56,7 @@ export default function Profile() {
     e.preventDefault()
     setIsUpdating(true)
     try {
-      const { data } = await api.put('/api/user/profile', profileData)
+      const data = await userService.updateProfile(profileData)
       setProfileData(data)
       alert('Profile updated successfully!')
     } catch (err) {
