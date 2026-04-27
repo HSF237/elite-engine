@@ -15,6 +15,7 @@ import Orders from './pages/Orders'
 import Wishlist from './pages/Wishlist'
 import StaffGateway from './pages/StaffGateway'
 import StaffDashboard from './pages/StaffDashboard'
+import Seeder from './pages/Seeder'
 
 export default function App() {
   return (
@@ -39,6 +40,8 @@ export default function App() {
             {/* Staff (hidden) */}
             <Route path="/staff-gateway" element={<StaffGateway />} />
             <Route path="/staff/dashboard" element={<StaffDashboard />} />
+            {/* Database Seeder */}
+            <Route path="/seeder" element={<Seeder />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </CartProvider>
