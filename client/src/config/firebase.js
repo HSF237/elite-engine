@@ -12,7 +12,17 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
-const app = initializeApp(firebaseConfig)
+let app
+try {
+  if (!firebaseConfig.apiKey) {
+    throw new Error('Firebase API Key is missing. Check your environment variables.')
+  }
+  app = initializeApp(firebaseConfig)
+} catch (error) {
+  console.error('Firebase initialization failed:', error)
+  // Create a mock app object to prevent total crash on import
+  app = { name: '[DEFAULT]', options: {} }
+}
 
 export const auth = getAuth(app)
 export const db = getFirestore(app)

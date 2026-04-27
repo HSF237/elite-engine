@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, ChevronDown, Star, Heart, ShoppingBag, X, Search, SlidersHorizontal, Check, Plus } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
+import { productService } from '../services/firebaseService'
 import { ELITE_DROPS } from '../data/mockProducts'
 import QuickViewModal from '../components/QuickViewModal'
 import OptimizedImage from '../components/OptimizedImage'
@@ -47,7 +48,6 @@ function FilterSection({ title, children, defaultOpen = true }) {
   )
 }
 
-import { productService } from '../services/firebaseService'
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()

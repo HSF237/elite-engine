@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, Link } from 'react-router-dom'
 import { Heart, ChevronLeft, ChevronRight } from 'lucide-react'
+import { productService } from '../services/firebaseService'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import QuickViewModal from '../components/QuickViewModal'
@@ -21,8 +22,6 @@ const item = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0 },
 }
-
-import { productService } from '../services/firebaseService'
 
 const FlashDealCountdown = () => {
   const [timeLeft, setTimeLeft] = useState({ h: 12, m: 45, s: 0 })
