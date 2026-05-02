@@ -125,14 +125,19 @@ export default function Checkout() {
           try {
             const orderData = {
               items: items.map(i => ({
-                product: i._id || i.id,
+                product: i._id || i.id || null,
                 name: i.retailHeading || i.title || 'Elite Product',
-                price: i.discountPrice || i.regularPrice || i.price || 0,
-                qty: i.qty, size: i.size, color: i.color, image: i.image
+                price: Number(i.discountPrice || i.regularPrice || i.price || 0),
+                qty: Number(i.qty || 1),
+                size: i.size || 'Standard',
+                color: i.color || 'Default',
+                image: i.image || (i.images && i.images[0]) || ''
               })),
               shippingAddress: {
-                street: selectedAddress.street, city: selectedAddress.city,
-                state: selectedAddress.state, zip: selectedAddress.zip,
+                street: selectedAddress.street || '', 
+                city: selectedAddress.city || '',
+                state: selectedAddress.state || '', 
+                zip: selectedAddress.zip || '',
                 country: selectedAddress.country || 'India',
                 phone: selectedAddress.phone || user?.phone || '',
                 deliveryTime: selectedAddress.deliveryTime || '',
@@ -188,14 +193,19 @@ export default function Checkout() {
     try {
       const orderData = {
         items: items.map(i => ({
-          product: i._id || i.id,
+          product: i._id || i.id || null,
           name: i.retailHeading || i.title || 'Elite Product',
-          price: i.discountPrice || i.regularPrice || i.price || 0,
-          qty: i.qty, size: i.size, color: i.color, image: i.image
+          price: Number(i.discountPrice || i.regularPrice || i.price || 0),
+          qty: Number(i.qty || 1),
+          size: i.size || 'Standard',
+          color: i.color || 'Default',
+          image: i.image || (i.images && i.images[0]) || ''
         })),
         shippingAddress: {
-          street: selectedAddress.street, city: selectedAddress.city,
-          state: selectedAddress.state, zip: selectedAddress.zip,
+          street: selectedAddress.street || '', 
+          city: selectedAddress.city || '',
+          state: selectedAddress.state || '', 
+          zip: selectedAddress.zip || '',
           country: selectedAddress.country || 'India',
           phone: selectedAddress.phone || user?.phone || '',
           deliveryTime: selectedAddress.deliveryTime || '',

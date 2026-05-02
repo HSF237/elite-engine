@@ -311,7 +311,7 @@ export const productService = {
       longDescription: data.longDescription || '',
       category: data.category || 'Accessories',
       regularPrice: Number(data.regularPrice) || 0,
-      discountPrice: data.discountPrice ? Number(data.discountPrice) : undefined,
+      discountPrice: data.discountPrice ? Number(data.discountPrice) : null,
       deliveryCharge: Number(data.deliveryCharge) || 0,
       sizes,
       colors,
@@ -433,6 +433,11 @@ export const orderService = {
       }],
       createdAt: serverTimestamp()
     }
+
+    // Strip any lingering undefined values just in case
+    Object.keys(order).forEach(key => {
+      if (order[key] === undefined) order[key] = null;
+    });
 
     const docRef = await addDoc(collection(db, 'orders'), order)
 
